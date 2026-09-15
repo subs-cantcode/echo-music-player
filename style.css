@@ -1,0 +1,14 @@
+h1.center{
+    color: white;
+    font-family: "Press Start", sans-serif;
+}
+
+h2 {
+    color: lightgray;
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+body{
+    background-color: dimgray;
+    align-items: center;
+}

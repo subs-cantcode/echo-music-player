@@ -1,0 +1,8 @@
+{
+  "name": "echo-music-player",
+  "private": true,
+  "description": "Echo music player — static app with Supabase auth, Postgres, and Storage",
+  "scripts": {
+    "build": "node scripts/write-env.js"
+  }
+}

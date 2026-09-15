@@ -1,0 +1,5 @@
+Music Player - Echo: Progress
+
+1. Created a login form and register form slider
+2. uploaded a favicon.jpg
+3. inserted a background.mp4 for time being 
