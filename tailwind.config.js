@@ -13,6 +13,7 @@ export default {
         'text-primary': 'var(--color-text-primary)',
         'text-secondary': 'var(--color-text-secondary)',
         accent: 'var(--color-accent)',
+        'hover-inactive': 'var(--hover-inactive)',
       },
       fontFamily: {
         serif: ['Playfair Display', 'Georgia', 'serif'],
