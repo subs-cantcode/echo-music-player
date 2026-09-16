@@ -167,7 +167,7 @@ export default function NowPlayingBar({
             </button>
             <div
               ref={volumeBarRef}
-              className="relative h-1 bg-border rounded-full cursor-pointer group"
+              className="relative h-1 bg-transparent rounded-full cursor-pointer group"
               style={{ width: 90, paddingTop: 10, paddingBottom: 10, marginTop: -10, marginBottom: -10 }}
               onMouseDown={handleVolumeBarMouseDown}
             >
