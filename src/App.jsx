@@ -2,7 +2,6 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom'
 import Sidebar from './components/Sidebar.jsx'
 import NowPlayingBar from './components/NowPlayingBar.jsx'
-import UploadZone from './components/UploadZone.jsx'
 import { useAudioPlayer } from './hooks/useAudioPlayer.js'
 import { useLibrary } from './hooks/useLibrary.js'
 import { getAllTracks } from './lib/api.js'
@@ -11,6 +10,7 @@ import Home from './pages/Home.jsx'
 import Search from './pages/Search.jsx'
 import Playlists, { PlaylistDetail } from './pages/Playlists.jsx'
 import Favourites from './pages/Favourites.jsx'
+import Upload from './pages/Upload.jsx'
 import Settings from './pages/Settings.jsx'
 
 function UploadSuccess({ visible }) {
@@ -177,19 +177,22 @@ function AppLayout() {
                 />
               }
             />
+            <Route
+              path="/upload"
+              element={
+                <Upload
+                  onUploaded={async () => {
+                    await loadTracks()
+                    showUploadSuccess()
+                  }}
+                />
+              }
+            />
             <Route path="/settings" element={<Settings />} />
           </Routes>
 
-          {/* Upload zone on home */}
-          <div className="mt-6">
-            <UploadZone
-              onUpload={async () => {
-                await loadTracks()
-                showUploadSuccess()
-              }}
-            />
-            <UploadSuccess visible={uploadSuccessVisible} />
-          </div>
+          {/* Upload success toast */}
+          <UploadSuccess visible={uploadSuccessVisible} />
         </div>
       </main>
 

@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom'
 
 const navItems = [
   { to: '/', icon: 'bi-house', label: 'Home', end: true },
+  { to: '/upload', icon: 'bi-cloud-upload', label: 'Upload' },
   { to: '/search', icon: 'bi-search', label: 'Search' },
   { to: '/playlists', icon: 'bi-music-note-list', label: 'Playlists' },
   { to: '/favourites', icon: 'bi-heart', label: 'Favourites' },
