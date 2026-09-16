@@ -18,7 +18,17 @@ export default function NowPlayingBar({
   onToggleMute,
 }) {
   const [volumeHover, setVolumeHover] = useState(false)
+  const volumeLeaveTimer = useRef(null)
   const volumeBarRef = useRef(null)
+
+  const handleVolumeEnter = useCallback(() => {
+    if (volumeLeaveTimer.current) clearTimeout(volumeLeaveTimer.current)
+    setVolumeHover(true)
+  }, [])
+
+  const handleVolumeLeave = useCallback(() => {
+    volumeLeaveTimer.current = setTimeout(() => setVolumeHover(false), 200)
+  }, [])
 
   const handleVolumeClick = useCallback((e) => {
     if (!volumeBarRef.current || !onSetVolume) return
@@ -115,9 +125,9 @@ export default function NowPlayingBar({
 
           {/* Volume slider */}
           <div
-            className="flex-shrink-0 flex items-center gap-2"
-            onMouseEnter={() => setVolumeHover(true)}
-            onMouseLeave={() => setVolumeHover(false)}
+            className="flex-shrink-0 flex items-center gap-1 pl-1"
+            onMouseEnter={handleVolumeEnter}
+            onMouseLeave={handleVolumeLeave}
           >
             <button
               onClick={onToggleMute}
@@ -127,17 +137,17 @@ export default function NowPlayingBar({
               <i className={`bi ${volumeIcon} text-base`} />
             </button>
             <div
-              className={`overflow-hidden transition-all duration-200 ease-in-out ${
-                volumeHover ? 'w-[80px] opacity-100' : 'w-0 opacity-0'
+              className={`transition-all duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)] ${
+                volumeHover ? 'w-[80px] opacity-100 ml-1' : 'w-0 opacity-0 ml-0'
               }`}
             >
               <div
                 ref={volumeBarRef}
-                className="h-1 bg-border rounded-full cursor-pointer relative group"
+                className="h-1 bg-border rounded-full cursor-pointer group mx-1.5"
                 onClick={handleVolumeClick}
               >
                 <div
-                  className="h-full bg-accent rounded-full transition-[width] duration-100 group-hover:h-1.5 group-hover:-mt-0.5"
+                  className="h-full bg-accent rounded-full transition-[width] duration-150 ease-out group-hover:h-1.5 group-hover:-mt-0.5"
                   style={{ width: `${effectiveVolume * 100}%` }}
                 />
               </div>
