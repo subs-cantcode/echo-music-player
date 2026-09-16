@@ -146,9 +146,11 @@ export default function Sidebar({ collapsed, onToggle }) {
       </nav>
 
       {/* Account section */}
-      <div className={`flex-shrink-0 border-t border-border/50 ${collapsed ? 'px-2 py-3' : 'px-4 py-3'}`}>
-        <div className={`flex items-center ${collapsed ? 'justify-center' : 'gap-2.5'}`}>
-          <div className="w-8 h-8 rounded-full bg-accent/20 text-accent flex items-center justify-center text-sm font-medium flex-shrink-0">
+      <div className={`flex-shrink-0 border-t border-border/25 ${collapsed ? 'px-2 py-2' : 'px-2 py-1.5'}`}>
+        <div
+          className={`sidebar-nav-item rounded-lg btn-press flex items-center cursor-pointer ${collapsed ? 'justify-center px-0 py-2' : 'gap-2.5 px-2 py-2'}`}
+        >
+          <div className="w-8 h-8 rounded-full bg-accent/15 text-accent flex items-center justify-center text-sm font-medium flex-shrink-0 transition-colors duration-200">
             {initial}
           </div>
           {!collapsed && (
@@ -166,12 +168,12 @@ export default function Sidebar({ collapsed, onToggle }) {
                       setDisplayName(profile?.username || 'Guest')
                     }
                   }}
-                  className="flex-1 min-w-0 bg-transparent border-b border-accent text-text-primary text-sm outline-none px-0 py-0"
+                  className="flex-1 min-w-0 bg-transparent border-b border-accent/40 text-text-primary text-sm outline-none px-0 py-0"
                 />
               ) : (
                 <button
                   onClick={() => setEditingName(true)}
-                  className="flex-1 min-w-0 text-sm text-text-primary text-left truncate hover:text-accent transition-colors"
+                  className="flex-1 min-w-0 text-sm text-text-primary text-left truncate hover:text-accent/80 transition-colors duration-200"
                   title="Click to edit display name"
                 >
                   {displayName}
@@ -180,19 +182,19 @@ export default function Sidebar({ collapsed, onToggle }) {
               <div className="relative" ref={menuRef}>
                 <button
                   onClick={() => setMenuOpen((o) => !o)}
-                  className="text-text-secondary hover:text-text-primary transition-colors p-0.5 rounded"
+                  className="text-text-secondary hover:text-text-primary transition-colors duration-200 p-0.5 rounded"
                   aria-label="Account menu"
                 >
                   <i className="bi bi-three-dots-vertical text-sm" />
                 </button>
                 {menuOpen && (
-                  <div className="absolute bottom-full right-0 mb-1 bg-panel border border-border rounded-lg shadow-lg py-1 min-w-[140px] z-50">
+                  <div className="absolute bottom-full right-0 mb-1 bg-panel border border-border/60 rounded-lg shadow-lg py-1 min-w-[140px] z-50">
                     <button
                       onClick={() => {
                         setMenuOpen(false)
                         setShowSignOutConfirm(true)
                       }}
-                      className="w-full text-left px-3 py-2 text-sm transition-colors"
+                      className="w-full text-left px-3 py-2 text-sm transition-colors duration-200"
                       style={{ color: document.documentElement.classList.contains('dark') ? '#E5726B' : '#D64545' }}
                     >
                       Sign out
