@@ -240,6 +240,7 @@ function AppLayout() {
         onSeek={seek}
         onSetVolume={setVolume}
         onToggleMute={toggleMute}
+        onToggleFavourite={() => currentTrack && toggleFavourite(currentTrack.id)}
       />
     </div>
   )
