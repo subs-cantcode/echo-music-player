@@ -40,8 +40,8 @@ export default function NowPlayingBar({
         sidebarCollapsed ? 'left-[88px]' : 'left-[256px]'
       } right-4`}
     >
-      <div className="max-w-player mx-auto bg-panel border border-border rounded-2xl px-5 py-3 shadow-sm">
-        <div className="flex items-center gap-4">
+      <div className="max-w-player mx-auto bg-panel border border-border rounded-2xl px-7 py-5 shadow-sm">
+        <div className="flex items-center gap-6">
           {/* Track info */}
           <div className="min-w-0 flex-shrink-0 w-[160px]">
             {track ? (
@@ -59,8 +59,8 @@ export default function NowPlayingBar({
           </div>
 
           {/* Controls + progress */}
-          <div className="flex-1 flex flex-col items-center gap-1.5 min-w-0">
-            <div className="flex items-center gap-3">
+          <div className="flex-1 flex flex-col items-center gap-2.5 min-w-0">
+            <div className="flex items-center gap-5">
               <button
                 onClick={onSkipBack}
                 className="text-text-secondary hover:text-text-primary transition-colors p-1"
