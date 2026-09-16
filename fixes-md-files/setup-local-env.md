@@ -18,6 +18,5 @@ window.ECHO_SUPABASE_ANON_KEY = 'sb_publishable_DNgYDK9-LbEVzmi8QRimxg_150tcGgX'
 - Do NOT commit this file. It's for local testing only. Production (Vercel)
   gets these same values from Environment Variables set in the Vercel project
   settings, not from this file.
-- After creating the file, open `login-and-signup/signup.html` (or `index.html`,
-  whichever is the actual entry point) locally and confirm the app no longer
+- After creating the file, open `index.html` locally and confirm the app no longer
   logs "Missing Supabase config" to the console.

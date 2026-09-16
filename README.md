@@ -1,6 +1,6 @@
 # Echo Music Player — setup
 
-The player uses **Supabase** for accounts, track metadata, playlists, and audio file storage. IndexedDB and localStorage accounts are no longer used.
+The player uses **Supabase** for track metadata, playlists, and audio file storage. No login required — anonymous access only.
 
 ## 1. Create a Supabase project
 
@@ -8,8 +8,6 @@ The player uses **Supabase** for accounts, track metadata, playlists, and audio 
 2. In **SQL Editor**, paste and run `supabase/schema.sql`. That creates `profiles`, `tracks`, `playlists`, `playlist_tracks`, RLS policies, storage-usage helpers, and the private `audio-files` bucket.
 
 If the bucket already exists, the insert is a no-op. Confirm in **Storage** that `audio-files` is **private**.
-
-Optional: in **Authentication → Providers → Email**, turn off “Confirm email” while you are testing so signup can enter the player immediately.
 
 ## 2. Keys (anon only)
 
@@ -36,8 +34,6 @@ In the Vercel project: **Settings → Environment Variables**, add:
 
 ## 3. App entry
 
-- Sign in: `login-and-signup/login.html`
-- Sign up: `login-and-signup/signup.html`
-- Player: `player-v3.html`
+- Player: `index.html` (served at `/`)
 
-Unauthenticated visits to the player redirect to login.
+No login/signup — the player loads directly with anonymous access.
