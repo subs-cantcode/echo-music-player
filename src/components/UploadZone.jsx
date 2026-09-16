@@ -165,7 +165,7 @@ export default function UploadZone({ onUpload }) {
 
       {/* ── Review state ── */}
       {phase === 'review' && (
-        <div className="border border-border rounded-lg px-5 py-5">
+        <div className="upload-zone-enter border border-border rounded-lg px-5 py-5">
           <div className="flex items-center justify-between mb-4">
             <p className="text-sm text-text-secondary">
               <span className="text-accent font-semibold">{selectedFiles.length}</span>
@@ -196,14 +196,12 @@ export default function UploadZone({ onUpload }) {
 
           <div className="flex items-center gap-3">
             <button
-              onClick={startUpload}
-              className="px-5 py-2 bg-accent text-white text-sm font-medium rounded-lg hover:bg-accent/90 transition-colors"
+              onClick={startUpload}                className="px-5 py-2 bg-accent text-white text-sm font-medium rounded-lg hover:bg-accent/90 btn-press transition-colors"
             >
               Upload
             </button>
             <button
-              onClick={cancelSelection}
-              className="text-text-secondary text-sm hover:text-text-primary transition-colors"
+              onClick={cancelSelection}                className="text-text-secondary text-sm hover:text-text-primary btn-press transition-colors"
             >
               Cancel
             </button>
@@ -213,7 +211,7 @@ export default function UploadZone({ onUpload }) {
 
       {/* ── Uploading state ── */}
       {phase === 'uploading' && (
-        <div className="border border-border rounded-lg px-5 py-5">
+        <div className="upload-zone-enter border border-border rounded-lg px-5 py-5">
           <div className="flex flex-col gap-2">
             {uploadingFiles.map((f, i) => (
               <div
@@ -255,7 +253,7 @@ export default function UploadZone({ onUpload }) {
                 {f.status === 'error' && (
                   <button
                     onClick={() => retryFile(i)}
-                    className="text-accent text-xs font-medium hover:underline flex-shrink-0 ml-2"
+                    className="text-accent text-xs font-medium hover:underline btn-press flex-shrink-0 ml-2"
                   >
                     Retry
                   </button>

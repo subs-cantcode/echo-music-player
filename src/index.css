@@ -6,12 +6,137 @@ body {
   @apply bg-background text-text-primary font-sans antialiased;
 }
 
-/* Smooth page transitions */
-.page-enter {
-  animation: fadeIn 200ms ease-out;
+/* ── Page transition ── */
+.page-wrapper {
+  animation: pageSlideIn 280ms cubic-bezier(0.25, 0.1, 0.25, 1) both;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
+@keyframes pageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Sidebar nav item interactions ── */
+.sidebar-nav-item {
+  position: relative;
+  transition: background-color 200ms ease, color 200ms ease, padding-left 200ms ease;
+}
+
+.sidebar-nav-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) scaleY(0);
+  width: 3px;
+  height: 60%;
+  background-color: #B5623E;
+  border-radius: 0 2px 2px 0;
+  transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.sidebar-nav-item:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.sidebar-nav-item.active {
+  background-color: rgba(181, 98, 62, 0.06);
+}
+
+.sidebar-nav-item.active::before {
+  transform: translateY(-50%) scaleY(1);
+}
+
+/* ── Sidebar label fade ── */
+.sidebar-label {
+  animation: labelFadeIn 200ms ease-out both;
+}
+
+@keyframes labelFadeIn {
+  from { opacity: 0; transform: translateX(-4px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Subtle button press ── */
+.btn-press {
+  transition: transform 120ms ease, opacity 120ms ease;
+}
+
+.btn-press:active {
+  transform: scale(0.96);
+}
+
+/* ── Smooth track row hover ── */
+.track-row {
+  transition: background-color 150ms ease, transform 150ms ease;
+}
+
+.track-row:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.track-row:active {
+  transform: scale(0.995);
+}
+
+/* ── Panel fade-in for child elements ── */
+.panel-content > * {
+  animation: panelChildIn 250ms ease-out both;
+}
+
+.panel-content > *:nth-child(1) { animation-delay: 0ms; }
+.panel-content > *:nth-child(2) { animation-delay: 40ms; }
+.panel-content > *:nth-child(3) { animation-delay: 80ms; }
+.panel-content > *:nth-child(4) { animation-delay: 120ms; }
+.panel-content > *:nth-child(5) { animation-delay: 160ms; }
+
+@keyframes panelChildIn {
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Upload zone smooth state transitions ── */
+.upload-zone-enter {
+  animation: zoneExpand 250ms cubic-bezier(0.25, 0.1, 0.25, 1) both;
+}
+
+@keyframes zoneExpand {
+  from { opacity: 0; transform: scaleY(0.95); transform-origin: top; }
+  to { opacity: 1; transform: scaleY(1); transform-origin: top; }
+}
+
+/* ── Favourite heart bounce ── */
+.heart-bounce {
+  animation: heartPop 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes heartPop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+/* ── Scrollbar styling ── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
 }

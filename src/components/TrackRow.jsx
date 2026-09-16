@@ -3,7 +3,7 @@ import { formatTime } from '../components/NowPlaying.jsx'
 export default function TrackRow({ track, isActive, onPlay, onDelete, onToggleFavourite }) {
   return (
     <div
-      className={`flex justify-between items-center py-3 border-t border-border cursor-pointer ${isActive ? 'text-accent' : ''}`}
+      className={`track-row flex justify-between items-center py-3 border-t border-border cursor-pointer rounded-lg ${isActive ? 'text-accent' : ''}`}
       onClick={() => onPlay(track)}
     >
       <div className="min-w-0 flex-1 mr-3">
@@ -26,9 +26,9 @@ export default function TrackRow({ track, isActive, onPlay, onDelete, onToggleFa
           e.stopPropagation()
           if (onToggleFavourite) onToggleFavourite(track.id)
         }}
-        className={`flex-shrink-0 ml-2 px-1.5 text-sm transition-all duration-200 ${
+        className={`flex-shrink-0 ml-2 px-1.5 text-sm btn-press transition-all duration-200 ${
           track.is_favorite
-            ? 'text-accent scale-110'
+            ? 'text-accent heart-bounce'
             : 'text-text-secondary hover:text-accent'
         }`}
         aria-label={track.is_favorite ? 'Remove from favourites' : 'Add to favourites'}
@@ -40,7 +40,7 @@ export default function TrackRow({ track, isActive, onPlay, onDelete, onToggleFa
           e.stopPropagation()
           onDelete(track.id)
         }}
-        className="text-text-secondary hover:text-text-primary flex-shrink-0 ml-1 px-1.5 text-sm transition-colors"
+        className="text-text-secondary hover:text-text-primary flex-shrink-0 ml-1 px-1.5 text-sm btn-press transition-colors"
         aria-label="Delete track"
       >
         <i className="bi bi-trash3" />

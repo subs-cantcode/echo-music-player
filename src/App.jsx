@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import Sidebar from './components/Sidebar.jsx'
 import NowPlayingBar from './components/NowPlayingBar.jsx'
 import { useAudioPlayer } from './hooks/useAudioPlayer.js'
@@ -21,6 +21,17 @@ function UploadSuccess({ visible }) {
     >
       <i className="bi bi-check-circle-fill" />
       Upload complete
+    </div>
+  )
+}
+
+function AnimatedRoutes(props) {
+  const location = useLocation()
+  return (
+    <div key={location.pathname} className="page-wrapper">
+      <Routes location={location}>
+        {props.children}
+      </Routes>
     </div>
   )
 }
@@ -119,7 +130,7 @@ function AppLayout() {
             </div>
           )}
 
-          <Routes>
+          <AnimatedRoutes>
             <Route
               path="/"
               element={
@@ -189,7 +200,7 @@ function AppLayout() {
               }
             />
             <Route path="/settings" element={<Settings />} />
-          </Routes>
+          </AnimatedRoutes>
 
           {/* Upload success toast */}
           <UploadSuccess visible={uploadSuccessVisible} />

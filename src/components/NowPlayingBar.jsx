@@ -63,14 +63,14 @@ export default function NowPlayingBar({
             <div className="flex items-center gap-5">
               <button
                 onClick={onSkipBack}
-                className="text-text-secondary hover:text-text-primary transition-colors p-1"
+                className="text-text-secondary hover:text-text-primary btn-press transition-colors p-1"
                 aria-label="Rewind 10 seconds"
               >
                 <i className="bi bi-skip-backward-fill text-base" />
               </button>
               <button
                 onClick={onPlayPause}
-                className="w-9 h-9 rounded-full bg-text-primary text-background flex items-center justify-center hover:bg-text-primary/80 transition-colors"
+                className="w-9 h-9 rounded-full bg-text-primary text-background flex items-center justify-center hover:bg-text-primary/80 btn-press transition-all duration-200"
                 aria-label={isPlaying ? 'Pause' : 'Play'}
               >
                 {isPlaying ? (
@@ -81,7 +81,7 @@ export default function NowPlayingBar({
               </button>
               <button
                 onClick={onSkipForward}
-                className="text-text-secondary hover:text-text-primary transition-colors p-1"
+                className="text-text-secondary hover:text-text-primary btn-press transition-colors p-1"
                 aria-label="Forward 10 seconds"
               >
                 <i className="bi bi-skip-forward-fill text-base" />
@@ -121,7 +121,7 @@ export default function NowPlayingBar({
           >
             <button
               onClick={onToggleMute}
-              className="text-text-secondary hover:text-text-primary transition-colors p-1"
+              className="text-text-secondary hover:text-text-primary btn-press transition-colors p-1"
               aria-label={isMuted ? 'Unmute' : 'Mute'}
             >
               <i className={`bi ${volumeIcon} text-base`} />
