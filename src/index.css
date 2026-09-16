@@ -9,9 +9,9 @@
   --color-border: #DDD4C4;
   --color-text-primary: #4A443A;
   --color-text-secondary: #8C8272;
-  --color-accent: #B5623E;
+  --color-accent: #B8862E;
 
-  --hover-inactive: rgba(181, 98, 62, 0.08);
+  --hover-inactive: rgba(184, 134, 46, 0.08);
   --hover-sidebar: rgba(0, 0, 0, 0.03);
 }
 
@@ -21,9 +21,9 @@ html.dark {
   --color-border: #3A342C;
   --color-text-primary: #F2EAE0;
   --color-text-secondary: #A79C8C;
-  --color-accent: #D97B52;
+  --color-accent: #E0A94A;
 
-  --hover-inactive: rgba(217, 123, 82, 0.14);
+  --hover-inactive: rgba(224, 169, 74, 0.14);
   --hover-sidebar: rgba(255, 255, 255, 0.04);
 }
 

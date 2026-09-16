@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { formatTime } from './NowPlaying.jsx'
 
 export default function NowPlayingBar({
@@ -18,8 +18,10 @@ export default function NowPlayingBar({
   onToggleMute,
 }) {
   const [volumeHover, setVolumeHover] = useState(false)
+  const [volumeDragging, setVolumeDragging] = useState(false)
   const volumeLeaveTimer = useRef(null)
   const volumeBarRef = useRef(null)
+  const volumeDraggingRef = useRef(false)
 
   const handleVolumeEnter = useCallback(() => {
     if (volumeLeaveTimer.current) clearTimeout(volumeLeaveTimer.current)
@@ -27,15 +29,42 @@ export default function NowPlayingBar({
   }, [])
 
   const handleVolumeLeave = useCallback(() => {
+    if (volumeDraggingRef.current) return
     volumeLeaveTimer.current = setTimeout(() => setVolumeHover(false), 200)
   }, [])
 
-  const handleVolumeClick = useCallback((e) => {
+  const handleVolumeBarMouseDown = useCallback((e) => {
     if (!volumeBarRef.current || !onSetVolume) return
+    e.preventDefault()
+    volumeDraggingRef.current = true
+    setVolumeDragging(true)
     const rect = volumeBarRef.current.getBoundingClientRect()
-    const pos = (e.clientX - rect.left) / rect.width
+    const pos = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width))
     onSetVolume(pos)
+
+    const handleMouseMove = (ev) => {
+      const r = volumeBarRef.current?.getBoundingClientRect()
+      if (!r) return
+      const p = Math.min(1, Math.max(0, (ev.clientX - r.left) / r.width))
+      onSetVolume(p)
+    }
+
+    const handleMouseUp = () => {
+      volumeDraggingRef.current = false
+      setVolumeDragging(false)
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('mouseup', handleMouseUp)
+    }
+
+    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('mouseup', handleMouseUp)
   }, [onSetVolume])
+
+  useEffect(() => {
+    return () => {
+      volumeDraggingRef.current = false
+    }
+  }, [])
 
   const effectiveVolume = isMuted ? 0 : volume
   const volumeIcon = effectiveVolume === 0
@@ -143,12 +172,19 @@ export default function NowPlayingBar({
             >
               <div
                 ref={volumeBarRef}
-                className="h-1 bg-border rounded-full cursor-pointer group mx-1.5"
-                onClick={handleVolumeClick}
+                className="relative h-1 bg-border rounded-full cursor-pointer group mx-1.5"
+                style={{ paddingTop: 8, paddingBottom: 8, marginTop: -8, marginBottom: -8 }}
+                onMouseDown={handleVolumeBarMouseDown}
               >
                 <div
-                  className="h-full bg-accent rounded-full transition-[width] duration-150 ease-out group-hover:h-1.5 group-hover:-mt-0.5"
+                  className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-accent rounded-full transition-[width] duration-150 ease-out group-hover:h-1.5"
                   style={{ width: `${effectiveVolume * 100}%` }}
+                />
+                <div
+                  className={`absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-accent border-2 border-panel shadow-sm transition-all duration-150 ease-out pointer-events-none ${
+                    volumeDragging ? 'scale-110 shadow-md' : 'group-hover:scale-110'
+                  }`}
+                  style={{ left: `${effectiveVolume * 100}%` }}
                 />
               </div>
             </div>

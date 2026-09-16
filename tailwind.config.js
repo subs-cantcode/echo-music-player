@@ -15,7 +15,7 @@ export default {
         accent: 'var(--color-accent)',
       },
       fontFamily: {
-        serif: ['Fraunces', 'Georgia', 'serif'],
+        serif: ['Playfair Display', 'Georgia', 'serif'],
         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
       },
       maxWidth: {
