@@ -183,8 +183,8 @@ function AppLayout() {
           {/* Upload zone on home */}
           <div className="mt-6">
             <UploadZone
-              onUpload={async (files) => {
-                await addTracks(files)
+              onUpload={async () => {
+                await loadTracks()
                 showUploadSuccess()
               }}
             />
