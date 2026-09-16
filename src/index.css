@@ -2,8 +2,45 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Theme variables ── */
+:root {
+  --color-background: #FAF7F1;
+  --color-panel: #EFE9DE;
+  --color-border: #DDD4C4;
+  --color-text-primary: #4A443A;
+  --color-text-secondary: #8C8272;
+  --color-accent: #B5623E;
+
+  --hover-inactive: rgba(181, 98, 62, 0.08);
+  --hover-sidebar: rgba(0, 0, 0, 0.03);
+}
+
+html.dark {
+  --color-background: #1C1815;
+  --color-panel: #26221D;
+  --color-border: #3A342C;
+  --color-text-primary: #F2EAE0;
+  --color-text-secondary: #A79C8C;
+  --color-accent: #D97B52;
+
+  --hover-inactive: rgba(217, 123, 82, 0.14);
+  --hover-sidebar: rgba(255, 255, 255, 0.04);
+}
+
+/* ── Smooth theme transition ── */
+html:not(.no-theme-transition) body,
+html:not(.no-theme-transition) body * {
+  transition:
+    background-color 220ms ease,
+    color 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
 body {
-  @apply bg-background text-text-primary font-sans antialiased;
+  @apply font-sans antialiased;
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
 }
 
 /* ── Page transition ── */
@@ -25,7 +62,7 @@ body {
 /* ── Sidebar nav item interactions ── */
 .sidebar-nav-item {
   position: relative;
-  transition: background-color 200ms ease, color 200ms ease, padding-left 200ms ease;
+  transition: background-color 150ms ease, color 200ms ease, padding-left 200ms ease;
 }
 
 .sidebar-nav-item::before {
@@ -36,17 +73,21 @@ body {
   transform: translateY(-50%) scaleY(0);
   width: 3px;
   height: 60%;
-  background-color: #B5623E;
+  background-color: var(--color-accent);
   border-radius: 0 2px 2px 0;
   transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .sidebar-nav-item:hover {
-  background-color: rgba(0, 0, 0, 0.03);
+  background-color: var(--hover-inactive);
+}
+
+html.dark .sidebar-nav-item:not(.active):hover {
+  background-color: var(--hover-inactive);
 }
 
 .sidebar-nav-item.active {
-  background-color: rgba(181, 98, 62, 0.06);
+  background-color: transparent;
 }
 
 .sidebar-nav-item.active::before {
@@ -78,7 +119,7 @@ body {
 }
 
 .track-row:hover {
-  background-color: rgba(0, 0, 0, 0.02);
+  background-color: var(--hover-sidebar);
 }
 
 .track-row:active {
@@ -137,6 +178,14 @@ body {
   border-radius: 3px;
 }
 
+html.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+}
+
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.2);
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
 }

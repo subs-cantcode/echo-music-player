@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import Sidebar from './components/Sidebar.jsx'
 import NowPlayingBar from './components/NowPlayingBar.jsx'
+import { useTheme } from './lib/ThemeContext.jsx'
 import { useAudioPlayer } from './hooks/useAudioPlayer.js'
 import { useLibrary } from './hooks/useLibrary.js'
 import { getAllTracks } from './lib/api.js'
@@ -33,6 +34,19 @@ function AnimatedRoutes(props) {
         {props.children}
       </Routes>
     </div>
+  )
+}
+
+function ThemeToggle() {
+  const { theme, toggleTheme } = useTheme()
+  return (
+    <button
+      onClick={toggleTheme}
+      className="fixed top-4 right-5 z-50 w-9 h-9 rounded-full bg-panel border border-border flex items-center justify-center text-text-secondary hover:text-text-primary btn-press transition-colors duration-200"
+      aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+    >
+      <i className={`bi ${theme === 'dark' ? 'bi-sun' : 'bi-moon'} text-base`} />
+    </button>
   )
 }
 
@@ -111,6 +125,9 @@ function AppLayout() {
 
   return (
     <div className="min-h-screen bg-background font-sans">
+      {/* Theme toggle */}
+      <ThemeToggle />
+
       {/* Sidebar */}
       <Sidebar
         collapsed={sidebarCollapsed}

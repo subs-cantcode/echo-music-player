@@ -29,7 +29,7 @@ export default function Sidebar({ collapsed, onToggle }) {
         </div>
         <button
           onClick={onToggle}
-          className="text-text-secondary hover:text-text-primary transition-colors duration-200 p-1.5 rounded-lg hover:bg-black/5 flex-shrink-0"
+          className="text-text-secondary hover:text-text-primary transition-colors duration-200 p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 flex-shrink-0"
           aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           <i className={`bi ${collapsed ? 'bi-chevron-right' : 'bi-chevron-left'} text-lg transition-transform duration-300`} />

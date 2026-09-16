@@ -7,12 +7,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: '#FAF7F1',
-        panel: '#EFE9DE',
-        border: '#DDD4C4',
-        'text-primary': '#4A443A',
-        'text-secondary': '#8C8272',
-        accent: '#B5623E',
+        background: 'var(--color-background)',
+        panel: 'var(--color-panel)',
+        border: 'var(--color-border)',
+        'text-primary': 'var(--color-text-primary)',
+        'text-secondary': 'var(--color-text-secondary)',
+        accent: 'var(--color-accent)',
       },
       fontFamily: {
         serif: ['Fraunces', 'Georgia', 'serif'],
