@@ -1,6 +1,8 @@
 # Echo Music Player — setup
 
-The player uses **Supabase** for track metadata, playlists, and audio file storage. No login required — anonymous access only.
+The player uses **Supabase** for track metadata and audio file storage. No login required — anonymous access only.
+
+The app is a **React + Vite** build styled with **Tailwind CSS**, using **Bootstrap Icons** (icon font only, via CDN).
 
 ## 1. Create a Supabase project
 
@@ -15,11 +17,14 @@ Use the project **URL** and **anon public** key. Never put the **service role** 
 
 ### Local
 
+Create a `.env` file in the project root:
+
 ```bash
-copy js\env.example.js js\env.js
+VITE_SUPABASE_URL="https://YOUR_PROJECT.supabase.co"
+VITE_SUPABASE_ANON_KEY="your-anon-public-key"
 ```
 
-Fill in `ECHO_SUPABASE_URL` and `ECHO_SUPABASE_ANON_KEY` in `js/env.js`.
+(`.env` is gitignored. `npm run dev` picks it up via Vite's standard env handling.)
 
 ### Vercel
 
@@ -27,13 +32,13 @@ In the Vercel project: **Settings → Environment Variables**, add:
 
 | Name | Value |
 | --- | --- |
-| `SUPABASE_URL` | `https://YOUR_PROJECT.supabase.co` |
-| `SUPABASE_ANON_KEY` | the anon public key from Supabase **Project Settings → API** |
+| `VITE_SUPABASE_URL` | `https://YOUR_PROJECT.supabase.co` |
+| `VITE_SUPABASE_ANON_KEY` | the anon public key from Supabase **Project Settings → API** |
 
-`npm run build` (`scripts/write-env.js`) writes `js/env.js` from those variables on each deploy. The site stays a static Vercel deployment plus the Supabase backend.
+The Vercel build runs `node scripts/write-env.js && vite build`. `write-env.js` writes a `.env` from those variables (falling back to unprefixed `SUPABASE_URL`/`SUPABASE_ANON_KEY` if present), and Vite inlines them at build time. The deployment is static: Vite outputs to `dist/`, and the app talks to Supabase directly.
 
 ## 3. App entry
 
-- Player: `index.html` (served at `/`)
+- Player: `index.html` → `src/main.jsx` → `src/App.jsx` (served at `/`)
 
 No login/signup — the player loads directly with anonymous access.
