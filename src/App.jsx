@@ -27,17 +27,21 @@ function UploadSuccess({ visible }) {
 
 function AppLayout() {
   const navigate = useNavigate()
-  const { tracks, loading, error, loadTracks, addTracks, removeTrack } = useLibrary()
+  const { tracks, loading, error, loadTracks, addTracks, removeTrack, toggleFavourite } = useLibrary()
   const {
     isPlaying,
     currentTime,
     duration,
     progress,
+    volume,
+    isMuted,
     playTrack,
     togglePlay,
     pause,
     skip,
     seek,
+    setVolume,
+    toggleMute,
   } = useAudioPlayer()
   const [currentTrack, setCurrentTrack] = useState(null)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
@@ -104,7 +108,7 @@ function AppLayout() {
 
       {/* Main content */}
       <main
-        className={`transition-all duration-250 ease-in-out pt-4 pb-[100px] ${
+        className={`transition-all duration-250 ease-in-out pt-4 pb-32 ${
           sidebarCollapsed ? 'ml-[72px]' : 'ml-[240px]'
         }`}
       >
@@ -124,6 +128,7 @@ function AppLayout() {
                   currentTrack={currentTrack}
                   onPlay={handlePlayTrack}
                   onDelete={removeTrack}
+                  onToggleFavourite={toggleFavourite}
                   recentlyPlayed={recentlyPlayed}
                 />
               }
@@ -136,6 +141,7 @@ function AppLayout() {
                   currentTrack={currentTrack}
                   onPlay={handlePlayTrack}
                   onDelete={removeTrack}
+                  onToggleFavourite={toggleFavourite}
                 />
               }
             />
@@ -167,6 +173,7 @@ function AppLayout() {
                   currentTrack={currentTrack}
                   onPlay={handlePlayTrack}
                   onDelete={removeTrack}
+                  onToggleFavourite={toggleFavourite}
                 />
               }
             />
@@ -193,10 +200,15 @@ function AppLayout() {
         currentTime={currentTime}
         duration={duration}
         progress={progress}
+        volume={volume}
+        isMuted={isMuted}
+        sidebarCollapsed={sidebarCollapsed}
         onPlayPause={togglePlay}
         onSkipBack={() => skip(-10)}
         onSkipForward={() => skip(10)}
         onSeek={seek}
+        onSetVolume={setVolume}
+        onToggleMute={toggleMute}
       />
     </div>
   )

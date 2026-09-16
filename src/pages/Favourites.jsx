@@ -1,6 +1,6 @@
 import TrackRow from '../components/TrackRow.jsx'
 
-export default function Favourites({ tracks, currentTrack, onPlay, onDelete }) {
+export default function Favourites({ tracks, currentTrack, onPlay, onDelete, onToggleFavourite }) {
   const favourited = tracks.filter((t) => t.is_favorite)
 
   return (
@@ -18,14 +18,14 @@ export default function Favourites({ tracks, currentTrack, onPlay, onDelete }) {
         </p>
       ) : (
         <div className="flex flex-col">
-          {favourited.map((track) => (
-            <TrackRow
-              key={track.id}
-              track={track}
-              isActive={currentTrack?.id === track.id}
-              onPlay={onPlay}
-              onDelete={onDelete}
-            />
+          {favourited.map((track) => (              <TrackRow
+                key={track.id}
+                track={track}
+                isActive={currentTrack?.id === track.id}
+                onPlay={onPlay}
+                onDelete={onDelete}
+                onToggleFavourite={onToggleFavourite}
+              />
           ))}
         </div>
       )}

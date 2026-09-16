@@ -237,4 +237,25 @@ export async function deleteTrack(trackId) {
   return true
 }
 
+export async function toggleFavourite(trackId) {
+  const user = await getOrCreateUser()
+  const { data: row, error: fetchError } = await supabase
+    .from('tracks')
+    .select('id, is_favorite')
+    .eq('id', trackId)
+    .eq('user_id', user.id)
+    .maybeSingle()
+  if (fetchError) throw fetchError
+  if (!row) return false
+
+  const newValue = !row.is_favorite
+  const { error: updateError } = await supabase
+    .from('tracks')
+    .update({ is_favorite: newValue })
+    .eq('id', trackId)
+    .eq('user_id', user.id)
+  if (updateError) throw updateError
+  return newValue
+}
+
 export { sanitizeTitle, bytesToLabel }

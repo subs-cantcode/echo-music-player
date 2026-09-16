@@ -1,6 +1,6 @@
 import { formatTime } from '../components/NowPlaying.jsx'
 
-export default function TrackRow({ track, isActive, onPlay, onDelete }) {
+export default function TrackRow({ track, isActive, onPlay, onDelete, onToggleFavourite }) {
   return (
     <div
       className={`flex justify-between items-center py-3 border-t border-border cursor-pointer ${isActive ? 'text-accent' : ''}`}
@@ -24,9 +24,23 @@ export default function TrackRow({ track, isActive, onPlay, onDelete }) {
       <button
         onClick={(e) => {
           e.stopPropagation()
+          if (onToggleFavourite) onToggleFavourite(track.id)
+        }}
+        className={`flex-shrink-0 ml-2 px-1.5 text-sm transition-all duration-200 ${
+          track.is_favorite
+            ? 'text-accent scale-110'
+            : 'text-text-secondary hover:text-accent'
+        }`}
+        aria-label={track.is_favorite ? 'Remove from favourites' : 'Add to favourites'}
+      >
+        <i className={`bi ${track.is_favorite ? 'bi-heart-fill' : 'bi-heart'}`} />
+      </button>
+      <button
+        onClick={(e) => {
+          e.stopPropagation()
           onDelete(track.id)
         }}
-        className="text-text-secondary hover:text-text-primary flex-shrink-0 ml-3 px-2 text-sm transition-colors"
+        className="text-text-secondary hover:text-text-primary flex-shrink-0 ml-1 px-1.5 text-sm transition-colors"
         aria-label="Delete track"
       >
         <i className="bi bi-trash3" />

@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { getAllTracks, uploadTrack, deleteTrack as deleteSupabaseTrack } from '../lib/api.js'
+import { getAllTracks, uploadTrack, deleteTrack as deleteSupabaseTrack, toggleFavourite as toggleFavouriteApi } from '../lib/api.js'
 
 export function useLibrary() {
   const [tracks, setTracks] = useState([])
@@ -49,6 +49,19 @@ export function useLibrary() {
     }
   }, [loadTracks])
 
+  const toggleFavourite = useCallback(async (trackId) => {
+    try {
+      await toggleFavouriteApi(trackId)
+      setTracks((prev) =>
+        prev.map((t) =>
+          t.id === trackId ? { ...t, is_favorite: !t.is_favorite } : t
+        )
+      )
+    } catch (err) {
+      console.error('Failed to toggle favourite:', err)
+    }
+  }, [])
+
   return {
     tracks,
     loading,
@@ -56,5 +69,6 @@ export function useLibrary() {
     loadTracks,
     addTracks,
     removeTrack,
+    toggleFavourite,
   }
 }

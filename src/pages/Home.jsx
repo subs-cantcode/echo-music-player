@@ -1,6 +1,6 @@
 import TrackRow from '../components/TrackRow.jsx'
 
-export default function Home({ tracks, currentTrack, onPlay, onDelete, recentlyPlayed }) {
+export default function Home({ tracks, currentTrack, onPlay, onDelete, onToggleFavourite, recentlyPlayed }) {
   return (
     <div className="flex flex-col gap-6">
       {/* Recently played */}
@@ -43,14 +43,14 @@ export default function Home({ tracks, currentTrack, onPlay, onDelete, recentlyP
           </p>
         ) : (
           <div className="flex flex-col">
-            {tracks.map((track) => (
-              <TrackRow
-                key={track.id}
-                track={track}
-                isActive={currentTrack?.id === track.id}
-                onPlay={onPlay}
-                onDelete={onDelete}
-              />
+            {tracks.map((track) => (                <TrackRow
+                  key={track.id}
+                  track={track}
+                  isActive={currentTrack?.id === track.id}
+                  onPlay={onPlay}
+                  onDelete={onDelete}
+                  onToggleFavourite={onToggleFavourite}
+                />
             ))}
           </div>
         )}

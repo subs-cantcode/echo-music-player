@@ -5,6 +5,8 @@ export function useAudioPlayer() {
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
+  const [volume, setVolumeState] = useState(0.8)
+  const [isMuted, setIsMuted] = useState(false)
 
   const ensureAudio = useCallback(() => {
     if (!audioRef.current) {
@@ -57,6 +59,24 @@ export function useAudioPlayer() {
     }
   }, [])
 
+  const setVolume = useCallback((val) => {
+    const clamped = Math.max(0, Math.min(1, val))
+    setVolumeState(clamped)
+    setIsMuted(clamped === 0)
+    if (audioRef.current) {
+      audioRef.current.volume = clamped
+      audioRef.current.muted = clamped === 0
+    }
+  }, [])
+
+  const toggleMute = useCallback(() => {
+    if (audioRef.current) {
+      const newMuted = !isMuted
+      setIsMuted(newMuted)
+      audioRef.current.muted = newMuted
+    }
+  }, [isMuted])
+
   const seek = useCallback((time) => {
     if (audioRef.current) {
       audioRef.current.currentTime = time
@@ -79,10 +99,14 @@ export function useAudioPlayer() {
     currentTime,
     duration,
     progress,
+    volume,
+    isMuted,
     playTrack,
     togglePlay,
     pause,
     seek,
     skip,
+    setVolume,
+    toggleMute,
   }
 }
