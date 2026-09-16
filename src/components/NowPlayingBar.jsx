@@ -72,7 +72,7 @@ export default function NowPlayingBar({
 
   return (
     <div
-      className={`fixed bottom-4 z-40 transition-all duration-250 ease-in-out ${
+      className={`fixed bottom-4 z-40 transition-all duration-350 ease-[cubic-bezier(0.34,1.2,0.64,1)] ${
         sidebarCollapsed ? 'left-[88px]' : 'left-[256px]'
       } right-4`}
     >

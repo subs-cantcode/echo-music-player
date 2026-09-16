@@ -61,6 +61,12 @@ body {
   }
 }
 
+/* ── Sidebar panel smooth width ── */
+.sidebar-panel {
+  will-change: width;
+  transition: width 350ms cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+
 /* ── Sidebar nav item interactions ── */
 .sidebar-nav-item {
   position: relative;

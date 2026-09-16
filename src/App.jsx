@@ -123,7 +123,7 @@ function AppLayout() {
 
       {/* Main content */}
       <main
-        className={`transition-all duration-250 ease-in-out pt-4 pb-32 ${
+        className={`transition-all duration-350 ease-[cubic-bezier(0.34,1.2,0.64,1)] pt-4 pb-32 ${
           sidebarCollapsed ? 'ml-[72px]' : 'ml-[240px]'
         }`}
       >
