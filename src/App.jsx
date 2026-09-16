@@ -1,11 +1,17 @@
-import { useState, useEffect, useRef } from 'react'
-import NowPlaying from './components/NowPlaying.jsx'
-import PlayerControls from './components/PlayerControls.jsx'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom'
+import Sidebar from './components/Sidebar.jsx'
+import NowPlayingBar from './components/NowPlayingBar.jsx'
 import UploadZone from './components/UploadZone.jsx'
-import Library from './components/Library.jsx'
 import { useAudioPlayer } from './hooks/useAudioPlayer.js'
 import { useLibrary } from './hooks/useLibrary.js'
 import { getAllTracks } from './lib/api.js'
+
+import Home from './pages/Home.jsx'
+import Search from './pages/Search.jsx'
+import Playlists, { PlaylistDetail } from './pages/Playlists.jsx'
+import Favourites from './pages/Favourites.jsx'
+import Settings from './pages/Settings.jsx'
 
 function UploadSuccess({ visible }) {
   return (
@@ -19,7 +25,8 @@ function UploadSuccess({ visible }) {
   )
 }
 
-export default function App() {
+function AppLayout() {
+  const navigate = useNavigate()
   const { tracks, loading, error, loadTracks, addTracks, removeTrack } = useLibrary()
   const {
     isPlaying,
@@ -33,6 +40,8 @@ export default function App() {
     seek,
   } = useAudioPlayer()
   const [currentTrack, setCurrentTrack] = useState(null)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [recentlyPlayed, setRecentlyPlayed] = useState([])
   const [uploadSuccessVisible, setUploadSuccessVisible] = useState(false)
   const uploadSuccessTimer = useRef(null)
 
@@ -67,10 +76,14 @@ export default function App() {
     return () => document.removeEventListener('keydown', handler)
   }, [togglePlay])
 
-  const handlePlayTrack = async (track) => {
+  const handlePlayTrack = useCallback(async (track) => {
     setCurrentTrack(track)
+    // Track recently played
+    setRecentlyPlayed((prev) => {
+      const filtered = prev.filter((t) => t.id !== track.id)
+      return [track, ...filtered].slice(0, 10)
+    })
     if (!track.src) {
-      // Signed URLs expire — fetch a fresh one before playing.
       const all = await getAllTracks()
       const fresh = all.find((t) => t.id === track.id)
       if (fresh?.src) {
@@ -79,49 +92,120 @@ export default function App() {
     } else {
       await playTrack(track.src)
     }
-  }
+  }, [playTrack])
 
   return (
     <div className="min-h-screen bg-background font-sans">
-      <div className="max-w-player mx-auto px-5 py-10 flex flex-col gap-7">
-        {error && (
-          <div className="bg-panel border border-border p-6 text-text-secondary text-center">
-            {error}
+      {/* Sidebar */}
+      <Sidebar
+        collapsed={sidebarCollapsed}
+        onToggle={() => setSidebarCollapsed((c) => !c)}
+      />
+
+      {/* Main content */}
+      <main
+        className={`transition-all duration-250 ease-in-out pt-4 pb-[100px] ${
+          sidebarCollapsed ? 'ml-[72px]' : 'ml-[240px]'
+        }`}
+      >
+        <div className="max-w-player mx-auto px-5">
+          {error && (
+            <div className="bg-panel border border-border p-6 text-text-secondary text-center mb-6">
+              {error}
+            </div>
+          )}
+
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Home
+                  tracks={tracks}
+                  currentTrack={currentTrack}
+                  onPlay={handlePlayTrack}
+                  onDelete={removeTrack}
+                  recentlyPlayed={recentlyPlayed}
+                />
+              }
+            />
+            <Route
+              path="/search"
+              element={
+                <Search
+                  tracks={tracks}
+                  currentTrack={currentTrack}
+                  onPlay={handlePlayTrack}
+                  onDelete={removeTrack}
+                />
+              }
+            />
+            <Route
+              path="/playlists"
+              element={
+                <Playlists
+                  tracks={tracks}
+                  currentTrack={currentTrack}
+                  onPlay={handlePlayTrack}
+                />
+              }
+            />
+            <Route
+              path="/playlists/:id"
+              element={
+                <PlaylistDetail
+                  tracks={tracks}
+                  currentTrack={currentTrack}
+                  onPlay={handlePlayTrack}
+                />
+              }
+            />
+            <Route
+              path="/favourites"
+              element={
+                <Favourites
+                  tracks={tracks}
+                  currentTrack={currentTrack}
+                  onPlay={handlePlayTrack}
+                  onDelete={removeTrack}
+                />
+              }
+            />
+            <Route path="/settings" element={<Settings />} />
+          </Routes>
+
+          {/* Upload zone on home */}
+          <div className="mt-6">
+            <UploadZone
+              onUpload={async (files) => {
+                await addTracks(files)
+                showUploadSuccess()
+              }}
+            />
+            <UploadSuccess visible={uploadSuccessVisible} />
           </div>
-        )}
+        </div>
+      </main>
 
-        <NowPlaying
-          track={currentTrack}
-          progress={progress}
-          currentTime={currentTime}
-          totalTime={duration}
-          onSeek={seek}
-        />
-
-        <PlayerControls
-          isPlaying={isPlaying}
-          onPlayPause={togglePlay}
-          onSkipBack={() => skip(-10)}
-          onSkipForward={() => skip(10)}
-        />
-
-        <UploadZone
-          onUpload={async (files) => {
-            await addTracks(files)
-            showUploadSuccess()
-          }}
-        />
-
-        <UploadSuccess visible={uploadSuccessVisible} />
-
-        <Library
-          tracks={tracks}
-          currentTrack={currentTrack}
-          onPlay={handlePlayTrack}
-          onDelete={removeTrack}
-          loading={loading}
-        />
-      </div>
+      {/* Persistent now-playing bar */}
+      <NowPlayingBar
+        track={currentTrack}
+        isPlaying={isPlaying}
+        currentTime={currentTime}
+        duration={duration}
+        progress={progress}
+        onPlayPause={togglePlay}
+        onSkipBack={() => skip(-10)}
+        onSkipForward={() => skip(10)}
+        onSeek={seek}
+      />
     </div>
+  )
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AppLayout />
+    </BrowserRouter>
   )
 }
