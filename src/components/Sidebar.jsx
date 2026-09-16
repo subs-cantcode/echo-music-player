@@ -111,7 +111,7 @@ export default function Sidebar({ collapsed, onToggle }) {
         </div>
         <button
           onClick={onToggle}
-          className="text-text-secondary hover:text-text-primary transition-colors duration-200 p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 flex-shrink-0"
+          className="player-btn w-8 h-8 text-text-secondary hover:text-text-primary flex-shrink-0"
           aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           <i className={`bi ${collapsed ? 'bi-chevron-right' : 'bi-chevron-left'} text-lg transition-transform duration-300`} />
@@ -146,7 +146,7 @@ export default function Sidebar({ collapsed, onToggle }) {
       </nav>
 
       {/* Account section */}
-      <div className={`flex-shrink-0 border-t border-border/25 ${collapsed ? 'px-2 py-2' : 'px-2 py-1.5'}`}>
+      <div className={`flex-shrink-0 border-t divider-soft ${collapsed ? 'px-2 py-2' : 'px-2 py-1.5'}`}>
         <div
           className={`sidebar-nav-item rounded-lg btn-press flex items-center cursor-pointer ${collapsed ? 'justify-center px-0 py-2' : 'gap-2.5 px-2 py-2'}`}
         >
@@ -182,7 +182,7 @@ export default function Sidebar({ collapsed, onToggle }) {
               <div className="relative" ref={menuRef}>
                 <button
                   onClick={() => setMenuOpen((o) => !o)}
-                  className="text-text-secondary hover:text-text-primary transition-colors duration-200 p-0.5 rounded"
+                  className="player-btn w-7 h-7 text-text-secondary hover:text-text-primary"
                   aria-label="Account menu"
                 >
                   <i className="bi bi-three-dots-vertical text-sm" />

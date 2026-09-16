@@ -17,20 +17,25 @@ export default function NowPlayingBar({
   onSetVolume,
   onToggleMute,
 }) {
-  const [volumeHover, setVolumeHover] = useState(false)
+  const [volumeOpen, setVolumeOpen] = useState(false)
   const [volumeDragging, setVolumeDragging] = useState(false)
   const volumeLeaveTimer = useRef(null)
   const volumeBarRef = useRef(null)
   const volumeDraggingRef = useRef(false)
+  const volumeContainerRef = useRef(null)
 
   const handleVolumeEnter = useCallback(() => {
     if (volumeLeaveTimer.current) clearTimeout(volumeLeaveTimer.current)
-    setVolumeHover(true)
+    setVolumeOpen(true)
   }, [])
 
   const handleVolumeLeave = useCallback(() => {
     if (volumeDraggingRef.current) return
-    volumeLeaveTimer.current = setTimeout(() => setVolumeHover(false), 200)
+    volumeLeaveTimer.current = setTimeout(() => setVolumeOpen(false), 250)
+  }, [])
+
+  const handleVolumeIconClick = useCallback(() => {
+    setVolumeOpen((prev) => !prev)
   }, [])
 
   const handleVolumeBarMouseDown = useCallback((e) => {
@@ -63,6 +68,7 @@ export default function NowPlayingBar({
   useEffect(() => {
     return () => {
       volumeDraggingRef.current = false
+      if (volumeLeaveTimer.current) clearTimeout(volumeLeaveTimer.current)
     }
   }, [])
 
@@ -79,10 +85,10 @@ export default function NowPlayingBar({
         sidebarCollapsed ? 'left-[88px]' : 'left-[256px]'
       } right-4`}
     >
-      <div className="max-w-player mx-auto bg-panel border border-border rounded-2xl px-7 py-5 shadow-sm">
-        <div className="flex items-center gap-6">
+      <div className="max-w-player mx-auto bg-panel border border-border rounded-2xl px-5 py-4 shadow-sm">
+        <div className="flex items-center gap-4">
           {/* Track info */}
-          <div className="min-w-0 flex-shrink-0 w-[160px]">
+          <div className="min-w-0 flex-shrink-0 w-[140px]">
             {track ? (
               <>
                 <div className="font-serif text-sm font-medium text-text-primary truncate">
@@ -98,29 +104,29 @@ export default function NowPlayingBar({
           </div>
 
           {/* Controls + progress */}
-          <div className="flex-1 flex flex-col items-center gap-2.5 min-w-0">
-            <div className="flex items-center gap-5">
+          <div className="flex-1 flex flex-col items-center gap-2 min-w-0">
+            <div className="flex items-center gap-2">
               <button
                 onClick={onSkipBack}
-                className="text-text-secondary hover:text-text-primary btn-press transition-colors p-1"
+                className="player-btn w-9 h-9 text-text-secondary hover:text-text-primary"
                 aria-label="Rewind 10 seconds"
               >
                 <i className="bi bi-skip-backward-fill text-base" />
               </button>
               <button
                 onClick={onPlayPause}
-                className="w-9 h-9 rounded-full bg-text-primary text-background flex items-center justify-center hover:bg-text-primary/80 btn-press transition-all duration-200"
+                className="player-btn w-10 h-10 bg-text-primary text-background hover:bg-text-primary/80"
                 aria-label={isPlaying ? 'Pause' : 'Play'}
               >
                 {isPlaying ? (
-                  <i className="bi bi-pause-fill text-sm" />
+                  <i className="bi bi-pause-fill text-base" />
                 ) : (
-                  <i className="bi bi-play-fill text-sm" />
+                  <i className="bi bi-play-fill text-base ml-0.5" />
                 )}
               </button>
               <button
                 onClick={onSkipForward}
-                className="text-text-secondary hover:text-text-primary btn-press transition-colors p-1"
+                className="player-btn w-9 h-9 text-text-secondary hover:text-text-primary"
                 aria-label="Forward 10 seconds"
               >
                 <i className="bi bi-skip-forward-fill text-base" />
@@ -128,7 +134,7 @@ export default function NowPlayingBar({
             </div>
 
             {/* Progress bar */}
-            <div className="flex items-center gap-2 w-full">
+            <div className="flex items-center gap-2.5 w-full">
               <span className="text-text-secondary text-[10px] w-8 text-right tabular-nums">
                 {formatTime(currentTime)}
               </span>
@@ -152,40 +158,52 @@ export default function NowPlayingBar({
             </div>
           </div>
 
-          {/* Volume slider */}
-          <div
-            className="flex-shrink-0 flex items-center gap-1 pl-1"
-            onMouseEnter={handleVolumeEnter}
-            onMouseLeave={handleVolumeLeave}
-          >
+          {/* Right: shuffle + volume */}
+          <div className="flex-shrink-0 flex items-center gap-1">
+            {/* Shuffle */}
             <button
-              onClick={onToggleMute}
-              className="text-text-secondary hover:text-text-primary btn-press transition-colors p-1"
-              aria-label={isMuted ? 'Unmute' : 'Mute'}
+              className="player-btn w-9 h-9 text-text-secondary hover:text-text-primary"
+              aria-label="Shuffle"
             >
-              <i className={`bi ${volumeIcon} text-base`} />
+              <i className="bi bi-shuffle text-lg" />
             </button>
+
+            {/* Volume */}
             <div
-              className={`transition-all duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)] ${
-                volumeHover ? 'w-[80px] opacity-100 ml-1' : 'w-0 opacity-0 ml-0'
-              }`}
+              ref={volumeContainerRef}
+              className="flex items-center"
+              onMouseEnter={handleVolumeEnter}
+              onMouseLeave={handleVolumeLeave}
             >
+              <button
+                onClick={handleVolumeIconClick}
+                className="player-btn w-9 h-9 text-text-secondary hover:text-text-primary"
+                aria-label={isMuted ? 'Unmute' : 'Mute'}
+              >
+                <i className={`bi ${volumeIcon} text-xl`} />
+              </button>
               <div
-                ref={volumeBarRef}
-                className="relative h-1 bg-border rounded-full cursor-pointer group mx-1.5"
-                style={{ paddingTop: 8, paddingBottom: 8, marginTop: -8, marginBottom: -8 }}
-                onMouseDown={handleVolumeBarMouseDown}
+                className={`overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)] ${
+                  volumeOpen ? 'w-[90px] opacity-100' : 'w-0 opacity-0'
+                }`}
               >
                 <div
-                  className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-accent rounded-full transition-[width] duration-150 ease-out group-hover:h-1.5"
-                  style={{ width: `${effectiveVolume * 100}%` }}
-                />
-                <div
-                  className={`absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-accent border-2 border-panel shadow-sm transition-all duration-150 ease-out pointer-events-none ${
-                    volumeDragging ? 'scale-110 shadow-md' : 'group-hover:scale-110'
-                  }`}
-                  style={{ left: `${effectiveVolume * 100}%` }}
-                />
+                  ref={volumeBarRef}
+                  className="relative h-1 bg-border rounded-full cursor-pointer group mx-2"
+                  style={{ paddingTop: 10, paddingBottom: 10, marginTop: -10, marginBottom: -10 }}
+                  onMouseDown={handleVolumeBarMouseDown}
+                >
+                  <div
+                    className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-accent rounded-full transition-[width] duration-100 ease-out group-hover:h-1.5"
+                    style={{ width: `${effectiveVolume * 100}%` }}
+                  />
+                  <div
+                    className={`absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-accent border-2 border-panel shadow-sm transition-all duration-150 ease-out pointer-events-none ${
+                      volumeDragging ? 'scale-110 shadow-md' : 'group-hover:scale-110'
+                    }`}
+                    style={{ left: `${effectiveVolume * 100}%` }}
+                  />
+                </div>
               </div>
             </div>
           </div>

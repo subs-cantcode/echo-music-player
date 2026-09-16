@@ -10,6 +10,7 @@
   --color-text-primary: #4A443A;
   --color-text-secondary: #8C8272;
   --color-accent: #B8862E;
+  --color-divider: rgba(221, 212, 196, 0.35);
 
   --hover-inactive: rgba(184, 134, 46, 0.08);
   --hover-sidebar: rgba(0, 0, 0, 0.03);
@@ -22,6 +23,7 @@ html.dark {
   --color-text-primary: #F2EAE0;
   --color-text-secondary: #A79C8C;
   --color-accent: #E0A94A;
+  --color-divider: rgba(58, 52, 44, 0.45);
 
   --hover-inactive: rgba(224, 169, 74, 0.14);
   --hover-sidebar: rgba(255, 255, 255, 0.04);
@@ -188,4 +190,34 @@ html.dark ::-webkit-scrollbar-thumb {
 
 html.dark ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.2);
+}
+
+/* ── Soft divider ── */
+.divider-soft {
+  border-color: var(--color-divider);
+}
+
+/* ── Player button circle hover ── */
+.player-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  transition: background-color 150ms ease, color 150ms ease, transform 120ms ease;
+}
+
+.player-btn:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+html.dark .player-btn:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+html:not(.dark) .player-btn:hover {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+.player-btn:active {
+  transform: scale(0.94);
 }
