@@ -20,7 +20,10 @@ export default function NowPlayingBar({
 }) {
   const [volumeDragging, setVolumeDragging] = useState(false)
   const [shuffled, setShuffled] = useState(false)
+  const [shuffleKey, setShuffleKey] = useState(0)
   const [repeatMode, setRepeatMode] = useState(0)
+  const [repeatKey, setRepeatKey] = useState(0)
+  const [heartKey, setHeartKey] = useState(0)
   const volumeBarRef = useRef(null)
   const volumeDraggingRef = useRef(false)
 
@@ -104,19 +107,25 @@ export default function NowPlayingBar({
           {/* ── Center: Like · Shuffle · Prev · Play · Next · Repeat ── */}
           <div className="flex-1 flex items-center justify-center gap-1.5">
             <button
-              onClick={onToggleFavourite}
+              onClick={() => {
+                onToggleFavourite()
+                setHeartKey((k) => k + 1)
+              }}
               className={`player-btn w-8 h-8 ${isFavourite ? 'text-accent' : 'text-text-secondary hover:text-text-primary'}`}
               aria-label={isFavourite ? 'Remove from favourites' : 'Add to favourites'}
             >
-              <i className={`text-base ${isFavourite ? 'bi-heart-fill' : 'bi-heart'}`} />
+              <i key={heartKey} className={`text-base heart-pop ${isFavourite ? 'bi-heart-fill' : 'bi-heart'}`} />
             </button>
 
             <button
-              onClick={() => setShuffled((s) => !s)}
+              onClick={() => {
+                setShuffled((s) => !s)
+                setShuffleKey((k) => k + 1)
+              }}
               className={`player-btn w-8 h-8 ${shuffled ? 'text-accent' : 'text-text-secondary hover:text-text-primary'}`}
               aria-label="Shuffle"
             >
-              <i className="bi bi-shuffle text-sm" />
+              <i key={shuffleKey} className="bi bi-shuffle text-sm icon-spin" />
             </button>
 
             <button
@@ -129,7 +138,7 @@ export default function NowPlayingBar({
 
             <button
               onClick={onPlayPause}
-              className="player-btn w-10 h-10 bg-text-primary text-background hover:bg-text-primary/80"
+              className="player-btn player-btn-play w-10 h-10 bg-text-primary text-background hover:bg-text-primary/80"
               aria-label={isPlaying ? 'Pause' : 'Play'}
             >
               {isPlaying ? (
@@ -148,11 +157,14 @@ export default function NowPlayingBar({
             </button>
 
             <button
-              onClick={() => setRepeatMode((r) => (r + 1) % 3)}
+              onClick={() => {
+                setRepeatMode((r) => (r + 1) % 3)
+                setRepeatKey((k) => k + 1)
+              }}
               className={`player-btn w-8 h-8 ${repeatMode > 0 ? 'text-accent' : 'text-text-secondary hover:text-text-primary'}`}
               aria-label="Repeat"
             >
-              <i className={`bi ${repeatIcon} text-sm`} />
+              <i key={repeatKey} className={`bi ${repeatIcon} text-sm icon-spin`} />
             </button>
           </div>
 
@@ -170,16 +182,16 @@ export default function NowPlayingBar({
               className="relative h-5 w-[90px] flex items-center cursor-pointer group"
               onMouseDown={handleVolumeBarMouseDown}
             >
-              <div className="w-full h-1 bg-border/60 rounded-full relative">
+              <div className="w-full h-1 bar-track rounded-full relative overflow-visible">
                 <div
-                  className="absolute left-0 top-0 h-full bg-accent rounded-full transition-[width] duration-100 ease-out group-hover:h-1.5 group-hover:-mt-0.5"
+                  className="absolute left-0 top-0 h-full bg-accent rounded-full bar-fill"
                   style={{ width: `${effectiveVolume * 100}%` }}
                 />
                 <div
-                  className={`absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-accent border-2 border-panel shadow-sm transition-all duration-150 ease-out pointer-events-none ${
-                    volumeDragging ? 'scale-110 shadow-md' : 'opacity-0 group-hover:opacity-100 group-hover:scale-110'
+                  className={`absolute top-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-accent border-2 border-panel shadow-sm pointer-events-none bar-thumb opacity-0 ${
+                    volumeDragging ? 'dragging' : ''
                   }`}
-                  style={{ left: `${effectiveVolume * 100}%` }}
+                  style={{ left: `${effectiveVolume * 100}%`, transform: `translate(-50%, -50%) scale(${volumeDragging ? 1.15 : 0.8})` }}
                 />
               </div>
             </div>
@@ -192,7 +204,7 @@ export default function NowPlayingBar({
             {formatTime(currentTime)}
           </span>
           <div
-            className="flex-1 h-1 bg-border rounded-full cursor-pointer group relative"
+            className="flex-1 h-1 bar-track bg-border rounded-full cursor-pointer group relative overflow-visible"
             onClick={(e) => {
               if (!duration || !onSeek) return
               const rect = e.currentTarget.getBoundingClientRect()
@@ -201,7 +213,7 @@ export default function NowPlayingBar({
             }}
           >
             <div
-              className="h-full bg-accent rounded-full transition-[width] duration-150 group-hover:h-1.5 group-hover:-mt-0.5"
+              className="h-full bg-accent rounded-full bar-fill"
               style={{ width: `${progress}%` }}
             />
           </div>

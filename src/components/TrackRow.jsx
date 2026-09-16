@@ -28,7 +28,7 @@ export default function TrackRow({ track, isActive, onPlay, onDelete, onToggleFa
         }}
         className={`flex-shrink-0 ml-2 px-1.5 text-sm btn-press transition-all duration-200 ${
           track.is_favorite
-            ? 'text-accent heart-bounce'
+            ? 'text-accent heart-pop'
             : 'text-text-secondary hover:text-accent'
         }`}
         aria-label={track.is_favorite ? 'Remove from favourites' : 'Add to favourites'}
