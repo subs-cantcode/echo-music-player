@@ -240,7 +240,11 @@ function AppLayout() {
         onSeek={seek}
         onSetVolume={setVolume}
         onToggleMute={toggleMute}
-        onToggleFavourite={() => currentTrack && toggleFavourite(currentTrack.id)}
+        onToggleFavourite={async () => {
+          if (!currentTrack) return
+          await toggleFavourite(currentTrack.id)
+          setCurrentTrack((prev) => prev ? { ...prev, is_favorite: !prev.is_favorite } : prev)
+        }}
       />
     </div>
   )

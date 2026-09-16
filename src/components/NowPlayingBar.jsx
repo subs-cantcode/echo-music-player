@@ -160,27 +160,28 @@ export default function NowPlayingBar({
           <div className="flex items-center gap-2 flex-shrink-0">
             <button
               onClick={onToggleMute}
-              className="player-btn w-9 h-9 text-text-secondary hover:text-text-primary"
+              className="player-btn w-9 h-9 text-text-secondary hover:text-text-primary relative z-10"
               aria-label={isMuted ? 'Unmute' : 'Mute'}
             >
               <i className={`bi ${volumeIcon} text-xl`} />
             </button>
             <div
               ref={volumeBarRef}
-              className="relative h-1 bg-transparent rounded-full cursor-pointer group"
-              style={{ width: 90, paddingTop: 10, paddingBottom: 10, marginTop: -10, marginBottom: -10 }}
+              className="relative h-5 w-[90px] flex items-center cursor-pointer group"
               onMouseDown={handleVolumeBarMouseDown}
             >
-              <div
-                className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-accent rounded-full transition-[width] duration-100 ease-out group-hover:h-1.5"
-                style={{ width: `${effectiveVolume * 100}%` }}
-              />
-              <div
-                className={`absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-accent border-2 border-panel shadow-sm transition-all duration-150 ease-out pointer-events-none ${
-                  volumeDragging ? 'scale-110 shadow-md' : 'opacity-0 group-hover:opacity-100 group-hover:scale-110'
-                }`}
-                style={{ left: `${effectiveVolume * 100}%` }}
-              />
+              <div className="w-full h-1 bg-border/60 rounded-full relative">
+                <div
+                  className="absolute left-0 top-0 h-full bg-accent rounded-full transition-[width] duration-100 ease-out group-hover:h-1.5 group-hover:-mt-0.5"
+                  style={{ width: `${effectiveVolume * 100}%` }}
+                />
+                <div
+                  className={`absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-accent border-2 border-panel shadow-sm transition-all duration-150 ease-out pointer-events-none ${
+                    volumeDragging ? 'scale-110 shadow-md' : 'opacity-0 group-hover:opacity-100 group-hover:scale-110'
+                  }`}
+                  style={{ left: `${effectiveVolume * 100}%` }}
+                />
+              </div>
             </div>
           </div>
         </div>
