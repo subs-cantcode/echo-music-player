@@ -20,7 +20,7 @@ export default function MarqueeText({ children, className = '' }) {
     <div className="marquee-container">
       <div
         ref={measureRef}
-        className={isOverflowing ? 'marquee-text' : ''}
+        className={`${className} ${isOverflowing ? 'marquee-text' : ''}`}
         style={{ whiteSpace: 'nowrap', ...(isOverflowing ? {} : {}) }}
       >
         {isOverflowing ? (
