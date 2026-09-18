@@ -4,23 +4,31 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        background: 'var(--color-background)',
-        panel: 'var(--color-panel)',
-        border: 'var(--color-border)',
-        'text-primary': 'var(--color-text-primary)',
-        'text-secondary': 'var(--color-text-secondary)',
-        accent: 'var(--color-accent)',
-        'hover-inactive': 'var(--hover-inactive)',
+        bg: 'var(--bg)',
+        surface: 'var(--surface)',
+        'surface-hover': 'var(--surface-hover)',
+        border: 'var(--border)',
+        'border-subtle': 'var(--border-subtle)',
+        fg: 'var(--fg)',
+        'fg-muted': 'var(--fg-muted)',
+        'fg-faint': 'var(--fg-faint)',
+        accent: 'var(--accent)',
+        'accent-soft': 'var(--accent-soft)',
       },
       fontFamily: {
-        serif: ['Playfair Display', 'Georgia', 'serif'],
-        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['"DM Sans"', 'system-ui', '-apple-system', 'sans-serif'],
       },
-      maxWidth: {
-        'player': '640px',
+      borderRadius: {
+        '2xl': '1rem',
+        '3xl': '1.25rem',
+      },
+      transitionTimingFunction: {
+        'smooth': 'cubic-bezier(0.4, 0, 0.2, 1)',
+        'bounce': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
       },
     },
   },

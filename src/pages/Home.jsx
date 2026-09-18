@@ -1,56 +1,66 @@
 import TrackRow from '../components/TrackRow.jsx'
 
+function getGreeting() {
+  const h = new Date().getHours()
+  if (h < 12) return 'Good morning'
+  if (h < 18) return 'Good afternoon'
+  return 'Good evening'
+}
+
 export default function Home({ tracks, currentTrack, onPlay, onDelete, onToggleFavourite, recentlyPlayed }) {
   return (
-    <div className="flex flex-col gap-6">
-      {/* Recently played */}
+    <div className="page-enter">
+      <div className="mb-6">
+        <h1 className="text-xl font-medium text-fg mb-0.5">{getGreeting()}</h1>
+        <p className="text-fg-muted text-sm">Welcome back to your space.</p>
+      </div>
+
       {recentlyPlayed.length > 0 && (
-        <section>
-          <h2 className="text-base font-semibold mb-3">Recently played</h2>
-          <div className="flex gap-3 overflow-x-auto pb-2">
-            {recentlyPlayed.map((track) => (
+        <section className="mb-6">
+          <h2 className="text-sm font-medium text-fg mb-3">Continue Listening</h2>
+          <div className="flex gap-2.5 overflow-x-auto pb-2 -mx-1 px-1">
+            {recentlyPlayed.slice(0, 6).map((track) => (
               <button
                 key={track.id}
                 onClick={() => onPlay(track)}
-                className={`flex-shrink-0 w-[140px] bg-panel p-3 text-left transition-colors hover:bg-border/50 ${
+                className={`flex-shrink-0 w-[130px] bg-surface p-3 rounded-xl text-left transition-all duration-200 hover:bg-surface-hover hover:scale-[1.02] active:scale-[0.98] ${
                   currentTrack?.id === track.id ? 'ring-1 ring-accent' : ''
                 }`}
               >
-                <div className="font-medium text-text-primary text-sm truncate mb-1">
-                  {track.title}
+                <div className="w-10 h-10 rounded-lg bg-border flex items-center justify-center mb-2">
+                  <i className="bi bi-music-note-beamed text-fg-faint text-sm" />
                 </div>
-                <div className="text-text-secondary text-xs truncate">
-                  {track.artist || 'Unknown'}
-                </div>
+                <div className="text-sm font-medium text-fg truncate">{track.title}</div>
+                <div className="text-fg-muted text-xs truncate">{track.artist || 'Unknown'}</div>
               </button>
             ))}
           </div>
         </section>
       )}
 
-      {/* Full library */}
-      <section className="bg-panel p-6">
+      <section className="bg-surface rounded-2xl p-5">
         <div className="flex justify-between items-center mb-3">
-          <h2 className="text-base font-semibold">Your Library</h2>
-          <span className="text-text-secondary text-sm">
-            {tracks.length} {tracks.length === 1 ? 'track' : 'tracks'}
-          </span>
+          <h2 className="text-sm font-medium text-fg">Your Library</h2>
+          <span className="text-fg-faint text-xs">{tracks.length} track{tracks.length !== 1 ? 's' : ''}</span>
         </div>
 
         {tracks.length === 0 ? (
-          <p className="text-text-secondary text-center py-8">
-            No tracks yet. Upload some music to get started.
-          </p>
+          <div className="text-center py-10">
+            <i className="bi bi-disc text-3xl text-fg-faint mb-3 block" />
+            <p className="text-sm text-fg-muted mb-1">Your space is quiet.</p>
+            <p className="text-xs text-fg-faint">Import some music to begin.</p>
+          </div>
         ) : (
-          <div className="flex flex-col">
-            {tracks.map((track) => (                <TrackRow
-                  key={track.id}
-                  track={track}
-                  isActive={currentTrack?.id === track.id}
-                  onPlay={onPlay}
-                  onDelete={onDelete}
-                  onToggleFavourite={onToggleFavourite}
-                />
+          <div className="group">
+            {tracks.map((track) => (
+              <TrackRow
+                key={track.id}
+                track={track}
+                isActive={currentTrack?.id === track.id}
+                onPlay={onPlay}
+                onDelete={onDelete}
+                onToggleFavourite={onToggleFavourite}
+              />
             ))}
           </div>
         )}

@@ -15,38 +15,45 @@ export default function Search({ tracks, currentTrack, onPlay, onDelete, onToggl
   }, [tracks, query])
 
   return (
-    <div className="flex flex-col gap-6">
-      {/* Search input */}
-      <div className="bg-panel p-4">
+    <div className="page-enter">
+      <div className="mb-5">
+        <h1 className="text-xl font-medium text-fg mb-3">Search</h1>
         <div className="relative">
-          <i className="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary" />
+          <i className="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-fg-faint text-sm" />
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search your library..."
-            className="w-full bg-background border border-border rounded-lg pl-10 pr-4 py-2.5 text-sm text-text-primary placeholder:text-text-secondary focus:outline-none focus:border-accent transition-colors"
+            className="w-full bg-surface border border-border rounded-xl pl-10 pr-4 py-2.5 text-sm text-fg placeholder:text-fg-faint"
           />
+          {query && (
+            <button
+              onClick={() => setQuery('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-fg-faint hover:text-fg-muted transition-colors"
+            >
+              <i className="bi bi-x-circle text-sm" />
+            </button>
+          )}
         </div>
       </div>
 
-      {/* Results */}
-      <section className="bg-panel p-6">
+      <section className="bg-surface rounded-2xl p-5">
         <div className="flex justify-between items-center mb-3">
-          <h2 className="text-base font-semibold">
+          <h2 className="text-sm font-medium text-fg">
             {query.trim() ? 'Results' : 'All Tracks'}
           </h2>
-          <span className="text-text-secondary text-sm">
-            {filtered.length} {filtered.length === 1 ? 'track' : 'tracks'}
+          <span className="text-fg-faint text-xs">
+            {filtered.length} track{filtered.length !== 1 ? 's' : ''}
           </span>
         </div>
 
         {filtered.length === 0 ? (
-          <p className="text-text-secondary text-center py-8">
+          <p className="text-fg-muted text-sm text-center py-8">
             {query.trim() ? 'No tracks match your search.' : 'No tracks yet.'}
           </p>
         ) : (
-          <div className="flex flex-col">
+          <div className="group">
             {filtered.map((track) => (
               <TrackRow
                 key={track.id}

@@ -2,13 +2,13 @@ import UploadZone from '../components/UploadZone.jsx'
 
 export default function Upload({ onUploaded }) {
   return (
-    <div className="flex flex-col gap-6">
-      <section className="bg-panel p-6">
-        <h2 className="font-serif text-2xl font-medium text-text-primary mb-1">Upload music</h2>
-        <p className="text-text-secondary text-sm">
-          Import audio files into your library. They'll be stored securely and available on every page.
+    <div className="page-enter">
+      <div className="bg-surface rounded-2xl p-5 mb-4">
+        <h1 className="text-xl font-medium text-fg mb-1">Upload Music</h1>
+        <p className="text-fg-muted text-sm">
+          Import audio files into your library. Your music stays on your device.
         </p>
-      </section>
+      </div>
       <UploadZone onUpload={onUploaded} />
     </div>
   )

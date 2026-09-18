@@ -1,32 +1,34 @@
 export default function PlayerControls({ isPlaying, onPlayPause, onSkipBack, onSkipForward }) {
   return (
-    <section className="flex justify-center items-center gap-4">
+    <div className="flex items-center justify-center gap-3">
       <button
         onClick={onSkipBack}
-        className="text-text-secondary hover:text-text-primary transition-colors p-2"
+        className="player-btn w-9 h-9"
         aria-label="Rewind 10 seconds"
       >
-        <i className="bi bi-skip-backward-fill text-xl" />
+        <i className="bi bi-skip-backward-fill text-base" />
       </button>
+
       <button
         onClick={onPlayPause}
-        disabled={false}
-        className="w-14 h-14 rounded-full bg-text-primary text-background flex items-center justify-center hover:bg-text-primary/80 transition-colors"
+        className="player-btn w-11 h-11 bg-fg text-bg hover:bg-fg/85"
+        style={{ transition: 'all 160ms cubic-bezier(0.4, 0, 0.2, 1)' }}
         aria-label={isPlaying ? 'Pause' : 'Play'}
       >
         {isPlaying ? (
-          <i className="bi bi-pause-fill text-xl" />
+          <i className="bi bi-pause-fill text-lg" />
         ) : (
-          <i className="bi bi-play-fill text-xl" />
+          <i className="bi bi-play-fill text-lg ml-0.5" />
         )}
       </button>
+
       <button
         onClick={onSkipForward}
-        className="text-text-secondary hover:text-text-primary transition-colors p-2"
+        className="player-btn w-9 h-9"
         aria-label="Forward 10 seconds"
       >
-        <i className="bi bi-skip-forward-fill text-xl" />
+        <i className="bi bi-skip-forward-fill text-base" />
       </button>
-    </section>
+    </div>
   )
 }

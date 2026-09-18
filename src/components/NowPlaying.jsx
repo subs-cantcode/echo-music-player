@@ -1,39 +1,25 @@
-function formatTime(seconds) {
+export function formatTime(seconds) {
   if (!seconds || isNaN(seconds)) return '0:00'
   const mins = Math.floor(seconds / 60)
   const secs = Math.floor(seconds % 60)
   return `${mins}:${String(secs).padStart(2, '0')}`
 }
 
-export { formatTime }
-
 export default function NowPlaying({ track, progress, currentTime, totalTime, onSeek }) {
   return (
-    <section className="bg-panel p-8">
-      <div className="mb-2">
-        <svg
-          width="32"
-          height="32"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="text-text-primary opacity-40"
-        >
-          <circle cx="12" cy="12" r="10" />
-          <circle cx="12" cy="12" r="3" fill="currentColor" stroke="none" />
-        </svg>
+    <section className="bg-surface p-6">
+      <h2 className="text-lg font-medium text-fg mb-4">Now Playing</h2>
+      <div className="flex items-center gap-5">
+        <div className="w-16 h-16 rounded-xl bg-border flex items-center justify-center flex-shrink-0 overflow-hidden">
+          <i className="bi bi-music-note-beamed text-fg-muted text-xl" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="font-medium text-fg truncate">{track?.title || 'No track'}</div>
+          <div className="text-fg-muted text-sm truncate">{track?.artist || ''}</div>
+        </div>
       </div>
-      <h1 className="font-serif text-3xl font-medium text-text-primary leading-tight mb-1">
-        {track ? track.title : 'Select a track'}
-      </h1>
-      <p className="text-text-secondary text-base mb-6">
-        {track?.artist || ''}
-      </p>
       <div
-        className="h-1 bg-border rounded-full cursor-pointer"
+        className="bar-track mt-5"
         onClick={(e) => {
           if (!totalTime || !onSeek) return
           const rect = e.currentTarget.getBoundingClientRect()
@@ -41,12 +27,10 @@ export default function NowPlaying({ track, progress, currentTime, totalTime, on
           onSeek(pos * totalTime)
         }}
       >
-        <div
-          className="h-full bg-accent rounded-full transition-all duration-300"
-          style={{ width: `${progress}%` }}
-        />
+        <div className="bar-fill" style={{ width: `${progress}%` }} />
+        <div className="bar-thumb" style={{ left: `${progress}%` }} />
       </div>
-      <div className="flex justify-between mt-2 text-text-secondary text-xs">
+      <div className="flex justify-between mt-2 text-fg-faint text-xs tabular-nums">
         <span>{formatTime(currentTime)}</span>
         <span>{formatTime(totalTime)}</span>
       </div>

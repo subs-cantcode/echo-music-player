@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 
 const ThemeContext = createContext()
 
@@ -11,18 +11,16 @@ export function ThemeProvider({ children }) {
 
   useEffect(() => {
     const root = document.documentElement
-    if (theme === 'dark') {
-      root.classList.add('dark')
-    } else {
-      root.classList.remove('dark')
-    }
+    root.classList.toggle('dark', theme === 'dark')
     localStorage.setItem('echo-theme', theme)
   }, [theme])
 
-  const toggleTheme = () => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))
+  const cycleTheme = useCallback(() => {
+    setTheme((t) => (t === 'dark' ? 'light' : 'dark'))
+  }, [])
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, cycleTheme, setTheme }}>
       {children}
     </ThemeContext.Provider>
   )

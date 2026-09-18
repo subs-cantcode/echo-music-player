@@ -14,76 +14,31 @@ import Favourites from './pages/Favourites.jsx'
 import Upload from './pages/Upload.jsx'
 import Settings from './pages/Settings.jsx'
 
-function UploadSuccess({ visible }) {
-  return (
-    <div
-      className={`flex items-center justify-center gap-2 text-accent text-sm font-medium transition-opacity duration-300 ${visible ? 'opacity-100' : 'opacity-0'}`}
-      aria-hidden={!visible}
-    >
-      <i className="bi bi-check-circle-fill" />
-      Upload complete
-    </div>
-  )
-}
-
-function AnimatedRoutes(props) {
-  const location = useLocation()
-  return (
-    <div key={location.pathname} className="page-wrapper">
-      <Routes location={location}>
-        {props.children}
-      </Routes>
-    </div>
-  )
-}
-
 function AppLayout() {
   const navigate = useNavigate()
   const { tracks, loading, error, loadTracks, addTracks, removeTrack, toggleFavourite } = useLibrary()
   const {
-    isPlaying,
-    currentTime,
-    duration,
-    progress,
-    volume,
-    isMuted,
-    playTrack,
-    togglePlay,
-    pause,
-    skip,
-    seek,
-    setVolume,
-    toggleMute,
+    isPlaying, currentTime, duration, progress, volume, isMuted,
+    playTrack, togglePlay, pause, skip, seek, setVolume, toggleMute,
   } = useAudioPlayer()
   const [currentTrack, setCurrentTrack] = useState(null)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [recentlyPlayed, setRecentlyPlayed] = useState([])
-  const [uploadSuccessVisible, setUploadSuccessVisible] = useState(false)
-  const uploadSuccessTimer = useRef(null)
+  const [uploadToast, setUploadToast] = useState(false)
+  const toastTimer = useRef(null)
 
-  const showUploadSuccess = () => {
-    if (uploadSuccessTimer.current) clearTimeout(uploadSuccessTimer.current)
-    setUploadSuccessVisible(true)
-    uploadSuccessTimer.current = setTimeout(() => {
-      setUploadSuccessVisible(false)
-      uploadSuccessTimer.current = null
-    }, 3000)
-  }
-
-  useEffect(() => {
-    return () => {
-      if (uploadSuccessTimer.current) clearTimeout(uploadSuccessTimer.current)
-    }
+  const showToast = useCallback(() => {
+    if (toastTimer.current) clearTimeout(toastTimer.current)
+    setUploadToast(true)
+    toastTimer.current = setTimeout(() => setUploadToast(false), 2500)
   }, [])
 
-  useEffect(() => {
-    loadTracks()
-  }, [loadTracks])
+  useEffect(() => () => { if (toastTimer.current) clearTimeout(toastTimer.current) }, [])
+  useEffect(() => { loadTracks() }, [loadTracks])
 
-  // Keyboard shortcut: Space to toggle play
   useEffect(() => {
     const handler = (e) => {
-      if (e.code === 'Space') {
+      if (e.code === 'Space' && e.target.tagName !== 'INPUT') {
         e.preventDefault()
         togglePlay()
       }
@@ -94,7 +49,6 @@ function AppLayout() {
 
   const handlePlayTrack = useCallback(async (track) => {
     setCurrentTrack(track)
-    // Track recently played
     setRecentlyPlayed((prev) => {
       const filtered = prev.filter((t) => t.id !== track.id)
       return [track, ...filtered].slice(0, 10)
@@ -102,116 +56,65 @@ function AppLayout() {
     if (!track.src) {
       const all = await getAllTracks()
       const fresh = all.find((t) => t.id === track.id)
-      if (fresh?.src) {
-        await playTrack(fresh.src)
-      }
+      if (fresh?.src) await playTrack(fresh.src)
     } else {
       await playTrack(track.src)
     }
   }, [playTrack])
 
+  const location = useLocation()
+
   return (
-    <div className="min-h-screen bg-background font-sans">
-      {/* User menu (avatar + theme toggle) */}
+    <div className="min-h-screen bg-bg font-sans">
       <UserMenu />
+      <Sidebar collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed((c) => !c)} />
 
-      {/* Sidebar */}
-      <Sidebar
-        collapsed={sidebarCollapsed}
-        onToggle={() => setSidebarCollapsed((c) => !c)}
-      />
-
-      {/* Main content */}
       <main
-        className={`transition-all duration-350 ease-[cubic-bezier(0.34,1.2,0.64,1)] pt-4 pb-32 ${
-          sidebarCollapsed ? 'ml-[72px]' : 'ml-[240px]'
+        className={`transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] pt-4 pb-28 ${
+          sidebarCollapsed ? 'ml-[68px]' : 'ml-[220px]'
         }`}
       >
-        <div className="max-w-player mx-auto px-5">
+        <div className="max-w-[680px] mx-auto px-5">
           {error && (
-            <div className="bg-panel border border-border p-6 text-text-secondary text-center mb-6">
+            <div className="bg-surface border border-border rounded-2xl p-5 text-fg-muted text-center text-sm mb-5">
               {error}
             </div>
           )}
 
-          <AnimatedRoutes>
-            <Route
-              path="/"
-              element={
-                <Home
-                  tracks={tracks}
-                  currentTrack={currentTrack}
-                  onPlay={handlePlayTrack}
-                  onDelete={removeTrack}
-                  onToggleFavourite={toggleFavourite}
-                  recentlyPlayed={recentlyPlayed}
-                />
-              }
-            />
-            <Route
-              path="/search"
-              element={
-                <Search
-                  tracks={tracks}
-                  currentTrack={currentTrack}
-                  onPlay={handlePlayTrack}
-                  onDelete={removeTrack}
-                  onToggleFavourite={toggleFavourite}
-                />
-              }
-            />
-            <Route
-              path="/playlists"
-              element={
-                <Playlists
-                  tracks={tracks}
-                  currentTrack={currentTrack}
-                  onPlay={handlePlayTrack}
-                />
-              }
-            />
-            <Route
-              path="/playlists/:id"
-              element={
-                <PlaylistDetail
-                  tracks={tracks}
-                  currentTrack={currentTrack}
-                  onPlay={handlePlayTrack}
-                />
-              }
-            />
-            <Route
-              path="/favourites"
-              element={
-                <Favourites
-                  tracks={tracks}
-                  currentTrack={currentTrack}
-                  onPlay={handlePlayTrack}
-                  onDelete={removeTrack}
-                  onToggleFavourite={toggleFavourite}
-                />
-              }
-            />
-            <Route
-              path="/upload"
-              element={
-                <Upload
-                  onUploaded={async () => {
-                    await loadTracks()
-                    showUploadSuccess()
-                  }}
-                />
-              }
-            />
+          <Routes location={location}>
+            <Route path="/" element={
+              <Home tracks={tracks} currentTrack={currentTrack} onPlay={handlePlayTrack}
+                onDelete={removeTrack} onToggleFavourite={toggleFavourite} recentlyPlayed={recentlyPlayed} />
+            } />
+            <Route path="/search" element={
+              <Search tracks={tracks} currentTrack={currentTrack} onPlay={handlePlayTrack}
+                onDelete={removeTrack} onToggleFavourite={toggleFavourite} />
+            } />
+            <Route path="/playlists" element={
+              <Playlists tracks={tracks} currentTrack={currentTrack} onPlay={handlePlayTrack} />
+            } />
+            <Route path="/playlists/:id" element={
+              <PlaylistDetail tracks={tracks} currentTrack={currentTrack} onPlay={handlePlayTrack} />
+            } />
+            <Route path="/favourites" element={
+              <Favourites tracks={tracks} currentTrack={currentTrack} onPlay={handlePlayTrack}
+                onDelete={removeTrack} onToggleFavourite={toggleFavourite} />
+            } />
+            <Route path="/upload" element={
+              <Upload onUploaded={async () => { await loadTracks(); showToast() }} />
+            } />
             <Route path="/settings" element={<Settings />} />
-          </AnimatedRoutes>
+          </Routes>
 
-          {/* Upload success toast */}
-          <UploadSuccess visible={uploadSuccessVisible} />
+          {uploadToast && (
+            <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-surface border border-border rounded-xl px-4 py-2.5 shadow-lg text-sm text-fg flex items-center gap-2 fade-in">
+              <i className="bi bi-check-circle-fill text-accent" />
+              Upload complete
+            </div>
+          )}
         </div>
       </main>
 
-      {/* Persistent now-playing bar */}
       <NowPlayingBar
         track={currentTrack}
         isPlaying={isPlaying}
