@@ -26,10 +26,12 @@ export default function MarqueeText({ children, className = '' }) {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {isOverflowing && (
+        {isOverflowing ? (
           <>
             {children}<span>{children}</span>
           </>
+        ) : (
+          children
         )}
       </div>
     </div>

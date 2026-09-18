@@ -182,7 +182,6 @@ body {
 
 /* Marquee */
 .marquee-container {
-  overflow: hidden;
   white-space: nowrap;
   width: 100%;
 }
