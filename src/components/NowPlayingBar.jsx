@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { formatTime } from './NowPlaying.jsx'
+import MarqueeText from './MarqueeText.jsx'
 
 export default function NowPlayingBar({
   track, isPlaying, currentTime, duration, progress, volume, isMuted,
@@ -61,12 +62,8 @@ export default function NowPlayingBar({
             <div className="min-w-0">
               {track ? (
                 <>
-                  <div className="marquee-container">
-                    <div className="text-sm font-medium text-fg marquee-text">{track.title}<span>{track.title}</span></div>
-                  </div>
-                  <div className="marquee-container">
-                    <div className="marquee-text text-fg-muted text-[11px]">{track.artist || ''}<span>{track.artist || ''}</span></div>
-                  </div>
+                  <MarqueeText className="text-sm font-medium text-fg">{track.title}</MarqueeText>
+                  <MarqueeText className="text-fg-muted text-[11px]">{track.artist || ''}</MarqueeText>
                 </>
               ) : (
                 <div className="text-fg-faint text-sm">No track</div>

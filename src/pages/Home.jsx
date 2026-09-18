@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import TrackRow from '../components/TrackRow.jsx'
 import ParticleBackground from '../components/ParticleBackground.jsx'
+import MarqueeText from '../components/MarqueeText.jsx'
 
 function getGreeting() {
   const h = new Date().getHours()
@@ -49,12 +50,8 @@ export default function Home({ tracks, currentTrack, onPlay, onDelete, onToggleF
                   <div className="w-10 h-10 rounded-lg bg-border flex items-center justify-center mb-2">
                     <i className="bi bi-music-note-beamed text-fg-faint text-sm" />
                   </div>
-<div className="marquee-container">
-                    <div className="marquee-text">{track.title}<span>{track.title}</span></div>
-                  </div>
-                  <div className="marquee-container">
-                    <div className="marquee-text text-fg-muted text-xs">{track.artist || 'Unknown'}<span>{track.artist || 'Unknown'}</span></div>
-                  </div>
+<MarqueeText className="text-sm font-medium text-fg">{track.title}</MarqueeText>
+                  <MarqueeText className="text-fg-muted text-xs">{track.artist || 'Unknown'}</MarqueeText>
                  </button>
                ))}
              </div>
@@ -77,12 +74,8 @@ export default function Home({ tracks, currentTrack, onPlay, onDelete, onToggleF
                    <div className="w-10 h-10 rounded-lg bg-border flex items-center justify-center mb-2">
                      <i className="bi bi-hourglass text-fg-faint text-sm" />
                    </div>
-                   <div className="marquee-container">
-                     <div className="marquee-text">{track.title}<span>{track.title}</span></div>
-                   </div>
-                  <div className="marquee-container">
-                      <div className="marquee-text text-fg-muted text-xs">{track.artist || 'Unknown'}<span>{track.artist || 'Unknown'}</span></div>
-                    </div>
+<MarqueeText className="text-sm font-medium text-fg">{track.title}</MarqueeText>
+                    <MarqueeText className="text-fg-muted text-xs">{track.artist || 'Unknown'}</MarqueeText>
                 </button>
               ))}
             </div>
