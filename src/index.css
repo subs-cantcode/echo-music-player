@@ -192,11 +192,13 @@ body {
   white-space: nowrap;
   letter-spacing: 0.05em;
   padding-right: 2em;
+  animation: marquee 8s linear infinite;
+  animation-play-state: paused;
+  animation-delay: 1.6s;
 }
 
-.marquee-text:hover {
-  animation: marquee 8s linear infinite;
-  animation-delay: 1.6s;
+.marquee-text.marquee-active {
+  animation-play-state: running;
 }
 
 .marquee-text span {

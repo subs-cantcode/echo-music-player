@@ -3,6 +3,7 @@ import { useRef, useEffect, useState } from 'react'
 export default function MarqueeText({ children, className = '' }) {
   const measureRef = useRef(null)
   const [isOverflowing, setIsOverflowing] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
 
   useEffect(() => {
     const el = measureRef.current
@@ -20,15 +21,15 @@ export default function MarqueeText({ children, className = '' }) {
     <div className="marquee-container">
       <div
         ref={measureRef}
-        className={`${className} ${isOverflowing ? 'marquee-text' : ''}`}
-        style={{ whiteSpace: 'nowrap', ...(isOverflowing ? {} : {}) }}
+        className={`${className} marquee-text ${isOverflowing && isHovered ? 'marquee-active' : ''}`}
+        style={{ whiteSpace: 'nowrap' }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
-        {isOverflowing ? (
+        {isOverflowing && (
           <>
             {children}<span>{children}</span>
           </>
-        ) : (
-          children
         )}
       </div>
     </div>
