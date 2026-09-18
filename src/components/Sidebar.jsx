@@ -14,7 +14,7 @@ export default function Sidebar({ collapsed, onToggle }) {
 
   return (
     <aside
-      className={`sidebar fixed top-0 left-0 h-full bg-surface z-30 flex flex-col border-r border-border-subtle ${
+      className={`sidebar frosted-panel fixed top-0 left-0 h-full bg-surface z-30 flex flex-col border-r border-border-subtle ${
         collapsed ? 'w-[68px]' : 'w-[220px]'
       }`}
     >

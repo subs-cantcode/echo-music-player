@@ -8,15 +8,18 @@ export default {
   theme: {
     extend: {
       colors: {
-        bg: 'var(--bg)',
-        surface: 'var(--surface)',
-        'surface-hover': 'var(--surface-hover)',
-        border: 'var(--border)',
+        // Channel-based so utilities can take opacity modifiers (bg-fg/85).
+        bg: 'rgb(var(--bg-rgb) / <alpha-value>)',
+        surface: 'rgb(var(--surface-rgb) / <alpha-value>)',
+        'surface-hover': 'rgb(var(--surface-hover-rgb) / <alpha-value>)',
+        border: 'rgb(var(--border-rgb) / <alpha-value>)',
+        // Already tinted too (<alpha-value> = 1 would make it fully opaque).
         'border-subtle': 'var(--border-subtle)',
-        fg: 'var(--fg)',
-        'fg-muted': 'var(--fg-muted)',
-        'fg-faint': 'var(--fg-faint)',
-        accent: 'var(--accent)',
+        fg: 'rgb(var(--fg-rgb) / <alpha-value>)',
+        'fg-muted': 'rgb(var(--fg-muted-rgb) / <alpha-value>)',
+        'fg-faint': 'rgb(var(--fg-faint-rgb) / <alpha-value>)',
+        accent: 'rgb(var(--accent-rgb) / <alpha-value>)',
+        // Already a tinted colour: the alpha lives in the token itself.
         'accent-soft': 'var(--accent-soft)',
       },
       fontFamily: {

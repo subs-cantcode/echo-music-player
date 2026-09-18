@@ -3,29 +3,45 @@
 @tailwind utilities;
 
 :root {
-  --bg: #F8F6F1;
-  --surface: #EFEBE2;
-  --surface-hover: #E6E1D6;
-  --border: #DDD6C8;
-  --border-subtle: rgba(221, 214, 200, 0.5);
-  --fg: #3D3830;
-  --fg-muted: #8A8072;
-  --fg-faint: #B5ADA2;
-  --accent: #C48A2A;
-  --accent-soft: rgba(196, 138, 42, 0.1);
+  /* Channel triples are the source of truth: Tailwind can only apply opacity
+     modifiers (hover:bg-fg/85) to a colour it can split into channels. */
+  --bg-rgb: 248 246 241;
+  --surface-rgb: 239 235 226;
+  --surface-hover-rgb: 230 225 214;
+  --border-rgb: 221 214 200;
+  --border-subtle-rgb: 221 214 200;
+  --fg-rgb: 61 56 48;
+  --fg-muted-rgb: 138 128 114;
+  --fg-faint-rgb: 181 173 162;
+  --accent-rgb: 196 138 42;
+  --accent-soft-rgb: 196 138 42;
+
+  /* Plain-CSS tokens, derived so every existing var(--x) keeps working. */
+  --bg: rgb(var(--bg-rgb));
+  --surface: rgb(var(--surface-rgb));
+  --surface-hover: rgb(var(--surface-hover-rgb));
+  --border: rgb(var(--border-rgb));
+  --border-subtle: rgb(var(--border-subtle-rgb) / 0.5);
+  --fg: rgb(var(--fg-rgb));
+  --fg-muted: rgb(var(--fg-muted-rgb));
+  --fg-faint: rgb(var(--fg-faint-rgb));
+  --accent: rgb(var(--accent-rgb));
+  --accent-soft: rgb(var(--accent-soft-rgb) / 0.1);
 }
 
 html.dark {
-  --bg: #161412;
-  --surface: #1E1C18;
-  --surface-hover: #28251F;
-  --border: #332F28;
-  --border-subtle: rgba(51, 47, 40, 0.5);
-  --fg: #EDE6DA;
-  --fg-muted: #9A9084;
-  --fg-faint: #5E574E;
-  --accent: #D9A23C;
-  --accent-soft: rgba(217, 162, 60, 0.12);
+  --bg-rgb: 22 20 18;
+  --surface-rgb: 30 28 24;
+  --surface-hover-rgb: 40 37 31;
+  --border-rgb: 51 47 40;
+  --border-subtle-rgb: 51 47 40;
+  --fg-rgb: 237 230 218;
+  --fg-muted-rgb: 154 144 132;
+  --fg-faint-rgb: 94 87 78;
+  --accent-rgb: 217 162 60;
+  --accent-soft-rgb: 217 162 60;
+
+  --accent-soft: rgb(var(--accent-soft-rgb) / 0.12);
 }
 
 html.no-transition,
@@ -78,15 +94,20 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* Frosted glass panels: whatever sits behind (the particle wallpaper, or page
+   content scrolling under the player bar) shows through, blurred and dimmed.
+   Browsers without color-mix keep the opaque --surface from the bg-surface
+   class, since the invalid declaration is dropped. */
+.frosted-panel {
+  background-color: color-mix(in srgb, var(--surface) 75%, transparent);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
 /* Sidebar */
 .sidebar {
   will-change: width;
   transition: width 280ms cubic-bezier(0.4, 0, 0.2, 1);
-  /* Frosted panel: the wallpaper glows through, blurred and dimmed. Browsers
-     without color-mix keep the opaque --surface from the bg-surface class. */
-  background-color: color-mix(in srgb, var(--surface) 75%, transparent);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
 }
 
 .nav-link {

@@ -77,7 +77,7 @@ export default function UploadZone({ onUpload }) {
         onDragLeave={() => setDragOver(false)}
         onDrop={(e) => { e.preventDefault(); setDragOver(false); handleFiles(e.dataTransfer.files) }}
         className={`border-2 border-dashed rounded-xl px-6 py-10 text-center cursor-pointer transition-all duration-200 ${
-          dragOver ? 'border-accent bg-accent-soft' : 'border-border hover:border-accent hover:bg-accent-soft/50'
+          dragOver ? 'border-accent bg-accent-soft' : 'border-border hover:border-accent hover:bg-accent-soft'
         }`}
       >
         <i className="bi bi-cloud-upload text-3xl text-fg-faint mb-3 block" />
