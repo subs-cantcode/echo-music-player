@@ -295,6 +295,17 @@ body {
   color: var(--accent-text);
 }
 
+.track-row .truncate.marquee,
+.track-row .truncate.marquee + .truncate.marquee {
+  animation: marquee 8s linear infinite;
+  text-overflow: clip;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+
 /* Bar slider */
 .bar-track {
   position: relative;
@@ -452,6 +463,11 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.playlist-card-name.marquee {
+  animation: marquee 8s linear infinite;
+  text-overflow: clip;
 }
 
 .playlist-card-meta {

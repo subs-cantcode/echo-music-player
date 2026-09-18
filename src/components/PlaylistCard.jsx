@@ -1,12 +1,15 @@
+import { useTextOverflow } from '../hooks/useTextOverflow';
+
 export const PlaylistCard = ({ playlist, tracks, onOpen, onPlay, onShuffle }) => {
   const trackIds = playlist.trackIds || []
   const count = trackIds.length
 
-  // Tracks carry no artwork yet, so this falls back to the music-note placeholder.
   const coverImages = trackIds
     .slice(0, 4)
     .map((trackId) => tracks.find((t) => t.id === trackId)?.coverImage)
     .filter(Boolean)
+
+  const { elementRef: nameRef, isOverflowing: nameOverflows } = useTextOverflow();
 
   const open = () => onOpen?.(playlist.id)
 
@@ -33,7 +36,11 @@ export const PlaylistCard = ({ playlist, tracks, onOpen, onPlay, onShuffle }) =>
       </div>
 
       <div className="playlist-card-info">
-        <h3 className="playlist-card-name" title={playlist.name}>
+        <h3
+          ref={nameRef}
+          className={`playlist-card-name ${nameOverflows ? 'marquee' : ''}`}
+          title={playlist.name}
+        >
           {playlist.name}
         </h3>
         <p className="playlist-card-meta">
