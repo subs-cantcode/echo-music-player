@@ -180,6 +180,31 @@ body {
   text-overflow: ellipsis;
 }
 
+/* Marquee */
+.marquee-container {
+  overflow: hidden;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.marquee-text {
+  display: inline-block;
+  animation: marquee 6s linear infinite;
+  white-space: nowrap;
+  letter-spacing: 0.05em;
+  padding-right: 2em;
+}
+
+.marquee-text span {
+  display: inline-block;
+  padding-left: 1em;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
 /* Grid Layout */
 .app-layout {
   display: grid;
