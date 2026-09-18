@@ -146,6 +146,44 @@ body {
   justify-content: center;
 }
 
+/* Home Page Responsive Text */
+.home-page {
+  position: relative;
+  overflow: hidden;
+}
+
+.home-content {
+  position: relative;
+  z-index: 1;
+  padding: 2rem clamp(1rem, 5%, 3rem);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.home-greeting {
+  font-size: clamp(2rem, 8vw, 3.5rem);
+  font-weight: 500;
+  color: var(--fg);
+  margin: 0 0 1rem 0;
+  line-height: 1.2;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.home-subtext {
+  font-size: clamp(1rem, 3vw, 1.25rem);
+  color: var(--fg-muted);
+  margin: 0 0 2rem 0;
+}
+
+/* Grid Layout */
+.app-layout {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  height: 100vh;
+  gap: 0;
+}
+
 .nav-link {
   position: relative;
   display: flex;

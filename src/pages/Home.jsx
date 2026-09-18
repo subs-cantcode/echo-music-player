@@ -29,10 +29,10 @@ export default function Home({ tracks, currentTrack, onPlay, onDelete, onToggleF
       {/* page-enter lives here, not on .home-page: a transform on the ancestor
           would trap the fixed canvas in the page box instead of the viewport. */}
       <div className="home-content page-enter">
-        <div className="mb-6">
-          <h1 className="text-xl font-medium text-fg mb-0.5">{getGreeting()}</h1>
-          <p className="text-fg-muted text-sm">Welcome back to your space.</p>
-        </div>
+<div className="mb-6">
+           <h1 className="home-greeting mb-0.5">Welcome back to your echo space</h1>
+           <p className="home-subtext">Your music, your place.</p>
+         </div>
 
         {recentlyPlayed.length > 0 && (
           <section className="mb-6">

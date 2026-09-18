@@ -154,7 +154,7 @@ function AppLayout() {
 
       <main
         className={`transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] pt-4 pb-28 ${
-          sidebarCollapsed ? 'ml-[68px]' : 'ml-[220px]'
+          sidebarCollapsed ? 'ml-[80px]' : 'ml-[220px]'
         }`}
       >
         <div className="max-w-[680px] mx-auto px-5">
