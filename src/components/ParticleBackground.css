@@ -1,7 +1,7 @@
 .particle-background {
   /* Fixed to the viewport, not to the page: the wallpaper covers the whole
-     visible area and keeps glowing while a long library scrolls. It stretches
-     under the frosted sidebar, but stops short of the floating player bar.
+     visible area - including behind the frosted sidebar and player bar - and
+     keeps glowing while a long library scrolls.
 
      Width/height must stay explicit: a canvas is a replaced element, so an auto
      size would fall back to its 300x150 intrinsic size AND let the bitmap
@@ -10,7 +10,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: calc(100% - 6.5rem);
+  height: 100%;
   pointer-events: none;
   z-index: 0;
 }
