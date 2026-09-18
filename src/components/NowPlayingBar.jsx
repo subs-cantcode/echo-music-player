@@ -3,12 +3,11 @@ import { formatTime } from './NowPlaying.jsx'
 
 export default function NowPlayingBar({
   track, isPlaying, currentTime, duration, progress, volume, isMuted,
-  sidebarCollapsed, onPlayPause, onSkipBack, onSkipForward, onSeek,
-  onSetVolume, onToggleMute, onToggleFavourite,
+  sidebarCollapsed, loopMode, onPlayPause, onSkipBack, onSkipForward, onSeek,
+  onSetVolume, onToggleMute, onToggleFavourite, onToggleLoop,
 }) {
   const [volDrag, setVolDrag] = useState(false)
   const [shuffled, setShuffled] = useState(false)
-  const [repeatMode, setRepeatMode] = useState(0)
   const [heartKey, setHeartKey] = useState(0)
   const volRef = useRef(null)
   const volDragRef = useRef(false)
@@ -41,7 +40,7 @@ export default function NowPlayingBar({
 
   const effectiveVol = isMuted ? 0 : volume
   const volIcon = effectiveVol === 0 ? 'bi-volume-mute' : effectiveVol < 0.5 ? 'bi-volume-down' : 'bi-volume-up'
-  const repeatIcon = repeatMode === 2 ? 'bi-repeat-1' : 'bi-repeat'
+  const repeatIcon = loopMode === 'track' ? 'bi-repeat-1' : 'bi-repeat'
   const isFav = track?.isFavourite ?? false
 
   return (
@@ -104,9 +103,11 @@ export default function NowPlayingBar({
             </button>
 
             <button
-              onClick={() => setRepeatMode((r) => (r + 1) % 3)}
-              className={`player-btn w-7 h-7 ${repeatMode > 0 ? 'text-accent' : ''}`}
-              aria-label="Repeat"
+              onClick={onToggleLoop}
+              className={`player-btn w-7 h-7 ${loopMode !== 'off' ? 'text-accent' : ''}`}
+              title={`Loop: ${loopMode}`}
+              aria-label="Loop"
+              aria-pressed={loopMode !== 'off'}
             >
               <i className={`bi ${repeatIcon} text-xs`} />
             </button>

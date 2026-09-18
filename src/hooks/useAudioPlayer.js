@@ -7,6 +7,7 @@ export function useAudioPlayer({ onEnded } = {}) {
   const [duration, setDuration] = useState(0)
   const [volume, setVolumeState] = useState(0.8)
   const [isMuted, setIsMuted] = useState(false)
+  const [loopMode, setLoopMode] = useState('off') // 'off' | 'all' | 'track'
 
   // Keep the latest callback in a ref so the audio element is only wired once.
   const onEndedRef = useRef(onEnded)
@@ -14,9 +15,17 @@ export function useAudioPlayer({ onEnded } = {}) {
     onEndedRef.current = onEnded
   }, [onEnded])
 
+  // Same for the loop mode: the audio element is wired once, so read it via a ref.
+  const loopModeRef = useRef(loopMode)
+  useEffect(() => {
+    loopModeRef.current = loopMode
+    if (audioRef.current) audioRef.current.loop = loopMode === 'track'
+  }, [loopMode])
+
   const ensureAudio = useCallback(() => {
     if (!audioRef.current) {
       audioRef.current = new Audio()
+      audioRef.current.loop = loopModeRef.current === 'track'
       audioRef.current.addEventListener('timeupdate', () => {
         setCurrentTime(audioRef.current.currentTime)
       })
@@ -26,7 +35,7 @@ export function useAudioPlayer({ onEnded } = {}) {
       audioRef.current.addEventListener('ended', () => {
         const played = audioRef.current.currentTime
         setIsPlaying(false)
-        if (onEndedRef.current) onEndedRef.current(played)
+        if (onEndedRef.current) onEndedRef.current(played, loopModeRef.current)
       })
     }
     return audioRef.current
@@ -99,6 +108,15 @@ export function useAudioPlayer({ onEnded } = {}) {
     setCurrentTime(next)
   }, [duration])
 
+  // Loop toggle (three-state cycle: off → all → track → off)
+  const toggleLoop = useCallback(() => {
+    setLoopMode((prev) => {
+      if (prev === 'off') return 'all'
+      if (prev === 'all') return 'track'
+      return 'off'
+    })
+  }, [])
+
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0
 
   return {
@@ -109,6 +127,7 @@ export function useAudioPlayer({ onEnded } = {}) {
     progress,
     volume,
     isMuted,
+    loopMode,
     playTrack,
     togglePlay,
     pause,
@@ -116,5 +135,6 @@ export function useAudioPlayer({ onEnded } = {}) {
     skip,
     setVolume,
     toggleMute,
+    toggleLoop,
   }
 }

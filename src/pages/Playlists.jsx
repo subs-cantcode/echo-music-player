@@ -1,14 +1,21 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import TrackRow from '../components/TrackRow.jsx'
+import PlaylistCard from '../components/PlaylistCard.jsx'
+import PlaylistRow from '../components/PlaylistRow.jsx'
+import PlaylistViewToggle from '../components/PlaylistViewToggle.jsx'
 import { useLibrary } from '../lib/LibraryContext.jsx'
 
-function PlaylistList({ tracks, onNavigate }) {
+function PlaylistList({ tracks, onPlay, onNavigate }) {
   const { playlists, createPlaylist, deletePlaylist } = useLibrary()
   const [newName, setNewName] = useState('')
   const [creating, setCreating] = useState(false)
+  const [view, setView] = useState('card') // 'card' | 'list'
 
-  const knownTrackIds = new Set(tracks.map((t) => t.id))
+  const trackMap = new Map(tracks.map((t) => [t.id, t]))
+
+  const playableTracks = (playlist) =>
+    (playlist?.trackIds || []).map((trackId) => trackMap.get(trackId)).filter(Boolean)
 
   const handleCreate = async () => {
     const name = newName.trim()
@@ -25,7 +32,7 @@ function PlaylistList({ tracks, onNavigate }) {
   }
 
   const handleDelete = async (event, playlistId) => {
-    event.stopPropagation()
+    event?.stopPropagation()
     if (!window.confirm('Delete this playlist?')) return
     try {
       await deletePlaylist(playlistId)
@@ -34,59 +41,75 @@ function PlaylistList({ tracks, onNavigate }) {
     }
   }
 
+  const handlePlay = (playlistId) => {
+    const first = playableTracks(playlists.find((p) => p.id === playlistId))[0]
+    if (first) onPlay(first)
+  }
+
+  const handleShuffle = (playlistId) => {
+    const playable = playableTracks(playlists.find((p) => p.id === playlistId))
+    if (playable.length === 0) return
+    onPlay(playable[Math.floor(Math.random() * playable.length)])
+  }
+
+  const open = (playlistId) => onNavigate(`/playlists/${playlistId}`)
+
   return (
-    <div className="bg-surface rounded-2xl p-5">
-      <h2 className="text-xl font-medium text-fg mb-4">Playlists</h2>
-      <div className="flex gap-2 mb-4">
-        <input
-          type="text"
-          value={newName}
-          onChange={(e) => setNewName(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
-          placeholder="New playlist name..."
-          className="flex-1 bg-bg border border-border rounded-xl px-3.5 py-2 text-sm text-fg placeholder:text-fg-faint"
-        />
-        <button
-          onClick={handleCreate}
-          disabled={!newName.trim() || creating}
-          className="px-4 py-2 bg-accent text-white text-sm font-medium rounded-xl hover:bg-accent/85 active:scale-[0.97] transition-all disabled:opacity-40"
-        >
-          Create
-        </button>
+    <div className="page-enter">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-xl font-medium text-fg">Playlists</h1>
+        <PlaylistViewToggle view={view} onToggle={setView} />
+      </div>
+
+      <div className="bg-surface rounded-2xl p-5 mb-4">
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
+            placeholder="New playlist name..."
+            className="flex-1 bg-bg border border-border rounded-xl px-3.5 py-2 text-sm text-fg placeholder:text-fg-faint"
+          />
+          <button
+            onClick={handleCreate}
+            disabled={!newName.trim() || creating}
+            className="px-4 py-2 bg-accent text-white text-sm font-medium rounded-xl hover:bg-accent/85 active:scale-[0.97] transition-all disabled:opacity-40"
+          >
+            Create
+          </button>
+        </div>
       </div>
 
       {playlists.length === 0 ? (
-        <p className="text-fg-muted text-sm text-center py-8">No playlists yet. Create one above.</p>
+        <div className="bg-surface rounded-2xl p-5">
+          <p className="text-fg-muted text-sm text-center py-4">No playlists yet. Create one above.</p>
+        </div>
+      ) : view === 'card' ? (
+        <div className="playlists-grid">
+          {playlists.map((playlist) => (
+            <PlaylistCard
+              key={playlist.id}
+              playlist={playlist}
+              tracks={tracks}
+              onOpen={open}
+              onPlay={handlePlay}
+              onShuffle={handleShuffle}
+            />
+          ))}
+        </div>
       ) : (
-        <div className="flex flex-col">
-          {playlists.map((pl) => {
-            const count = (pl.trackIds || []).filter((id) => knownTrackIds.has(id)).length
-            return (
-              <div
-                key={pl.id}
-                role="button"
-                tabIndex={0}
-                onClick={() => onNavigate(`/playlists/${pl.id}`)}
-                onKeyDown={(e) => e.key === 'Enter' && onNavigate(`/playlists/${pl.id}`)}
-                className="flex justify-between items-center py-3 px-2 -mx-2 rounded-lg text-left hover:bg-surface-hover transition-colors cursor-pointer group"
-              >
-                <div className="min-w-0">
-                  <div className="text-sm font-medium text-fg truncate">{pl.name}</div>
-                  <div className="text-fg-faint text-xs">{count} track{count !== 1 ? 's' : ''}</div>
-                </div>
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={(e) => handleDelete(e, pl.id)}
-                    className="w-7 h-7 rounded-full flex items-center justify-center text-fg-faint hover:text-red-400 text-xs opacity-0 group-hover:opacity-100 transition-all duration-150"
-                    aria-label={`Delete ${pl.name}`}
-                  >
-                    <i className="bi bi-trash3" />
-                  </button>
-                  <i className="bi bi-chevron-right text-fg-faint text-xs" />
-                </div>
-              </div>
-            )
-          })}
+        <div className="playlists-list">
+          {playlists.map((playlist) => (
+            <PlaylistRow
+              key={playlist.id}
+              playlist={playlist}
+              tracks={tracks}
+              onOpen={open}
+              onPlay={handlePlay}
+              onDelete={handleDelete}
+            />
+          ))}
         </div>
       )}
     </div>
@@ -131,6 +154,9 @@ function PlaylistDetail({ tracks, currentTrack, onPlay }) {
           <div className="min-w-0">
             <h2 className="text-xl font-medium text-fg mb-0.5 truncate">{playlist.name}</h2>
             <p className="text-fg-muted text-sm">{displayTracks.length} track{displayTracks.length !== 1 ? 's' : ''}</p>
+            {playlist.description && (
+              <p className="playlist-description">{playlist.description}</p>
+            )}
           </div>
           <button
             onClick={handleDeletePlaylist}
@@ -205,7 +231,7 @@ function PlaylistDetail({ tracks, currentTrack, onPlay }) {
 
 export default function Playlists({ tracks, currentTrack, onPlay }) {
   const navigate = useNavigate()
-  return <PlaylistList tracks={tracks} onNavigate={navigate} />
+  return <PlaylistList tracks={tracks} onPlay={onPlay} onNavigate={navigate} />
 }
 
 export { PlaylistDetail }

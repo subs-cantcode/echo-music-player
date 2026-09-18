@@ -1,6 +1,25 @@
-export default function PlayerControls({ isPlaying, onPlayPause, onSkipBack, onSkipForward }) {
+export default function PlayerControls({
+  isPlaying,
+  loopMode = 'off',
+  onPlayPause,
+  onSkipBack,
+  onSkipForward,
+  onToggleLoop,
+}) {
+  const loopIcon = loopMode === 'track' ? 'bi-repeat-1' : 'bi-repeat'
+
   return (
     <div className="flex items-center justify-center gap-3">
+      <button
+        onClick={onToggleLoop}
+        className={`player-btn w-9 h-9 ${loopMode !== 'off' ? 'text-accent' : ''}`}
+        title={`Loop: ${loopMode}`}
+        aria-label="Loop"
+        aria-pressed={loopMode !== 'off'}
+      >
+        <i className={`bi ${loopIcon} text-base`} />
+      </button>
+
       <button
         onClick={onSkipBack}
         className="player-btn w-9 h-9"

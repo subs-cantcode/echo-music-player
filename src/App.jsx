@@ -22,18 +22,16 @@ function AppLayout() {
     currentTrackRef.current = currentTrack
   }, [currentTrack])
 
-  const handleTrackEnd = useCallback(
-    (timeListened) => {
-      const track = currentTrackRef.current
-      if (track) logPlay(track.id, timeListened)
-    },
-    [logPlay]
-  )
+  // The player stores its ended callback in a ref, so it can call through one of
+  // ours. The handler needs the library order, which is defined further down.
+  const endedHandlerRef = useRef(null)
 
   const {
-    isPlaying, currentTime, duration, progress, volume, isMuted,
-    playTrack, togglePlay, skip, seek, setVolume, toggleMute,
-  } = useAudioPlayer({ onEnded: handleTrackEnd })
+    isPlaying, currentTime, duration, progress, volume, isMuted, loopMode,
+    playTrack, togglePlay, skip, seek, setVolume, toggleMute, toggleLoop,
+  } = useAudioPlayer({
+    onEnded: (timeListened, mode) => endedHandlerRef.current?.(timeListened, mode),
+  })
 
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [recentlyPlayed, setRecentlyPlayed] = useState([])
@@ -68,6 +66,31 @@ function AppLayout() {
     })
     await playTrack(track.objectUrl)
   }, [playTrack])
+
+  const handleTrackEnd = useCallback(
+    (timeListened, mode) => {
+      const track = currentTrackRef.current
+      if (track) logPlay(track.id, timeListened)
+
+      // Single-track repeats are handled by the audio element's own loop flag.
+      if (!track || mode === 'track') return
+
+      const index = tracks.findIndex((t) => t.id === track.id)
+      const next =
+        index >= 0 && index < tracks.length - 1
+          ? tracks[index + 1]
+          : mode === 'all'
+            ? tracks[0]
+            : null
+
+      if (next) handlePlayTrack(next)
+    },
+    [logPlay, tracks, handlePlayTrack]
+  )
+
+  useEffect(() => {
+    endedHandlerRef.current = handleTrackEnd
+  }, [handleTrackEnd])
 
   const location = useLocation()
 
@@ -125,6 +148,8 @@ function AppLayout() {
         volume={volume}
         isMuted={isMuted}
         sidebarCollapsed={sidebarCollapsed}
+        loopMode={loopMode}
+        onToggleLoop={toggleLoop}
         onPlayPause={togglePlay}
         onSkipBack={() => skip(-10)}
         onSkipForward={() => skip(10)}
