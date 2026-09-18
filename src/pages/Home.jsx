@@ -30,8 +30,8 @@ export default function Home({ tracks, currentTrack, onPlay, onDelete, onToggleF
           would trap the fixed canvas in the page box instead of the viewport. */}
       <div className="home-content page-enter">
 <div className="mb-6">
-           <h1 className="home-greeting mb-0.5">Welcome back to your echo space</h1>
-           <p className="home-subtext">Your music, your place.</p>
+<h1 className="home-greeting mb-0.5">Welcome back, Nabus</h1>
+            <p className="home-subtext">Long time no see — let's get listening!</p>
          </div>
 
         {recentlyPlayed.length > 0 && (

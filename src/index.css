@@ -166,14 +166,18 @@ body {
   color: var(--fg);
   margin: 0 0 1rem 0;
   line-height: 1.2;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .home-subtext {
   font-size: clamp(1rem, 3vw, 1.25rem);
   color: var(--fg-muted);
   margin: 0 0 2rem 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Grid Layout */
