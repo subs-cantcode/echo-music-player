@@ -75,7 +75,7 @@ export default function Home({ tracks, currentTrack, onPlay, onDelete, onToggleF
                      <i className="bi bi-hourglass text-fg-faint text-sm" />
                    </div>
 <MarqueeText className="text-sm font-medium text-fg">{track.title}</MarqueeText>
-                    <MarqueeText className="text-fg-muted text-xs">{track.artist || 'Unknown'}</MarqueeText>
+<MarqueeText className="text-fg-faint text-[10px]">{track.artist || 'Unknown'}</MarqueeText>
                 </button>
               ))}
             </div>

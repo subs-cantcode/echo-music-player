@@ -63,7 +63,7 @@ export default function NowPlayingBar({
               {track ? (
                 <>
                   <MarqueeText className="text-sm font-medium text-fg">{track.title}</MarqueeText>
-                  <MarqueeText className="text-fg-muted text-[11px]">{track.artist || ''}</MarqueeText>
+                  <MarqueeText className="text-fg-faint text-[10px]">{track.artist || ''}</MarqueeText>
                 </>
               ) : (
                 <div className="text-fg-faint text-sm">No track</div>
