@@ -11,14 +11,14 @@ const PARTICLE_COLOR = {
 // light accent only reaches ~2.8:1 on the light surface, so the glow is toned
 // down in dark mode to keep both themes looking equally soft.
 const PARTICLE_ALPHA = {
-  light: [0.07, 0.18],
-  dark: [0.04, 0.11],
+  light: [0.11, 0.26],
+  dark: [0.06, 0.15],
 }
 
 const SPRITE_SIZE = 128
-const AREA_PER_PARTICLE = 55000
-const MIN_PARTICLES = 8
-const MAX_PARTICLES = 18
+const AREA_PER_PARTICLE = 38000
+const MIN_PARTICLES = 12
+const MAX_PARTICLES = 26
 
 // A soft radial blob, drawn once per theme and scaled per particle.
 function createGlowSprite(rgb) {
@@ -65,8 +65,8 @@ export const ParticleBackground = () => {
         x: Math.random() * width,
         y: Math.random() * height,
         radius: (20 + Math.random() * 40) * scale,
-        speedX: (Math.random() - 0.5) * 0.22,
-        speedY: (Math.random() - 0.5) * 0.22,
+        speedX: (Math.random() - 0.5) * 0.3,
+        speedY: (Math.random() - 0.5) * 0.3,
         strength: Math.random() * 0.6 + 0.4,
       }
     }
@@ -109,8 +109,8 @@ export const ParticleBackground = () => {
 
     resize()
 
-    // Layout changes (sidebar collapse, route swap) resize the column without a
-    // window resize event, so watch the element itself.
+    // Watch the element, not just the window: the canvas box also changes with
+    // layout (sidebar collapse, scrollbar appearing) without a resize event.
     const observer =
       typeof ResizeObserver !== 'undefined' ? new ResizeObserver(resize) : null
     observer?.observe(canvas)

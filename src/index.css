@@ -239,7 +239,6 @@ body {
 /* Home page particle background */
 .home-page {
   position: relative;
-  overflow: hidden;
 }
 
 .home-content {

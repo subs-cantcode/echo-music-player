@@ -23,10 +23,12 @@ export default function Home({ tracks, currentTrack, onPlay, onDelete, onToggleF
   }, [tracks, currentTrack])
 
   return (
-    <div className="home-page page-enter">
+    <div className="home-page">
       <ParticleBackground />
 
-      <div className="home-content">
+      {/* page-enter lives here, not on .home-page: a transform on the ancestor
+          would trap the fixed canvas in the page box instead of the viewport. */}
+      <div className="home-content page-enter">
         <div className="mb-6">
           <h1 className="text-xl font-medium text-fg mb-0.5">{getGreeting()}</h1>
           <p className="text-fg-muted text-sm">Welcome back to your space.</p>

@@ -1,5 +1,7 @@
 .particle-background {
-  position: absolute;
+  /* Fixed to the viewport, not to the page: the wallpaper covers the whole
+     visible area and keeps glowing while a long library scrolls. */
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
