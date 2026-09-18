@@ -11,8 +11,8 @@ const PARTICLE_COLOR = {
 // light accent only reaches ~2.8:1 on the light surface, so the glow is toned
 // down in dark mode to keep both themes looking equally soft.
 const PARTICLE_ALPHA = {
-  light: [0.11, 0.26],
-  dark: [0.06, 0.15],
+  light: [0.09, 0.21],
+  dark: [0.05, 0.12],
 }
 
 const SPRITE_SIZE = 128
