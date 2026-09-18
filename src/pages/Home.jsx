@@ -37,12 +37,12 @@ export default function Home({ tracks, currentTrack, onPlay, onDelete, onToggleF
         {recentlyPlayed.length > 0 && (
           <section className="mb-6">
             <h2 className="text-sm font-medium text-fg mb-3">Continue Listening</h2>
-            <div className="flex gap-2.5 overflow-x-auto pb-2 -mx-1 px-1">
+            <div className="flex gap-2.5 overflow-x-auto pt-2 pb-2 -mx-1 px-1">
               {recentlyPlayed.slice(0, 6).map((track) => (
                 <button
                   key={track.id}
                   onClick={() => onPlay(track)}
-                  className={`flex-shrink-0 w-[130px] bg-surface p-3 rounded-xl text-left transition-all duration-200 hover:bg-surface-hover hover:scale-[1.02] active:scale-[0.98] ${
+                  className={`flex-shrink-0 w-[130px] bg-surface border border-border-subtle p-3 rounded-xl text-left transition-all duration-200 hover:bg-surface-hover hover:scale-[1.02] active:scale-[0.98] ${
                     currentTrack?.id === track.id ? 'ring-1 ring-accent' : ''
                   }`}
                 >
@@ -63,13 +63,13 @@ export default function Home({ tracks, currentTrack, onPlay, onDelete, onToggleF
               <h2 className="text-sm font-medium text-fg">Forgotten Echoes</h2>
               <p className="text-fg-faint text-xs mt-0.5">Tracks you haven't returned to in a while.</p>
             </div>
-            <div className="flex gap-2.5 overflow-x-auto pb-2 -mx-1 px-1">
-              {forgotten.map((track) => (
-                <button
-                  key={track.id}
-                  onClick={() => onPlay(track)}
-                  className="flex-shrink-0 w-[130px] bg-surface p-3 rounded-xl text-left transition-all duration-200 hover:bg-surface-hover hover:scale-[1.02] active:scale-[0.98]"
-                >
+<div className="flex gap-2.5 overflow-x-auto pt-2 pb-2 -mx-1 px-1">
+               {forgotten.map((track) => (
+                 <button
+                   key={track.id}
+                   onClick={() => onPlay(track)}
+                   className="flex-shrink-0 w-[130px] bg-surface border border-border-subtle p-3 rounded-xl text-left transition-all duration-200 hover:bg-surface-hover hover:scale-[1.02] active:scale-[0.98]"
+                 >
                   <div className="w-10 h-10 rounded-lg bg-border flex items-center justify-center mb-2">
                     <i className="bi bi-hourglass text-fg-faint text-sm" />
                   </div>
