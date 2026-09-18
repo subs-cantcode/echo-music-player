@@ -9,7 +9,7 @@ function getGreeting() {
   return 'Good evening'
 }
 
-export default function Home({ tracks, currentTrack, onPlay, onDelete, onToggleFavourite, recentlyPlayed }) {
+export default function Home({ tracks, currentTrack, onPlay, onDelete, onToggleFavourite, recentlyPlayed, onShuffleAll }) {
   const forgotten = useMemo(() => {
     if (tracks.length <= 5) return []
     return [...tracks]
@@ -82,7 +82,19 @@ export default function Home({ tracks, currentTrack, onPlay, onDelete, onToggleF
         <section className="bg-surface rounded-2xl p-5">
           <div className="flex justify-between items-center mb-3">
             <h2 className="text-sm font-medium text-fg">Your Library</h2>
-            <span className="text-fg-faint text-xs">{tracks.length} track{tracks.length !== 1 ? 's' : ''}</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-fg-faint text-xs">{tracks.length} track{tracks.length !== 1 ? 's' : ''}</span>
+              {tracks.length > 0 && (
+                <button
+                  onClick={onShuffleAll}
+                  className="player-btn w-7 h-7"
+                  title="Shuffle all"
+                  aria-label="Shuffle all tracks"
+                >
+                  <i className="bi bi-shuffle text-xs" />
+                </button>
+              )}
+            </div>
           </div>
 
           {tracks.length === 0 ? (

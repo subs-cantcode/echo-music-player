@@ -13,10 +13,27 @@ import Favourites from './pages/Favourites.jsx'
 import Upload from './pages/Upload.jsx'
 import Settings from './pages/Settings.jsx'
 
+// Fisher-Yates shuffle of track ids, optionally keeping one id at the front.
+function buildShuffleOrder(tracks, firstId) {
+  const ids = tracks.map((t) => t.id).filter((id) => id !== firstId)
+
+  for (let i = ids.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1))
+    const swap = ids[i]
+    ids[i] = ids[j]
+    ids[j] = swap
+  }
+
+  return firstId ? [firstId, ...ids] : ids
+}
+
 function AppLayout() {
   const { tracks, deleteTrack, toggleFavourite, logPlay } = useLibrary()
   const [currentTrack, setCurrentTrack] = useState(null)
   const currentTrackRef = useRef(null)
+  const [shuffleOn, setShuffleOn] = useState(false)
+  // Track ids for the current shuffled pass; empty when shuffle is off.
+  const playOrderRef = useRef([])
 
   useEffect(() => {
     currentTrackRef.current = currentTrack
@@ -59,13 +76,33 @@ function AppLayout() {
 
   const handlePlayTrack = useCallback(async (track) => {
     if (!track) return
+    // Picking a track by hand mid-shuffle restarts the shuffled pass from it.
+    if (shuffleOn && !playOrderRef.current.includes(track.id)) {
+      playOrderRef.current = buildShuffleOrder(tracks, track.id)
+    }
     setCurrentTrack(track)
     setRecentlyPlayed((prev) => {
       const filtered = prev.filter((t) => t.id !== track.id)
       return [track, ...filtered].slice(0, 10)
     })
     await playTrack(track.objectUrl)
-  }, [playTrack])
+  }, [playTrack, shuffleOn, tracks])
+
+  // Home: play the whole library in a fresh random order.
+  const handleShuffleAll = useCallback(() => {
+    if (tracks.length === 0) return
+    playOrderRef.current = buildShuffleOrder(tracks)
+    setShuffleOn(true)
+    const first = tracks.find((t) => t.id === playOrderRef.current[0])
+    if (first) handlePlayTrack(first)
+  }, [tracks, handlePlayTrack])
+
+  // Player bar: toggle shuffle without interrupting the current track.
+  const toggleShuffle = useCallback(() => {
+    const next = !shuffleOn
+    playOrderRef.current = next ? buildShuffleOrder(tracks, currentTrackRef.current?.id) : []
+    setShuffleOn(next)
+  }, [shuffleOn, tracks])
 
   const handleTrackEnd = useCallback(
     (timeListened, mode) => {
@@ -75,17 +112,33 @@ function AppLayout() {
       // Single-track repeats are handled by the audio element's own loop flag.
       if (!track || mode === 'track') return
 
-      const index = tracks.findIndex((t) => t.id === track.id)
-      const next =
-        index >= 0 && index < tracks.length - 1
-          ? tracks[index + 1]
-          : mode === 'all'
-            ? tracks[0]
-            : null
+      let next = null
+
+      if (shuffleOn) {
+        const order = playOrderRef.current
+        const position = order.indexOf(track.id)
+        const nextId = position >= 0 ? order[position + 1] : null
+
+        if (nextId) {
+          next = tracks.find((t) => t.id === nextId) || null
+        } else if (mode === 'all' && tracks.length > 0) {
+          // Loop all: start a fresh shuffled pass.
+          playOrderRef.current = buildShuffleOrder(tracks)
+          next = tracks.find((t) => t.id === playOrderRef.current[0]) || null
+        }
+      } else {
+        const index = tracks.findIndex((t) => t.id === track.id)
+        next =
+          index >= 0 && index < tracks.length - 1
+            ? tracks[index + 1]
+            : mode === 'all'
+              ? tracks[0]
+              : null
+      }
 
       if (next) handlePlayTrack(next)
     },
-    [logPlay, tracks, handlePlayTrack]
+    [logPlay, tracks, handlePlayTrack, shuffleOn]
   )
 
   useEffect(() => {
@@ -108,7 +161,8 @@ function AppLayout() {
           <Routes location={location}>
             <Route path="/" element={
               <Home tracks={tracks} currentTrack={currentTrack} onPlay={handlePlayTrack}
-                onDelete={deleteTrack} onToggleFavourite={toggleFavourite} recentlyPlayed={recentlyPlayed} />
+                onDelete={deleteTrack} onToggleFavourite={toggleFavourite} recentlyPlayed={recentlyPlayed}
+                onShuffleAll={handleShuffleAll} />
             } />
             <Route path="/search" element={
               <Search tracks={tracks} currentTrack={currentTrack} onPlay={handlePlayTrack}
@@ -150,6 +204,8 @@ function AppLayout() {
         sidebarCollapsed={sidebarCollapsed}
         loopMode={loopMode}
         onToggleLoop={toggleLoop}
+        shuffleOn={shuffleOn}
+        onToggleShuffle={toggleShuffle}
         onPlayPause={togglePlay}
         onSkipBack={() => skip(-10)}
         onSkipForward={() => skip(10)}

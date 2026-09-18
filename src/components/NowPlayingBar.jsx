@@ -3,11 +3,10 @@ import { formatTime } from './NowPlaying.jsx'
 
 export default function NowPlayingBar({
   track, isPlaying, currentTime, duration, progress, volume, isMuted,
-  sidebarCollapsed, loopMode, onPlayPause, onSkipBack, onSkipForward, onSeek,
-  onSetVolume, onToggleMute, onToggleFavourite, onToggleLoop,
+  sidebarCollapsed, loopMode, shuffleOn, onPlayPause, onSkipBack, onSkipForward, onSeek,
+  onSetVolume, onToggleMute, onToggleFavourite, onToggleLoop, onToggleShuffle,
 }) {
   const [volDrag, setVolDrag] = useState(false)
-  const [shuffled, setShuffled] = useState(false)
   const [heartKey, setHeartKey] = useState(0)
   const volRef = useRef(null)
   const volDragRef = useRef(false)
@@ -79,9 +78,11 @@ export default function NowPlayingBar({
             </button>
 
             <button
-              onClick={() => setShuffled((s) => !s)}
-              className={`player-btn w-7 h-7 ${shuffled ? 'text-accent' : ''}`}
+              onClick={onToggleShuffle}
+              className={`player-btn w-7 h-7 ${shuffleOn ? 'text-accent' : ''}`}
+              title={shuffleOn ? 'Shuffle on' : 'Shuffle off'}
               aria-label="Shuffle"
+              aria-pressed={Boolean(shuffleOn)}
             >
               <i className="bi bi-shuffle text-xs" />
             </button>
