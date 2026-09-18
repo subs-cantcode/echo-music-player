@@ -99,7 +99,7 @@ export default function UploadZone({ onUpload }) {
     return (
       <div className="border border-border rounded-xl px-5 py-4 fade-in">
         <p className="text-xs text-fg-muted mb-3">
-          <span className="text-accent font-medium">{selectedFiles.length}</span> file{selectedFiles.length !== 1 ? 's' : ''} selected
+          <span className="text-accent-text font-medium">{selectedFiles.length}</span> file{selectedFiles.length !== 1 ? 's' : ''} selected
         </p>
         <div className="flex flex-col gap-1 mb-4 max-h-48 overflow-y-auto">
           {selectedFiles.map((file, i) => (
@@ -115,7 +115,7 @@ export default function UploadZone({ onUpload }) {
           ))}
         </div>
         <div className="flex gap-2">
-          <button onClick={startUpload} className="px-5 py-2 bg-accent text-white text-sm font-medium rounded-lg hover:bg-accent/85 active:scale-[0.97] transition-all duration-150">
+          <button onClick={startUpload} className="px-5 py-2 bg-accent text-accent-ink text-sm font-medium rounded-lg hover:bg-accent/85 active:scale-[0.97] transition-all duration-150">
             Import
           </button>
           <button onClick={() => { setSelectedFiles([]); setPhase('empty') }} className="px-4 py-2 text-fg-muted text-sm hover:text-fg transition-colors">
@@ -134,7 +134,7 @@ export default function UploadZone({ onUpload }) {
             <div className="min-w-0 flex-1 mr-3">
               <div className="flex items-center gap-2">
                 <p className="text-sm text-fg truncate">{f.name}</p>
-                {f.status === 'done' && <i className="bi bi-check-circle-fill text-accent text-xs" />}
+                {f.status === 'done' && <i className="bi bi-check-circle-fill text-accent-text text-xs" />}
                 {f.status === 'error' && <i className="bi bi-exclamation-circle-fill text-red-400 text-xs" />}
               </div>
               <p className="text-xs text-fg-muted">
@@ -154,7 +154,7 @@ export default function UploadZone({ onUpload }) {
             {f.status === 'error' && (
               <button onClick={() => {
                 setUploadingFiles((prev) => prev.map((f2, idx) => idx === i ? { ...f2, status: 'pending', error: null } : f2))
-              }} className="text-accent text-xs hover:underline">
+              }} className="text-accent-text text-xs hover:underline">
                 Retry
               </button>
             )}

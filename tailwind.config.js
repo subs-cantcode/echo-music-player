@@ -19,6 +19,10 @@ export default {
         'fg-muted': 'rgb(var(--fg-muted-rgb) / <alpha-value>)',
         'fg-faint': 'rgb(var(--fg-faint-rgb) / <alpha-value>)',
         accent: 'rgb(var(--accent-rgb) / <alpha-value>)',
+        // Accent for text/icons (darker in the light theme), and the ink used on
+        // top of accent fills.
+        'accent-text': 'rgb(var(--accent-text-rgb) / <alpha-value>)',
+        'accent-ink': 'rgb(var(--accent-ink-rgb) / <alpha-value>)',
         // Already a tinted colour: the alpha lives in the token itself.
         'accent-soft': 'var(--accent-soft)',
       },

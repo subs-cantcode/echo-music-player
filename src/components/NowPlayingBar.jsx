@@ -48,7 +48,10 @@ export default function NowPlayingBar({
         sidebarCollapsed ? 'left-[80px]' : 'left-[232px]'
       } right-3`}
     >
-      <div className="frosted-panel max-w-[680px] mx-auto bg-surface border border-border-subtle rounded-2xl px-4 py-2.5 shadow-sm">
+      <div
+        className="frosted-panel max-w-[680px] mx-auto bg-surface border border-border-subtle rounded-2xl px-4 py-2.5 shadow-sm"
+        style={{ '--frost-tint': '65%', '--frost-blur': '20px' }}
+      >
         <div className="flex items-center gap-3">
           {/* Track info */}
           <div className="flex items-center gap-2.5 min-w-0 flex-shrink-0 w-[160px]">
@@ -71,7 +74,7 @@ export default function NowPlayingBar({
           <div className="flex-1 flex items-center justify-center gap-1">
             <button
               onClick={() => { onToggleFavourite(); setHeartKey((k) => k + 1) }}
-              className={`player-btn w-7 h-7 ${isFav ? 'text-accent' : ''}`}
+              className={`player-btn w-7 h-7 ${isFav ? 'text-accent-text' : ''}`}
               aria-label={isFav ? 'Remove from favourites' : 'Add to favourites'}
             >
               <i key={heartKey} className={`text-sm heart-pop ${isFav ? 'bi-heart-fill' : 'bi-heart'}`} />
@@ -79,7 +82,7 @@ export default function NowPlayingBar({
 
             <button
               onClick={onToggleShuffle}
-              className={`player-btn w-7 h-7 ${shuffleOn ? 'text-accent' : ''}`}
+              className={`player-btn w-7 h-7 ${shuffleOn ? 'text-accent-text' : ''}`}
               title={shuffleOn ? 'Shuffle on' : 'Shuffle off'}
               aria-label="Shuffle"
               aria-pressed={Boolean(shuffleOn)}
@@ -105,7 +108,7 @@ export default function NowPlayingBar({
 
             <button
               onClick={onToggleLoop}
-              className={`player-btn w-7 h-7 ${loopMode !== 'off' ? 'text-accent' : ''}`}
+              className={`player-btn w-7 h-7 ${loopMode !== 'off' ? 'text-accent-text' : ''}`}
               title={`Loop: ${loopMode}`}
               aria-label="Loop"
               aria-pressed={loopMode !== 'off'}

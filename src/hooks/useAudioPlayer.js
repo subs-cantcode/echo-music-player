@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
+import { attachAudioAnalysis } from '../lib/audioAnalysis.js'
 
 export function useAudioPlayer({ onEnded } = {}) {
   const audioRef = useRef(null)
@@ -47,6 +48,8 @@ export function useAudioPlayer({ onEnded } = {}) {
     try {
       await audio.play()
       setIsPlaying(true)
+      // Tapped after play() so the autoplay gesture is never delayed or lost.
+      attachAudioAnalysis(audio)
     } catch (err) {
       console.error('Playback error:', err)
       setIsPlaying(false)
@@ -60,6 +63,7 @@ export function useAudioPlayer({ onEnded } = {}) {
       try {
         await audio.play()
         setIsPlaying(true)
+        attachAudioAnalysis(audio)
       } catch (err) {
         console.error('Playback error:', err)
       }

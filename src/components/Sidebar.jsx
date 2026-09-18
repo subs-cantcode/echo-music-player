@@ -26,7 +26,7 @@ export default function Sidebar({ collapsed, onToggle }) {
         )}
         <button
           onClick={onToggle}
-          className="player-btn ml-auto w-7 h-7 text-fg-faint hover:text-fg-muted"
+          className="player-btn ml-auto w-7 h-7 text-fg-muted hover:text-fg"
           aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           <i className={`bi ${collapsed ? 'bi-chevron-right' : 'bi-chevron-left'} text-xs`} />

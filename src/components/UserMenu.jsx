@@ -30,7 +30,7 @@ export default function UserMenu() {
       <div className="relative">
         <button
           onClick={() => setMenuOpen((o) => !o)}
-          className="w-8 h-8 rounded-full bg-accent-soft text-accent flex items-center justify-center text-xs font-medium hover:bg-accent/20 active:scale-90 transition-all duration-150"
+          className="w-8 h-8 rounded-full bg-accent-soft text-accent-text flex items-center justify-center text-xs font-medium hover:bg-accent/20 active:scale-90 transition-all duration-150"
           aria-label="Menu"
         >
           <i className="bi bi-list text-sm" />

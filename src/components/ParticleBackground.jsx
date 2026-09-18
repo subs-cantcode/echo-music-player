@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { getAudioLevel } from '../lib/audioAnalysis.js'
 import './ParticleBackground.css'
 
 // Matches --accent in src/index.css for each theme.
@@ -19,6 +20,11 @@ const SPRITE_SIZE = 128
 const AREA_PER_PARTICLE = 38000
 const MIN_PARTICLES = 12
 const MAX_PARTICLES = 26
+
+// How strongly the playing track swells the field, at full level.
+const PULSE_RADIUS = 0.55
+const PULSE_ALPHA = 1.1
+const PULSE_SPEED = 0.7
 
 // A soft radial blob, drawn once per theme and scaled per particle.
 function createGlowSprite(rgb) {
@@ -126,9 +132,13 @@ export const ParticleBackground = () => {
       const [minAlpha, maxAlpha] = dark ? PARTICLE_ALPHA.dark : PARTICLE_ALPHA.light
       const sprite = dark ? sprites.dark : sprites.light
 
+      // 0 when idle or untappable, so the wallpaper has a calm resting state.
+      const level = getAudioLevel()
+
       for (const particle of particles) {
-        particle.x += particle.speedX
-        particle.y += particle.speedY
+        const drift = 1 + level * PULSE_SPEED
+        particle.x += particle.speedX * drift
+        particle.y += particle.speedY * drift
 
         // Wrap around edges
         if (particle.x + particle.radius < 0) particle.x = width + particle.radius
@@ -136,15 +146,13 @@ export const ParticleBackground = () => {
         if (particle.y + particle.radius < 0) particle.y = height + particle.radius
         if (particle.y - particle.radius > height) particle.y = -particle.radius
 
-        ctx.globalAlpha = minAlpha + (maxAlpha - minAlpha) * particle.strength
-        const diameter = particle.radius * 2
-        ctx.drawImage(
-          sprite,
-          particle.x - particle.radius,
-          particle.y - particle.radius,
-          diameter,
-          diameter
+        const radius = particle.radius * (1 + level * PULSE_RADIUS)
+        ctx.globalAlpha = Math.min(
+          1,
+          (minAlpha + (maxAlpha - minAlpha) * particle.strength) * (1 + level * PULSE_ALPHA)
         )
+        const diameter = radius * 2
+        ctx.drawImage(sprite, particle.x - radius, particle.y - radius, diameter, diameter)
       }
 
       ctx.globalAlpha = 1

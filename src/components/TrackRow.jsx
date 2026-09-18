@@ -24,8 +24,8 @@ export default function TrackRow({
         onClick={(e) => { e.stopPropagation(); onToggleFavourite?.(track.id) }}
         className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs transition-all duration-200 ${
           track.isFavourite
-            ? 'text-accent heart-pop'
-            : 'text-fg-faint hover:text-accent opacity-0 group-hover:opacity-100'
+            ? 'text-accent-text heart-pop'
+            : 'text-fg-faint hover:text-accent-text opacity-0 group-hover:opacity-100'
         }`}
         aria-label={track.isFavourite ? 'Remove from favourites' : 'Add to favourites'}
       >

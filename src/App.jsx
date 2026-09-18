@@ -186,7 +186,7 @@ function AppLayout() {
 
           {uploadToast && (
             <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-surface border border-border rounded-xl px-4 py-2.5 shadow-lg text-sm text-fg flex items-center gap-2 fade-in">
-              <i className="bi bi-check-circle-fill text-accent" />
+              <i className="bi bi-check-circle-fill text-accent-text" />
               Import complete
             </div>
           )}

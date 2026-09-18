@@ -12,7 +12,7 @@ export default function PlayerControls({
     <div className="flex items-center justify-center gap-3">
       <button
         onClick={onToggleLoop}
-        className={`player-btn w-9 h-9 ${loopMode !== 'off' ? 'text-accent' : ''}`}
+        className={`player-btn w-9 h-9 ${loopMode !== 'off' ? 'text-accent-text' : ''}`}
         title={`Loop: ${loopMode}`}
         aria-label="Loop"
         aria-pressed={loopMode !== 'off'}

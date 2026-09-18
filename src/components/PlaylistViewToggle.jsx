@@ -11,7 +11,7 @@ export const PlaylistViewToggle = ({ view, onToggle }) => {
           key={option.value}
           onClick={() => onToggle(option.value)}
           className={`player-btn w-8 h-8 ${
-            view === option.value ? 'bg-accent-soft text-accent' : ''
+            view === option.value ? 'bg-accent-soft text-accent-text' : ''
           }`}
           title={option.label}
           aria-label={option.label}

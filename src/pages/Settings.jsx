@@ -40,7 +40,7 @@ export default function Settings() {
               onClick={() => setTheme(opt.value)}
               className={`px-4 py-2 text-sm rounded-xl border transition-all duration-150 ${
                 theme === opt.value
-                  ? 'border-accent bg-accent-soft text-accent font-medium'
+                  ? 'border-accent bg-accent-soft text-accent-text font-medium'
                   : 'border-border text-fg-muted hover:border-fg-faint hover:text-fg'
               }`}
             >

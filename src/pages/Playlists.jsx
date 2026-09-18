@@ -74,7 +74,7 @@ function PlaylistList({ tracks, onPlay, onNavigate }) {
           <button
             onClick={handleCreate}
             disabled={!newName.trim() || creating}
-            className="px-4 py-2 bg-accent text-white text-sm font-medium rounded-xl hover:bg-accent/85 active:scale-[0.97] transition-all disabled:opacity-40"
+            className="px-4 py-2 bg-accent text-accent-ink text-sm font-medium rounded-xl hover:bg-accent/85 active:scale-[0.97] transition-all disabled:opacity-40"
           >
             Create
           </button>
@@ -131,7 +131,7 @@ function PlaylistDetail({ tracks, currentTrack, onPlay }) {
     return (
       <div className="bg-surface rounded-2xl p-5">
         <p className="text-fg-muted text-sm">Playlist not found.</p>
-        <button onClick={() => navigate('/playlists')} className="mt-2 text-accent text-sm hover:underline">
+        <button onClick={() => navigate('/playlists')} className="mt-2 text-accent-text text-sm hover:underline">
           Back to playlists
         </button>
       </div>
@@ -193,7 +193,7 @@ function PlaylistDetail({ tracks, currentTrack, onPlay }) {
                     </div>
                     <button
                       onClick={() => addTrackToPlaylist(playlist.id, track.id)}
-                      className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-accent hover:bg-accent-soft transition-colors"
+                      className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-accent-text hover:bg-accent-soft transition-colors"
                       aria-label={`Add ${track.title}`}
                     >
                       <i className="bi bi-plus-lg text-xs" />
