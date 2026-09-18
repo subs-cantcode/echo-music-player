@@ -14,8 +14,8 @@ export default function Sidebar({ collapsed, onToggle }) {
 
   return (
     <aside
-      className={`sidebar frosted-panel fixed top-0 left-0 h-full bg-surface z-30 flex flex-col border-r border-border-subtle ${
-        collapsed ? 'w-[68px]' : 'w-[220px]'
+      className={`sidebar frosted-panel fixed top-0 left-0 h-full bg-surface z-30 flex flex-col border-r border-border-subtle ${collapsed ? 'collapsed' : ''} ${
+        collapsed ? 'w-20' : 'w-[220px]'
       }`}
     >
       <div className="flex items-center h-14 px-4 flex-shrink-0">
@@ -46,8 +46,8 @@ export default function Sidebar({ collapsed, onToggle }) {
               end={item.end}
               className={`nav-link ${isActive ? 'active' : ''} ${collapsed ? 'justify-center px-0' : ''}`}
             >
-              <i className={`bi ${item.icon} text-lg ${!collapsed ? 'w-5 text-center' : ''}`} />
-              {!collapsed && <span>{item.label}</span>}
+              <i className={`bi ${item.icon} text-lg ${collapsed ? 'w-5 text-center' : 'w-5 text-center'}`} />
+              <span className="nav-label">{item.label}</span>
             </NavLink>
           )
         })}
