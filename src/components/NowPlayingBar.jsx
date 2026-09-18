@@ -61,8 +61,12 @@ export default function NowPlayingBar({
             <div className="min-w-0">
               {track ? (
                 <>
-                  <div className="text-sm font-medium text-fg truncate">{track.title}</div>
-                  <div className="text-fg-muted text-[11px] truncate">{track.artist || ''}</div>
+                  <div className="marquee-container">
+                    <div className="text-sm font-medium text-fg marquee-text">{track.title}<span>{track.title}</span></div>
+                  </div>
+                  <div className="marquee-container">
+                    <div className="marquee-text text-fg-muted text-[11px]">{track.artist || ''}<span>{track.artist || ''}</span></div>
+                  </div>
                 </>
               ) : (
                 <div className="text-fg-faint text-sm">No track</div>
