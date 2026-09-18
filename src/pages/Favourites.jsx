@@ -1,7 +1,7 @@
 import TrackRow from '../components/TrackRow.jsx'
 
 export default function Favourites({ tracks, currentTrack, onPlay, onDelete, onToggleFavourite }) {
-  const favourited = tracks.filter((t) => t.is_favorite)
+  const favourited = tracks.filter((t) => t.isFavourite)
 
   return (
     <div className="page-enter">

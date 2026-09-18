@@ -5,7 +5,7 @@ const navItems = [
   { to: '/search', icon: 'bi-search', label: 'Search' },
   { to: '/playlists', icon: 'bi-music-note-list', label: 'Playlists' },
   { to: '/favourites', icon: 'bi-heart', label: 'Favourites' },
-  { to: '/upload', icon: 'bi-cloud-upload', label: 'Upload' },
+  { to: '/upload', icon: 'bi-cloud-upload', label: 'Import' },
   { to: '/settings', icon: 'bi-gear', label: 'Settings' },
 ]
 

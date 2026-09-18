@@ -1,44 +1,60 @@
-# Echo Music Player — setup
+# Echo Music Player
 
-The player uses **Supabase** for track metadata and audio file storage. No login required — anonymous access only.
+A local-first personal music player. Import audio files from your device, browse and play them
+from a clean, minimal interface.
 
-The app is a **React + Vite** build styled with **Tailwind CSS**, using **Bootstrap Icons** (icon font only, via CDN).
+**Nothing leaves your device.** Tracks, playlists, and listening history are stored in the browser
+(IndexedDB + localStorage). There are no accounts, no server, and no uploads.
 
-## 1. Create a Supabase project
+Built with **React + Vite**, styled with **Tailwind CSS**, using **Bootstrap Icons** (icon font only,
+via CDN).
 
-1. Open [https://supabase.com/dashboard](https://supabase.com/dashboard) and create a project.
-2. In **SQL Editor**, paste and run `supabase/schema.sql`. That creates `profiles`, `tracks`, `playlists`, `playlist_tracks`, RLS policies, storage-usage helpers, and the private `audio-files` bucket.
+## How data is stored
 
-If the bucket already exists, the insert is a no-op. Confirm in **Storage** that `audio-files` is **private**.
+| Data | Where | Notes |
+| --- | --- | --- |
+| Tracks (audio file + metadata) | IndexedDB (`echo-local`) | The `File` object is stored directly |
+| Playlists | IndexedDB (`echo-local`) | References tracks by id |
+| Listening history | localStorage (`echoHistory`) | Capped at 1000 entries |
+| Theme | localStorage (`echo-theme`) | |
+| Playback URLs | In memory | Object URLs are regenerated from stored files on each load |
 
-## 2. Keys (anon only)
+Because storage is per browser and per origin, your library lives wherever you imported it.
 
-Use the project **URL** and **anon public** key. Never put the **service role** key in this app.
-
-### Local
-
-Create a `.env` file in the project root:
+## Getting started
 
 ```bash
-VITE_SUPABASE_URL="https://YOUR_PROJECT.supabase.co"
-VITE_SUPABASE_ANON_KEY="your-anon-public-key"
+npm install
+npm run dev
 ```
 
-(`.env` is gitignored. `npm run dev` picks it up via Vite's standard env handling.)
+The first visit seeds a handful of demo tracks (silent audio) so the library isn't empty. They can
+be removed with **Settings → Clear all data**, which also clears the library and history.
 
-### Vercel
+## Build & deploy
 
-In the Vercel project: **Settings → Environment Variables**, add:
+```bash
+npm run build    # outputs to dist/
+npm run preview
+```
 
-| Name | Value |
-| --- | --- |
-| `VITE_SUPABASE_URL` | `https://YOUR_PROJECT.supabase.co` |
-| `VITE_SUPABASE_ANON_KEY` | the anon public key from Supabase **Project Settings → API** |
+The deployment is fully static. `vercel.json` sets the SPA rewrite so client-side routes resolve to
+`index.html`. No environment variables are required.
 
-The Vercel build runs `node scripts/write-env.js && vite build`. `write-env.js` writes a `.env` from those variables (falling back to unprefixed `SUPABASE_URL`/`SUPABASE_ANON_KEY` if present), and Vite inlines them at build time. The deployment is static: Vite outputs to `dist/`, and the app talks to Supabase directly.
+## Project layout
 
-## 3. App entry
-
-- Player: `index.html` → `src/main.jsx` → `src/App.jsx` (served at `/`)
-
-No login/signup — the player loads directly with anonymous access.
+```
+src/
+├── main.jsx                    # Initializes the local library, then mounts the app
+├── App.jsx                     # Layout, routing, player state
+├── lib/
+│   ├── indexedDB.js            # Low-level IndexedDB schema/connection
+│   ├── localLibrary.js         # All local data operations (tracks, playlists, history)
+│   ├── LibraryContext.jsx      # Shares one library instance across the app
+│   └── ThemeContext.jsx        # Light/dark theme
+├── hooks/
+│   ├── useLocalLibrary.js      # React state wrapper over localLibrary
+│   └── useAudioPlayer.js       # HTML5 Audio playback, volume, seek, history logging
+├── components/                 # Sidebar, player bar, track rows, upload zone, etc.
+└── pages/                      # Home, Search, Playlists, Favourites, Upload, Settings
+```

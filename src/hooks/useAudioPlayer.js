@@ -1,12 +1,18 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 
-export function useAudioPlayer() {
+export function useAudioPlayer({ onEnded } = {}) {
   const audioRef = useRef(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const [volume, setVolumeState] = useState(0.8)
   const [isMuted, setIsMuted] = useState(false)
+
+  // Keep the latest callback in a ref so the audio element is only wired once.
+  const onEndedRef = useRef(onEnded)
+  useEffect(() => {
+    onEndedRef.current = onEnded
+  }, [onEnded])
 
   const ensureAudio = useCallback(() => {
     if (!audioRef.current) {
@@ -18,7 +24,9 @@ export function useAudioPlayer() {
         setDuration(audioRef.current.duration)
       })
       audioRef.current.addEventListener('ended', () => {
+        const played = audioRef.current.currentTime
         setIsPlaying(false)
+        if (onEndedRef.current) onEndedRef.current(played)
       })
     }
     return audioRef.current

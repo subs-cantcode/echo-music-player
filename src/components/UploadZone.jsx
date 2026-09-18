@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from 'react'
+import { useLibrary } from '../lib/LibraryContext.jsx'
 
 function bytesToLabel(bytes) {
   if (!bytes && bytes !== 0) return ''
@@ -10,6 +11,7 @@ function bytesToLabel(bytes) {
 }
 
 export default function UploadZone({ onUpload }) {
+  const { addTrack } = useLibrary()
   const inputRef = useRef(null)
   const [dragOver, setDragOver] = useState(false)
   const [phase, setPhase] = useState('empty')
@@ -47,8 +49,12 @@ export default function UploadZone({ onUpload }) {
     for (let i = 0; i < files.length; i++) {
       setUploadingFiles((prev) => prev.map((f, idx) => idx === i ? { ...f, status: 'uploading', progress: 50 } : f))
       try {
-        const { uploadTrack } = await import('../lib/api.js')
-        await uploadTrack({ blob: files[i].file, file: files[i].file, originalName: files[i].name })
+        const file = files[i].file
+        await addTrack(file, {
+          title: file.name.replace(/\.[^/.]+$/, ''),
+          artist: 'Unknown Artist',
+          album: 'Unknown Album',
+        })
         setUploadingFiles((prev) => prev.map((f, idx) => idx === i ? { ...f, status: 'done', progress: 100 } : f))
       } catch (err) {
         setUploadingFiles((prev) => prev.map((f, idx) => idx === i ? { ...f, status: 'error', error: err.message || 'Failed' } : f))
@@ -61,7 +67,7 @@ export default function UploadZone({ onUpload }) {
     setSelectedFiles([])
     setPhase('empty')
     if (onUpload) onUpload()
-  }, [selectedFiles, onUpload])
+  }, [selectedFiles, onUpload, addTrack])
 
   if (phase === 'empty') {
     return (
@@ -110,7 +116,7 @@ export default function UploadZone({ onUpload }) {
         </div>
         <div className="flex gap-2">
           <button onClick={startUpload} className="px-5 py-2 bg-accent text-white text-sm font-medium rounded-lg hover:bg-accent/85 active:scale-[0.97] transition-all duration-150">
-            Upload
+            Import
           </button>
           <button onClick={() => { setSelectedFiles([]); setPhase('empty') }} className="px-4 py-2 text-fg-muted text-sm hover:text-fg transition-colors">
             Cancel

@@ -42,7 +42,7 @@ export default function NowPlayingBar({
   const effectiveVol = isMuted ? 0 : volume
   const volIcon = effectiveVol === 0 ? 'bi-volume-mute' : effectiveVol < 0.5 ? 'bi-volume-down' : 'bi-volume-up'
   const repeatIcon = repeatMode === 2 ? 'bi-repeat-1' : 'bi-repeat'
-  const isFav = track?.is_favorite ?? false
+  const isFav = track?.isFavourite ?? false
 
   return (
     <div

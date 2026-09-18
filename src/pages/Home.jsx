@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import TrackRow from '../components/TrackRow.jsx'
 
 function getGreeting() {
@@ -8,6 +9,18 @@ function getGreeting() {
 }
 
 export default function Home({ tracks, currentTrack, onPlay, onDelete, onToggleFavourite, recentlyPlayed }) {
+  const forgotten = useMemo(() => {
+    if (tracks.length <= 5) return []
+    return [...tracks]
+      .filter((t) => currentTrack?.id !== t.id)
+      .sort((a, b) => {
+        const aPlayed = a.lastPlayed ? Date.parse(a.lastPlayed) : 0
+        const bPlayed = b.lastPlayed ? Date.parse(b.lastPlayed) : 0
+        return aPlayed - bPlayed
+      })
+      .slice(0, 5)
+  }, [tracks, currentTrack])
+
   return (
     <div className="page-enter">
       <div className="mb-6">
@@ -29,6 +42,30 @@ export default function Home({ tracks, currentTrack, onPlay, onDelete, onToggleF
               >
                 <div className="w-10 h-10 rounded-lg bg-border flex items-center justify-center mb-2">
                   <i className="bi bi-music-note-beamed text-fg-faint text-sm" />
+                </div>
+                <div className="text-sm font-medium text-fg truncate">{track.title}</div>
+                <div className="text-fg-muted text-xs truncate">{track.artist || 'Unknown'}</div>
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {forgotten.length > 0 && (
+        <section className="mb-6">
+          <div className="mb-3">
+            <h2 className="text-sm font-medium text-fg">Forgotten Echoes</h2>
+            <p className="text-fg-faint text-xs mt-0.5">Tracks you haven't returned to in a while.</p>
+          </div>
+          <div className="flex gap-2.5 overflow-x-auto pb-2 -mx-1 px-1">
+            {forgotten.map((track) => (
+              <button
+                key={track.id}
+                onClick={() => onPlay(track)}
+                className="flex-shrink-0 w-[130px] bg-surface p-3 rounded-xl text-left transition-all duration-200 hover:bg-surface-hover hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <div className="w-10 h-10 rounded-lg bg-border flex items-center justify-center mb-2">
+                  <i className="bi bi-hourglass text-fg-faint text-sm" />
                 </div>
                 <div className="text-sm font-medium text-fg truncate">{track.title}</div>
                 <div className="text-fg-muted text-xs truncate">{track.artist || 'Unknown'}</div>

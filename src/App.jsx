@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import Sidebar from './components/Sidebar.jsx'
 import NowPlayingBar from './components/NowPlayingBar.jsx'
 import UserMenu from './components/UserMenu.jsx'
 import { useAudioPlayer } from './hooks/useAudioPlayer.js'
-import { useLibrary } from './hooks/useLibrary.js'
-import { getAllTracks } from './lib/api.js'
+import { LibraryProvider, useLibrary } from './lib/LibraryContext.jsx'
 
 import Home from './pages/Home.jsx'
 import Search from './pages/Search.jsx'
@@ -15,13 +14,27 @@ import Upload from './pages/Upload.jsx'
 import Settings from './pages/Settings.jsx'
 
 function AppLayout() {
-  const navigate = useNavigate()
-  const { tracks, loading, error, loadTracks, addTracks, removeTrack, toggleFavourite } = useLibrary()
+  const { tracks, deleteTrack, toggleFavourite, logPlay } = useLibrary()
+  const [currentTrack, setCurrentTrack] = useState(null)
+  const currentTrackRef = useRef(null)
+
+  useEffect(() => {
+    currentTrackRef.current = currentTrack
+  }, [currentTrack])
+
+  const handleTrackEnd = useCallback(
+    (timeListened) => {
+      const track = currentTrackRef.current
+      if (track) logPlay(track.id, timeListened)
+    },
+    [logPlay]
+  )
+
   const {
     isPlaying, currentTime, duration, progress, volume, isMuted,
-    playTrack, togglePlay, pause, skip, seek, setVolume, toggleMute,
-  } = useAudioPlayer()
-  const [currentTrack, setCurrentTrack] = useState(null)
+    playTrack, togglePlay, skip, seek, setVolume, toggleMute,
+  } = useAudioPlayer({ onEnded: handleTrackEnd })
+
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [recentlyPlayed, setRecentlyPlayed] = useState([])
   const [uploadToast, setUploadToast] = useState(false)
@@ -34,7 +47,6 @@ function AppLayout() {
   }, [])
 
   useEffect(() => () => { if (toastTimer.current) clearTimeout(toastTimer.current) }, [])
-  useEffect(() => { loadTracks() }, [loadTracks])
 
   useEffect(() => {
     const handler = (e) => {
@@ -48,18 +60,13 @@ function AppLayout() {
   }, [togglePlay])
 
   const handlePlayTrack = useCallback(async (track) => {
+    if (!track) return
     setCurrentTrack(track)
     setRecentlyPlayed((prev) => {
       const filtered = prev.filter((t) => t.id !== track.id)
       return [track, ...filtered].slice(0, 10)
     })
-    if (!track.src) {
-      const all = await getAllTracks()
-      const fresh = all.find((t) => t.id === track.id)
-      if (fresh?.src) await playTrack(fresh.src)
-    } else {
-      await playTrack(track.src)
-    }
+    await playTrack(track.objectUrl)
   }, [playTrack])
 
   const location = useLocation()
@@ -75,20 +82,14 @@ function AppLayout() {
         }`}
       >
         <div className="max-w-[680px] mx-auto px-5">
-          {error && (
-            <div className="bg-surface border border-border rounded-2xl p-5 text-fg-muted text-center text-sm mb-5">
-              {error}
-            </div>
-          )}
-
           <Routes location={location}>
             <Route path="/" element={
               <Home tracks={tracks} currentTrack={currentTrack} onPlay={handlePlayTrack}
-                onDelete={removeTrack} onToggleFavourite={toggleFavourite} recentlyPlayed={recentlyPlayed} />
+                onDelete={deleteTrack} onToggleFavourite={toggleFavourite} recentlyPlayed={recentlyPlayed} />
             } />
             <Route path="/search" element={
               <Search tracks={tracks} currentTrack={currentTrack} onPlay={handlePlayTrack}
-                onDelete={removeTrack} onToggleFavourite={toggleFavourite} />
+                onDelete={deleteTrack} onToggleFavourite={toggleFavourite} />
             } />
             <Route path="/playlists" element={
               <Playlists tracks={tracks} currentTrack={currentTrack} onPlay={handlePlayTrack} />
@@ -98,10 +99,10 @@ function AppLayout() {
             } />
             <Route path="/favourites" element={
               <Favourites tracks={tracks} currentTrack={currentTrack} onPlay={handlePlayTrack}
-                onDelete={removeTrack} onToggleFavourite={toggleFavourite} />
+                onDelete={deleteTrack} onToggleFavourite={toggleFavourite} />
             } />
             <Route path="/upload" element={
-              <Upload onUploaded={async () => { await loadTracks(); showToast() }} />
+              <Upload onUploaded={showToast} />
             } />
             <Route path="/settings" element={<Settings />} />
           </Routes>
@@ -109,7 +110,7 @@ function AppLayout() {
           {uploadToast && (
             <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 bg-surface border border-border rounded-xl px-4 py-2.5 shadow-lg text-sm text-fg flex items-center gap-2 fade-in">
               <i className="bi bi-check-circle-fill text-accent" />
-              Upload complete
+              Import complete
             </div>
           )}
         </div>
@@ -132,8 +133,8 @@ function AppLayout() {
         onToggleMute={toggleMute}
         onToggleFavourite={async () => {
           if (!currentTrack) return
-          await toggleFavourite(currentTrack.id)
-          setCurrentTrack((prev) => prev ? { ...prev, is_favorite: !prev.is_favorite } : prev)
+          const updated = await toggleFavourite(currentTrack.id)
+          if (updated) setCurrentTrack((prev) => prev ? { ...prev, isFavourite: updated.isFavourite } : prev)
         }}
       />
     </div>
@@ -143,7 +144,9 @@ function AppLayout() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AppLayout />
+      <LibraryProvider>
+        <AppLayout />
+      </LibraryProvider>
     </BrowserRouter>
   )
 }
