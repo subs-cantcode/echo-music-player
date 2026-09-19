@@ -357,19 +357,6 @@ body {
   color: var(--accent-text);
 }
 
-/* Single-element scroll for truncated rows (no second copy to loop against,
-   so it keeps the full-width sweep under its own keyframe name rather than
-   clobbering the doubled marquee's -50%). */
-.track-row .truncate.marquee,
-.track-row .truncate.marquee + .truncate.marquee {
-  animation: marquee-scroll 8s linear infinite;
-  text-overflow: clip;
-}
-
-@keyframes marquee-scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
-}
 
 /* Bar slider */
 .bar-track {
@@ -530,10 +517,6 @@ body {
   white-space: nowrap;
 }
 
-.playlist-card-name.marquee {
-  animation: marquee-scroll 8s linear infinite;
-  text-overflow: clip;
-}
 
 .playlist-card-meta {
   margin: 0.25rem 0 0 0;

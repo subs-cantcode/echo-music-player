@@ -1,35 +1,24 @@
-import { useTextOverflow } from '../hooks/useTextOverflow';
+import MarqueeText from './MarqueeText.jsx';
 import { formatTime } from './NowPlaying.jsx';
 
 export default function TrackRow({
   track, isActive, onPlay, onDelete, onToggleFavourite,
   deleteIcon = 'bi-trash3', deleteLabel = 'Delete track',
 }) {
-  const { elementRef: titleRef, isOverflowing: titleOverflows } = useTextOverflow();
-  const { elementRef: artistRef, isOverflowing: artistOverflows } = useTextOverflow();
-
   return (
     <div
       className={`track-row ${isActive ? 'active' : ''}`}
       onClick={() => onPlay(track)}
     >
       <div className="min-w-0 flex-1">
-        <div
-          ref={titleRef}
-          className={`text-sm font-medium truncate ${titleOverflows ? 'marquee' : ''}`}
-        >
-          {track.title}
-        </div>
-        <div
-          ref={artistRef}
-          className={`text-fg-muted text-xs truncate ${artistOverflows ? 'marquee' : ''}`}
-        >
+        <MarqueeText className="text-sm font-medium">{track.title}</MarqueeText>
+        <MarqueeText className="text-fg-muted text-xs">
           {track.artist
             ? `${track.artist}${track.duration ? ' \u00b7 ' + formatTime(track.duration) : ''}`
             : track.duration
               ? formatTime(track.duration)
               : ''}
-        </div>
+        </MarqueeText>
       </div>
 
       <button
