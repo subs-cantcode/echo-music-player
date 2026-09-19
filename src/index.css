@@ -255,9 +255,10 @@ body {
   letter-spacing: 0.05em;
   animation: marquee 8s linear infinite;
   animation-play-state: paused;
-  animation-delay: 1.6s;
 }
 
+/* MarqueeText adds this whenever the text overflows, so the reel starts on
+   its own instead of waiting for a hover. */
 .marquee-text.marquee-active {
   animation-play-state: running;
 }
