@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { formatTime } from './NowPlaying.jsx'
 import MarqueeText from './MarqueeText.jsx'
+import AudioWaves from './AudioWaves.jsx'
 
 export default function NowPlayingBar({
   track, isPlaying, currentTime, duration, progress, volume, isMuted,
@@ -48,10 +49,12 @@ export default function NowPlayingBar({
       className="fixed bottom-3 left-3 right-3 z-40 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
     >
       <div
-        className="frosted-panel max-w-[680px] mx-auto bg-surface border border-border-subtle rounded-2xl px-4 py-2.5 shadow-sm"
+        className="frosted-panel relative overflow-hidden max-w-[680px] mx-auto bg-surface border border-border-subtle rounded-2xl px-4 py-2.5 shadow-sm"
         style={{ '--frost-tint': '65%', '--frost-blur': '20px' }}
       >
-        <div className="flex items-center gap-3">
+        <AudioWaves />
+
+        <div className="relative z-10 flex items-center gap-3">
           {/* Track info. flex-1 mirrors the volume column so the centre
               controls land on the bar's true horizontal centre. */}
           <div className="flex items-center gap-2.5 min-w-0 flex-1">
@@ -139,7 +142,7 @@ export default function NowPlayingBar({
         </div>
 
         {/* Progress */}
-        <div className="flex items-center gap-2.5 mt-1.5 px-0.5">
+        <div className="relative z-10 flex items-center gap-2.5 mt-1.5 px-0.5">
           <span className="text-fg-faint text-[10px] w-8 text-right tabular-nums">{formatTime(currentTime)}</span>
           <div className="flex-1 group cursor-pointer" onClick={(e) => {
             if (!duration || !onSeek) return
