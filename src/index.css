@@ -172,10 +172,21 @@ body {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+  transition: none !important;
+}
+
+.sidebar.collapsed .nav-link:hover {
+  background-color: var(--surface-hover) !important;
+  color: var(--fg) !important;
+  /* No alignment/padding/gap changes on hover */
 }
 
 .sidebar .nav-link i:first-child {
   transition: margin-right 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar.collapsed .nav-link i:first-child {
+  transition: none !important;
 }
 
 .sidebar .player-btn i {
