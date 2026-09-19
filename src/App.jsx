@@ -45,7 +45,7 @@ function AppLayout() {
 
   const {
     isPlaying, currentTime, duration, progress, volume, isMuted, loopMode,
-    playTrack, togglePlay, skip, seek, setVolume, toggleMute, toggleLoop,
+    playTrack, togglePlay, seek, setVolume, toggleMute, toggleLoop,
   } = useAudioPlayer({
     onEnded: (timeListened, mode) => endedHandlerRef.current?.(timeListened, mode),
   })
@@ -140,6 +140,40 @@ function AppLayout() {
     [logPlay, tracks, handlePlayTrack, shuffleOn]
   )
 
+  // Player bar skip buttons move whole tracks. Shuffle follows the current
+  // shuffled pass; both directions wrap around the queue.
+  const goToAdjacentTrack = useCallback(
+    (step) => {
+      const track = currentTrackRef.current
+      if (!track || tracks.length === 0) return
+
+      let next = null
+
+      if (shuffleOn) {
+        let order = playOrderRef.current
+        // Shuffle may have been switched on since this track started.
+        if (!order.includes(track.id)) {
+          order = buildShuffleOrder(tracks, track.id)
+          playOrderRef.current = order
+        }
+        const position = order.indexOf(track.id)
+        const nextId = order[(position + step + order.length) % order.length]
+        next = tracks.find((t) => t.id === nextId) || null
+      } else {
+        const index = tracks.findIndex((t) => t.id === track.id)
+        if (index < 0) return
+        next = tracks[(index + step + tracks.length) % tracks.length]
+      }
+
+      // A one-track library lands back on itself: no-op rather than a restart.
+      if (next && next.id !== track.id) handlePlayTrack(next)
+    },
+    [tracks, shuffleOn, handlePlayTrack]
+  )
+
+  const handleNextTrack = useCallback(() => goToAdjacentTrack(1), [goToAdjacentTrack])
+  const handlePreviousTrack = useCallback(() => goToAdjacentTrack(-1), [goToAdjacentTrack])
+
   useEffect(() => {
     endedHandlerRef.current = handleTrackEnd
   }, [handleTrackEnd])
@@ -200,8 +234,8 @@ function AppLayout() {
           shuffleOn={shuffleOn}
           onToggleShuffle={toggleShuffle}
           onPlayPause={togglePlay}
-          onSkipBack={() => skip(-10)}
-          onSkipForward={() => skip(10)}
+          onSkipBack={handlePreviousTrack}
+          onSkipForward={handleNextTrack}
           onSeek={seek}
           onSetVolume={setVolume}
           onToggleMute={toggleMute}

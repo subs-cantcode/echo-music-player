@@ -93,7 +93,7 @@ export default function NowPlayingBar({
               <i className="bi bi-shuffle text-base" />
             </button>
 
-            <button onClick={onSkipBack} className="player-btn w-11 h-11" aria-label="Rewind 10 seconds">
+            <button onClick={onSkipBack} className="player-btn w-11 h-11" title="Previous track" aria-label="Previous track">
               <i className="bi bi-skip-backward-fill text-lg" />
             </button>
 
@@ -105,7 +105,7 @@ export default function NowPlayingBar({
               {isPlaying ? <i className="bi bi-pause-fill text-xl" /> : <i className="bi bi-play-fill text-xl ml-0.5" />}
             </button>
 
-            <button onClick={onSkipForward} className="player-btn w-11 h-11" aria-label="Forward 10 seconds">
+            <button onClick={onSkipForward} className="player-btn w-11 h-11" title="Next track" aria-label="Next track">
               <i className="bi bi-skip-forward-fill text-lg" />
             </button>
 
