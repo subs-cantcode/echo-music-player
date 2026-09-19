@@ -247,6 +247,15 @@ body {
   white-space: nowrap;
   width: 100%;
   overflow: hidden;
+  /* Fallback for the first paint, before overflow is measured: ellipsise
+     rather than hard-clipping a long line. */
+  text-overflow: ellipsis;
+}
+
+/* Once the reel is running the text scrolls, so an ellipsis would just sit
+   static at the edge — clip instead. */
+.marquee-container.marquee-running {
+  text-overflow: clip;
 }
 
 .marquee-text {

@@ -17,7 +17,7 @@ export default function MarqueeText({ children, className = '' }) {
   }, [children])
 
   return (
-    <div className="marquee-container">
+    <div className={`marquee-container ${isOverflowing ? 'marquee-running' : ''}`}>
       <div
         ref={measureRef}
         className={`${className} marquee-text ${isOverflowing ? 'marquee-active' : ''}`}
