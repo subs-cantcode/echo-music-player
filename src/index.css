@@ -158,20 +158,20 @@ body {
 }
 
 .sidebar.collapsed .nav-link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5rem 0;
-  gap: 0;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0.5rem 0 !important;
+  gap: 0 !important;
 }
 
 .sidebar.collapsed .nav-link i:first-child {
-  margin: 0;
-  width: 100%;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  margin: 0 !important;
+  width: 100% !important;
+  text-align: center !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 .sidebar .nav-link i:first-child {
