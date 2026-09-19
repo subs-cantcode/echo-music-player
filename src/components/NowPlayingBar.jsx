@@ -74,60 +74,60 @@ export default function NowPlayingBar({
           </div>
 
           {/* Controls */}
-          <div className="flex items-center justify-center gap-1 flex-shrink-0">
+          <div className="flex items-center justify-center gap-2 flex-shrink-0">
             <button
               onClick={() => { onToggleFavourite(); setHeartKey((k) => k + 1) }}
-              className={`player-btn w-7 h-7 ${isFav ? 'text-accent-text' : ''}`}
+              className={`player-btn w-9 h-9 ${isFav ? 'text-accent-text' : ''}`}
               aria-label={isFav ? 'Remove from favourites' : 'Add to favourites'}
             >
-              <i key={heartKey} className={`text-sm heart-pop ${isFav ? 'bi-heart-fill' : 'bi-heart'}`} />
+              <i key={heartKey} className={`text-base heart-pop ${isFav ? 'bi-heart-fill' : 'bi-heart'}`} />
             </button>
 
             <button
               onClick={onToggleShuffle}
-              className={`player-btn w-7 h-7 ${shuffleOn ? 'text-accent-text' : ''}`}
+              className={`player-btn w-9 h-9 ${shuffleOn ? 'text-accent-text' : ''}`}
               title={shuffleOn ? 'Shuffle on' : 'Shuffle off'}
               aria-label="Shuffle"
               aria-pressed={Boolean(shuffleOn)}
             >
-              <i className="bi bi-shuffle text-xs" />
+              <i className="bi bi-shuffle text-sm" />
             </button>
 
-            <button onClick={onSkipBack} className="player-btn w-8 h-8" aria-label="Rewind 10 seconds">
-              <i className="bi bi-skip-backward-fill text-sm" />
+            <button onClick={onSkipBack} className="player-btn w-10 h-10" aria-label="Rewind 10 seconds">
+              <i className="bi bi-skip-backward-fill text-base" />
             </button>
 
             <button
               onClick={onPlayPause}
-              className="player-btn w-9 h-9 bg-fg text-bg hover:bg-fg/85"
+              className="player-btn w-11 h-11 bg-fg text-bg hover:bg-fg/85"
               aria-label={isPlaying ? 'Pause' : 'Play'}
             >
-              {isPlaying ? <i className="bi bi-pause-fill text-sm" /> : <i className="bi bi-play-fill text-sm ml-0.5" />}
+              {isPlaying ? <i className="bi bi-pause-fill text-lg" /> : <i className="bi bi-play-fill text-lg ml-0.5" />}
             </button>
 
-            <button onClick={onSkipForward} className="player-btn w-8 h-8" aria-label="Forward 10 seconds">
-              <i className="bi bi-skip-forward-fill text-sm" />
+            <button onClick={onSkipForward} className="player-btn w-10 h-10" aria-label="Forward 10 seconds">
+              <i className="bi bi-skip-forward-fill text-base" />
             </button>
 
             <button
               onClick={onToggleLoop}
-              className={`player-btn w-7 h-7 ${loopMode !== 'off' ? 'text-accent-text' : ''}`}
+              className={`player-btn w-9 h-9 ${loopMode !== 'off' ? 'text-accent-text' : ''}`}
               title={`Loop: ${loopMode}`}
               aria-label="Loop"
               aria-pressed={loopMode !== 'off'}
             >
-              <i className={`bi ${repeatIcon} text-xs`} />
+              <i className={`bi ${repeatIcon} text-sm`} />
             </button>
           </div>
 
           {/* Volume */}
-          <div className="flex items-center gap-1.5 flex-1 justify-end">
-            <button onClick={onToggleMute} className="player-btn w-7 h-7" aria-label={isMuted ? 'Unmute' : 'Mute'}>
-              <i className={`bi ${volIcon} text-sm`} />
+          <div className="flex items-center gap-2 flex-1 justify-end">
+            <button onClick={onToggleMute} className="player-btn w-9 h-9" aria-label={isMuted ? 'Unmute' : 'Mute'}>
+              <i className={`bi ${volIcon} text-base`} />
             </button>
             <div
               ref={volRef}
-              className="relative h-4 w-[80px] flex items-center cursor-pointer group"
+              className="relative h-6 w-[88px] flex items-center cursor-pointer group"
               onMouseDown={handleVolMouseDown}
             >
               <div className="bar-track w-full">
