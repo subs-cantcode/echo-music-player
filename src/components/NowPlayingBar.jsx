@@ -4,7 +4,7 @@ import MarqueeText from './MarqueeText.jsx'
 
 export default function NowPlayingBar({
   track, isPlaying, currentTime, duration, progress, volume, isMuted,
-  sidebarCollapsed, loopMode, shuffleOn, onPlayPause, onSkipBack, onSkipForward, onSeek,
+  loopMode, shuffleOn, onPlayPause, onSkipBack, onSkipForward, onSeek,
   onSetVolume, onToggleMute, onToggleFavourite, onToggleLoop, onToggleShuffle,
 }) {
   const [volDrag, setVolDrag] = useState(false)

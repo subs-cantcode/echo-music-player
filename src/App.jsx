@@ -195,7 +195,6 @@ function AppLayout() {
           progress={progress}
           volume={volume}
           isMuted={isMuted}
-          sidebarCollapsed={false}
           loopMode={loopMode}
           onToggleLoop={toggleLoop}
           shuffleOn={shuffleOn}

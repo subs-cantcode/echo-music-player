@@ -290,39 +290,6 @@ body {
   gap: 0;
 }
 
-.nav-link {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  color: var(--fg-muted);
-  transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1), color 150ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.nav-link:hover {
-  color: var(--fg);
-  background-color: var(--surface-hover);
-}
-
-.nav-link.active {
-  color: var(--accent-text);
-  background-color: var(--accent-soft);
-}
-
-.nav-link.active::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 3px;
-  height: 60%;
-  background: var(--accent);
-  border-radius: 0 2px 2px 0;
-}
 
 /* Player button.
    The colour rules live in :where() so their specificity is 0: plain classes

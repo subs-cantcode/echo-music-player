@@ -17,3 +17,13 @@ Object.defineProperty(HTMLElement.prototype, 'scrollWidth', {
     return (this.textContent || '').length > 10 ? 500 : 40
   },
 })
+
+// jsdom has no ResizeObserver; a no-op stub keeps MarqueeText's effect from
+// throwing. The initial synchronous check still drives the overflow state.
+if (typeof globalThis.ResizeObserver === 'undefined') {
+  globalThis.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  }
+}
