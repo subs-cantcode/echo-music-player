@@ -15,9 +15,12 @@ export const Sidebar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const location = useLocation();
 
-  const navItems = [
+  const libraryItems = [
     { path: '/', label: 'Home', icon: HouseFill },
     { path: '/search', label: 'Search', icon: Search },
+  ];
+
+  const playlistItems = [
     { path: '/playlists', label: 'Playlists', icon: ListUl },
     { path: '/favourites', label: 'Favourites', icon: Heart },
     { path: '/upload', label: 'Import', icon: Upload },
@@ -25,71 +28,101 @@ export const Sidebar = () => {
 
   const isActive = (path) => location.pathname === path;
 
+  const NavItem = ({ item }) => (
+    <Link
+      to={item.path}
+      className={`nav-item w-20 flex items-center justify-center flex-shrink-0 transition-all border-2 border-transparent rounded-lg ${
+        isExpanded ? 'h-auto py-2 px-4' : 'h-16 justify-center'
+      } ${
+        isActive(item.path)
+          ? 'bg-accent-soft border-accent text-accent'
+          : 'bg-surface-hover hover:bg-surface-hover hover:border-accent'
+      }`}
+      title={item.label}
+    >
+      <item.icon size={18} className="flex-shrink-0" />
+      {isExpanded && (
+        <span className="ml-3 text-sm font-500 whitespace-nowrap">
+          {item.label}
+        </span>
+      )}
+    </Link>
+  );
+
+  const SectionLabel = ({ label }) => (
+    isExpanded && (
+      <div className="px-4 py-2 text-xs uppercase font-600 text-fg-muted tracking-wider">
+        {label}
+      </div>
+    )
+  );
+
   return (
     <aside
-      className={`sidebar transition-all duration-280 overflow-hidden flex flex-col h-screen bg-surface border-r border-border ${isExpanded ? 'w-64' : 'w-20'}`}
+      className={`sidebar transition-all duration-280 overflow-hidden flex flex-col h-screen bg-surface border-r border-border ${
+        isExpanded ? 'w-64' : 'w-20'
+      }`}
     >
       {/* Toggle Button */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="nav-item w-20 h-20 flex items-center justify-center flex-shrink-0 hover:bg-surface-hover transition-colors border-2 border-transparent hover:border-accent"
+        className="nav-item w-16 h-16 flex items-center justify-center flex-shrink-0 hover:bg-surface-hover transition-colors rounded-lg m-2"
         title={isExpanded ? 'Collapse' : 'Expand'}
       >
         {isExpanded ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
       </button>
 
-      {/* Nav Items */}
-      {navItems.map(item => {
-        const IconComponent = item.icon;
-        return (
-          <Link
-            key={item.path}
-            to={item.path}
-            className={`nav-link w-20 flex items-center flex-shrink-0 transition-colors border-l-4 pl-0 ${
-              isExpanded ? 'h-auto py-3 px-4' : 'h-20 justify-center border-l-4 pl-0'
-            } ${
-              isActive(item.path)
-                ? 'bg-accent-soft border-l-accent text-accent'
-                : 'hover:bg-surface-hover hover:border-l-accent border-l-transparent'
-            }`}
-            title={item.label}
-          >
-            <IconComponent size={18} className="flex-shrink-0" />
+      {/* Echo Logo */}
+      {isExpanded && (
+        <div className="px-4 py-3 flex items-center gap-2 border-b border-border">
+          <span className="text-2xl">🎵</span>
+          <span className="font-600 text-lg">Echo</span>
+        </div>
+      )}
 
-            {/* Label - Only show when expanded */}
-            {isExpanded && (
-              <span className="ml-4 text-sm font-500 whitespace-nowrap">
-                {item.label}
-              </span>
-            )}
-          </Link>
-        );
-      })}
+      {/* Scrollable Nav Content */}
+      <nav className="flex-1 overflow-y-auto flex flex-col gap-1 px-2 py-4">
+        {/* Library Section */}
+        <SectionLabel label="Library" />
+        <div className="flex flex-col gap-1">
+          {libraryItems.map(item => (
+            <NavItem key={item.path} item={item} />
+          ))}
+        </div>
 
-      {/* Spacer */}
-      <div className="flex-1" />
+        {/* Playlists Section */}
+        <div className="pt-2 mt-2 border-t border-border">
+          <SectionLabel label="Playlists" />
+          <div className="flex flex-col gap-1">
+            {playlistItems.map(item => (
+              <NavItem key={item.path} item={item} />
+            ))}
+          </div>
+        </div>
+      </nav>
 
-      {/* Settings Button (bottom) */}
-      <Link
-        to="/settings"
-        className={`nav-link w-20 flex items-center flex-shrink-0 transition-colors border-l-4 pl-0 ${
-          isExpanded ? 'h-auto py-3 px-4' : 'h-20 justify-center border-l-4 pl-0'
-        } ${
-          isActive('/settings')
-            ? 'bg-accent-soft border-l-accent text-accent'
-            : 'hover:bg-surface-hover hover:border-l-accent border-l-transparent'
-        }`}
-        title="Settings"
-      >
-        <Gear size={18} className="flex-shrink-0" />
-
-        {/* Label - Only show when expanded */}
-        {isExpanded && (
-          <span className="ml-4 text-sm font-500 whitespace-nowrap">
-            Settings
-          </span>
-        )}
-      </Link>
+      {/* Settings Section (Bottom) */}
+      <div className="border-t border-border pt-2 px-2 pb-4">
+        <SectionLabel label="Settings" />
+        <Link
+          to="/settings"
+          className={`nav-item w-20 flex items-center justify-center flex-shrink-0 transition-all border-2 border-transparent rounded-lg ${
+            isExpanded ? 'h-auto py-2 px-4' : 'h-16 justify-center'
+          } ${
+            isActive('/settings')
+              ? 'bg-accent-soft border-accent text-accent'
+              : 'bg-surface-hover hover:bg-surface-hover hover:border-accent'
+          }`}
+          title="Settings"
+        >
+          <Gear size={18} className="flex-shrink-0" />
+          {isExpanded && (
+            <span className="ml-3 text-sm font-500 whitespace-nowrap">
+              Settings
+            </span>
+          )}
+        </Link>
+      </div>
     </aside>
   );
 };

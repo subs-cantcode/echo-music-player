@@ -117,83 +117,71 @@ body {
 
 /* Sidebar */
 .sidebar {
-  position: relative;
   display: flex;
   flex-direction: column;
-  background-color: var(--surface);
-  border-right: 1px solid var(--border);
   transition: width 280ms cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: width;
 }
 
 .nav-item {
-  border: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-}
-
-.nav-link {
   display: flex;
   align-items: center;
   gap: 0;
-  transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1), border-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   text-decoration: none;
   color: var(--fg);
-  border-left: 4px solid transparent;
+  border: 2px solid transparent;
+  border-radius: 8px;
 }
 
-/* Collapsed state (default) */
-.sidebar.w-20 .nav-link {
-  width: 80px;
-  height: 80px;
+/* Collapsed state */
+.sidebar.w-20 .nav-item {
+  width: 64px;
+  height: 64px;
   justify-content: center;
-  padding: 0 !important;
-}
-
-/* Collapsed state - icon only, centered */
-.sidebar.w-20 .nav-link svg {
-  margin: 0;
+  margin: 0.25rem;
   padding: 0;
 }
 
 /* Expanded state */
-.sidebar.w-64 .nav-link {
+.sidebar.w-64 .nav-item {
   width: auto;
   height: auto;
-  padding: 0.75rem 1rem !important;
   justify-content: flex-start;
+  padding: 0.75rem 1rem;
+  margin: 0.25rem 0.5rem;
 }
 
-/* Label visibility */
-.sidebar.w-20 .nav-link span {
-  display: none;
-}
-
-.sidebar.w-64 .nav-link span {
-  display: block;
-}
-
-/* Active state */
-.nav-link.active {
+/* Active state - more prominent */
+.nav-item[aria-current="page"],
+.nav-item.active,
+.nav-item.bg-accent-soft {
   background-color: var(--accent-soft);
-  border-left-color: var(--accent);
+  border-color: var(--accent);
   color: var(--accent);
+  font-weight: 600;
 }
 
 /* Hover state */
-.nav-link:hover {
+.nav-item:hover {
   background-color: var(--surface-hover);
-  border-left-color: var(--accent);
+  border-color: var(--accent);
 }
 
 /* Icon sizing */
-.nav-link svg {
+.nav-item svg {
   width: 18px;
   height: 18px;
   flex-shrink: 0;
   margin: 0;
   padding: 0;
+}
+
+/* Section labels */
+.sidebar .text-xs.uppercase {
+  color: var(--fg-muted);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
 }
 
 /* Home Page Responsive Text */
