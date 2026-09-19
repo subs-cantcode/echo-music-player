@@ -151,12 +151,15 @@ body {
   box-sizing: border-box;
 }
 
-/* Expanded state */
+/* Expanded state.
+   Keeps a 64px icon slot flush with the collapsed rail so an 18px glyph sits
+   at the same 31px left / 40px centre in both states: 8px nav padding + 23px
+   item padding. The row background starts at the same 8px edge as collapsed. */
 .sidebar.w-64 .nav-item {
   width: auto;
   height: auto;
-  padding: 0.75rem 1rem;
-  margin: 0.375rem 0.5rem;
+  padding: 0.75rem 1rem 0.75rem 1.4375rem;
+  margin: 0.375rem 0;
   justify-content: flex-start;
 }
 
