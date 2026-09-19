@@ -1,5 +1,7 @@
 # Echo Music Player
 
+![CI](https://github.com/subs-cantcode/echo-music-player/actions/workflows/test.yml/badge.svg)
+
 A local-first personal music player. Import audio files from your device, browse and play them
 from a clean, minimal interface.
 
