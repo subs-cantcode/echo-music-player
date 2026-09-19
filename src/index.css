@@ -122,7 +122,7 @@ body {
 }
 
 .sidebar .nav-link {
-  transition: all 180ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1), color 150ms cubic-bezier(0.4, 0, 0.2, 1), border-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .sidebar .nav-label {
@@ -160,6 +160,10 @@ body {
 .sidebar.collapsed .nav-link {
   justify-content: center;
   padding: 0.5rem 0;
+}
+
+.sidebar.collapsed .nav-link:hover {
+  justify-content: center;
 }
 
 .sidebar.collapsed .nav-link i:first-child {
@@ -261,7 +265,7 @@ body {
   border-radius: 0.5rem;
   font-size: 0.875rem;
   color: var(--fg-muted);
-  transition: all 180ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1), color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .nav-link:hover {
