@@ -1,57 +1,62 @@
-import { NavLink, useLocation } from 'react-router-dom'
+import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
-const navItems = [
-  { to: '/', icon: 'bi-house', label: 'Home', end: true },
-  { to: '/search', icon: 'bi-search', label: 'Search' },
-  { to: '/playlists', icon: 'bi-music-note-list', label: 'Playlists' },
-  { to: '/favourites', icon: 'bi-heart', label: 'Favourites' },
-  { to: '/upload', icon: 'bi-cloud-upload', label: 'Import' },
-  { to: '/settings', icon: 'bi-gear', label: 'Settings' },
-]
+export const Sidebar = () => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const location = useLocation();
 
-export default function Sidebar({ collapsed, onToggle }) {
-  const location = useLocation()
+  const navItems = [
+    { path: '/', label: 'Home', icon: '🏠' },
+    { path: '/search', label: 'Search', icon: '🔍' },
+    { path: '/playlists', label: 'Playlists', icon: '≡' },
+    { path: '/favourites', label: 'Favourites', icon: '♡' },
+    { path: '/upload', label: 'Import', icon: '⬆' },
+  ];
+
+  const isActive = (path) => location.pathname === path;
 
   return (
     <aside
-      className={`sidebar frosted-panel fixed top-0 left-0 h-full bg-surface z-30 flex flex-col border-r border-border-subtle ${collapsed ? 'collapsed' : ''} ${
-        collapsed ? 'w-[54px]' : 'w-[220px]'
-      }`}
+      className={`sidebar transition-all duration-280 overflow-hidden ${isExpanded ? 'w-64' : 'w-20'}`}
     >
-      <div className="flex items-center h-14 px-4 flex-shrink-0">
-        {!collapsed && (
-          <span className="text-[15px] font-medium text-fg tracking-tight">
-            Echo
-          </span>
-        )}
+      <nav className="flex flex-col h-full bg-surface border-r border-border">
+        {/* Toggle Button */}
         <button
-          onClick={onToggle}
-          className="player-btn ml-auto w-7 h-7 text-fg-muted hover:text-fg"
-          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="nav-item w-20 h-20 flex items-center justify-center hover:bg-surface-hover transition-colors border-2 border-transparent hover:border-accent"
+          title="Toggle sidebar"
         >
-          <i className={`bi ${collapsed ? 'bi-chevron-right' : 'bi-chevron-left'} text-xs`} />
+          <span className="text-lg">{isExpanded ? '‹' : '›'}</span>
         </button>
-      </div>
 
-      <nav className="flex-1 flex flex-col gap-0.5 px-2 mt-1">
-        {navItems.map((item) => {
-          const isActive = item.end
-            ? location.pathname === item.to
-            : location.pathname === item.to || location.pathname.startsWith(item.to + '/')
+        {/* Nav Items */}
+        {navItems.map(item => (
+          <Link
+            key={item.path}
+            to={item.path}
+            className={`nav-item w-20 h-20 flex items-center justify-center flex-shrink-0 transition-colors border-2 border-transparent ${
+              isActive(item.path)
+                ? 'bg-accent-soft border-accent text-accent'
+                : 'hover:bg-surface-hover hover:border-accent'
+            }`}
+            title={item.label}
+          >
+            <span className="text-2xl">{item.icon}</span>
+          </Link>
+        ))}
 
-          return (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.end}
-              className={`nav-link ${isActive ? 'active' : ''}`}
-            >
-              <i className={`bi ${item.icon} text-lg ${collapsed ? 'w-5 text-center' : 'w-5 text-center'}`} />
-              <span className="nav-label">{item.label}</span>
-            </NavLink>
-          )
-        })}
+        {/* Spacer */}
+        <div className="flex-1" />
+
+        {/* Settings Button (bottom) */}
+        <Link
+          to="/settings"
+          className="nav-item w-20 h-20 flex items-center justify-center flex-shrink-0 transition-colors border-2 border-transparent hover:bg-surface-hover hover:border-accent"
+          title="Settings"
+        >
+          <span className="text-2xl">⚙</span>
+        </Link>
       </nav>
     </aside>
-  )
-}
+  );
+};

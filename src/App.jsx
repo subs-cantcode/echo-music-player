@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
-import Sidebar from './components/Sidebar.jsx'
+import { Sidebar } from './components/Sidebar.jsx'
 import NowPlayingBar from './components/NowPlayingBar.jsx'
 import UserMenu from './components/UserMenu.jsx'
 import { useAudioPlayer } from './hooks/useAudioPlayer.js'
@@ -50,7 +50,6 @@ function AppLayout() {
     onEnded: (timeListened, mode) => endedHandlerRef.current?.(timeListened, mode),
   })
 
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [recentlyPlayed, setRecentlyPlayed] = useState([])
   const [uploadToast, setUploadToast] = useState(false)
   const toastTimer = useRef(null)
@@ -148,16 +147,12 @@ function AppLayout() {
   const location = useLocation()
 
   return (
-    <div className="min-h-screen bg-bg font-sans">
+    <div className="min-h-screen bg-bg font-sans app-layout grid grid-cols-[80px_1fr]">
       <UserMenu />
-      <Sidebar collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed((c) => !c)} />
+      <Sidebar />
 
-      <main
-        className={`transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] pt-4 pb-28 ${
-          sidebarCollapsed ? 'ml-[54px]' : 'ml-[220px]'
-        }`}
-      >
-        <div className="max-w-[680px] mx-auto px-5">
+      <main className="main-content flex flex-col min-w-0 overflow-x-hidden">
+        <div className="max-w-[680px] mx-auto px-5 w-full">
           <Routes location={location}>
             <Route path="/" element={
               <Home tracks={tracks} currentTrack={currentTrack} onPlay={handlePlayTrack}
@@ -191,33 +186,33 @@ function AppLayout() {
             </div>
           )}
         </div>
-      </main>
 
-      <NowPlayingBar
-        track={currentTrack}
-        isPlaying={isPlaying}
-        currentTime={currentTime}
-        duration={duration}
-        progress={progress}
-        volume={volume}
-        isMuted={isMuted}
-        sidebarCollapsed={sidebarCollapsed}
-        loopMode={loopMode}
-        onToggleLoop={toggleLoop}
-        shuffleOn={shuffleOn}
-        onToggleShuffle={toggleShuffle}
-        onPlayPause={togglePlay}
-        onSkipBack={() => skip(-10)}
-        onSkipForward={() => skip(10)}
-        onSeek={seek}
-        onSetVolume={setVolume}
-        onToggleMute={toggleMute}
-        onToggleFavourite={async () => {
-          if (!currentTrack) return
-          const updated = await toggleFavourite(currentTrack.id)
-          if (updated) setCurrentTrack((prev) => prev ? { ...prev, isFavourite: updated.isFavourite } : prev)
-        }}
-      />
+        <NowPlayingBar
+          track={currentTrack}
+          isPlaying={isPlaying}
+          currentTime={currentTime}
+          duration={duration}
+          progress={progress}
+          volume={volume}
+          isMuted={isMuted}
+          sidebarCollapsed={false}
+          loopMode={loopMode}
+          onToggleLoop={toggleLoop}
+          shuffleOn={shuffleOn}
+          onToggleShuffle={toggleShuffle}
+          onPlayPause={togglePlay}
+          onSkipBack={() => skip(-10)}
+          onSkipForward={() => skip(10)}
+          onSeek={seek}
+          onSetVolume={setVolume}
+          onToggleMute={toggleMute}
+          onToggleFavourite={async () => {
+            if (!currentTrack) return
+            const updated = await toggleFavourite(currentTrack.id)
+            if (updated) setCurrentTrack((prev) => prev ? { ...prev, isFavourite: updated.isFavourite } : prev)
+          }}
+        />
+      </main>
     </div>
   )
 }
