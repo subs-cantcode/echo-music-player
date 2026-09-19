@@ -11,5 +11,5 @@
   z-index: 0;
   /* Single knob for overall subtlety: the canvas also ramps its own alpha with
      the track's energy, so this sets the ceiling. */
-  opacity: 0.35;
+  opacity: 0.2;
 }
