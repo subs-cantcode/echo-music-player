@@ -163,6 +163,17 @@ body {
   justify-content: flex-start;
 }
 
+/* The collapse/expand toggle is a direct child of the sidebar, while the nav
+   items sit inside <nav>, which supplies their 8px side padding. Give the
+   toggle the same horizontal inset so its square (collapsed) and row
+   background (expanded) line up with the rest of the icons. Same specificity
+   as the state rules above, declared later so it wins. */
+.sidebar.w-20 > .nav-item,
+.sidebar.w-64 > .nav-item {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
 /* Icon - always centered */
 .nav-item svg {
   width: 18px;
