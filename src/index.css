@@ -239,17 +239,20 @@ body {
   text-overflow: ellipsis;
 }
 
-/* Marquee */
+/* Marquee.
+   MarqueeText renders two copies of the text. The container must clip the
+   spare copy, and the -50% keyframe (half the doubled width) makes the loop
+   seamless. Both copies carry the same trailing gap so the halves match. */
 .marquee-container {
   white-space: nowrap;
   width: 100%;
+  overflow: hidden;
 }
 
 .marquee-text {
   display: inline-block;
   white-space: nowrap;
   letter-spacing: 0.05em;
-  padding-right: 2em;
   animation: marquee 8s linear infinite;
   animation-play-state: paused;
   animation-delay: 1.6s;
@@ -261,7 +264,7 @@ body {
 
 .marquee-text span {
   display: inline-block;
-  padding-left: 1em;
+  padding-right: 1em;
 }
 
 @keyframes marquee {
@@ -354,13 +357,16 @@ body {
   color: var(--accent-text);
 }
 
+/* Single-element scroll for truncated rows (no second copy to loop against,
+   so it keeps the full-width sweep under its own keyframe name rather than
+   clobbering the doubled marquee's -50%). */
 .track-row .truncate.marquee,
 .track-row .truncate.marquee + .truncate.marquee {
-  animation: marquee 8s linear infinite;
+  animation: marquee-scroll 8s linear infinite;
   text-overflow: clip;
 }
 
-@keyframes marquee {
+@keyframes marquee-scroll {
   0% { transform: translateX(0); }
   100% { transform: translateX(-100%); }
 }
@@ -525,7 +531,7 @@ body {
 }
 
 .playlist-card-name.marquee {
-  animation: marquee 8s linear infinite;
+  animation: marquee-scroll 8s linear infinite;
   text-overflow: clip;
 }
 

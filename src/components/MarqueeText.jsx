@@ -28,7 +28,8 @@ export default function MarqueeText({ children, className = '' }) {
       >
         {isOverflowing ? (
           <>
-            {children}<span>{children}</span>
+            <span>{children}</span>
+            <span aria-hidden="true">{children}</span>
           </>
         ) : (
           children

@@ -52,8 +52,9 @@ export default function NowPlayingBar({
         style={{ '--frost-tint': '65%', '--frost-blur': '20px' }}
       >
         <div className="flex items-center gap-3">
-          {/* Track info */}
-          <div className="flex items-center gap-2.5 min-w-0 flex-shrink-0 w-[160px]">
+          {/* Track info. flex-1 mirrors the volume column so the centre
+              controls land on the bar's true horizontal centre. */}
+          <div className="flex items-center gap-2.5 min-w-0 flex-1">
             <div className="w-8 h-8 rounded-lg bg-border flex items-center justify-center flex-shrink-0">
               <i className="bi bi-music-note-beamed text-fg-faint text-xs" />
             </div>
@@ -70,7 +71,7 @@ export default function NowPlayingBar({
           </div>
 
           {/* Controls */}
-          <div className="flex-1 flex items-center justify-center gap-1">
+          <div className="flex items-center justify-center gap-1 flex-shrink-0">
             <button
               onClick={() => { onToggleFavourite(); setHeartKey((k) => k + 1) }}
               className={`player-btn w-7 h-7 ${isFav ? 'text-accent-text' : ''}`}
@@ -117,7 +118,7 @@ export default function NowPlayingBar({
           </div>
 
           {/* Volume */}
-          <div className="flex items-center gap-1.5 flex-shrink-0">
+          <div className="flex items-center gap-1.5 flex-1 justify-end">
             <button onClick={onToggleMute} className="player-btn w-7 h-7" aria-label={isMuted ? 'Unmute' : 'Mute'}>
               <i className={`bi ${volIcon} text-sm`} />
             </button>
