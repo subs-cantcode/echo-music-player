@@ -128,7 +128,10 @@ body {
   justify-content: center;
   gap: 0;
   padding: 0;
-  margin: 0.375rem;
+  /* Vertical rhythm only: the 80px rail plus the nav's 8px side padding is
+     sized to centre a 64px square exactly, so any side margin shifts the
+     container off-centre. */
+  margin: 0.375rem 0;
   transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   text-decoration: none;
@@ -143,6 +146,9 @@ body {
   width: 64px;
   height: 64px;
   flex-shrink: 0;
+  /* Border is inside the 64px box, so active/hover borders never resize or
+     nudge the icon. */
+  box-sizing: border-box;
 }
 
 /* Expanded state */
