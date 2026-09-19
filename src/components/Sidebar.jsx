@@ -35,7 +35,7 @@ export const Sidebar = () => {
         className="nav-item w-20 h-20 flex items-center justify-center flex-shrink-0 hover:bg-surface-hover transition-colors border-2 border-transparent hover:border-accent"
         title={isExpanded ? 'Collapse' : 'Expand'}
       >
-        {isExpanded ? <ChevronLeft size={24} /> : <ChevronRight size={24} />}
+        {isExpanded ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
       </button>
 
       {/* Nav Items */}
@@ -54,7 +54,7 @@ export const Sidebar = () => {
             }`}
             title={item.label}
           >
-            <IconComponent size={24} className="flex-shrink-0" />
+            <IconComponent size={18} className="flex-shrink-0" />
 
             {/* Label - Only show when expanded */}
             {isExpanded && (
@@ -81,7 +81,7 @@ export const Sidebar = () => {
         }`}
         title="Settings"
       >
-        <Gear size={24} className="flex-shrink-0" />
+        <Gear size={18} className="flex-shrink-0" />
 
         {/* Label - Only show when expanded */}
         {isExpanded && (
