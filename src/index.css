@@ -121,16 +121,31 @@ body {
   transition: width 280ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.sidebar .nav-link {
+  transition: all 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar .nav-label {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 150ms cubic-bezier(0.4, 0, 0.2, 1), transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
 .sidebar.collapsed .nav-label {
-  display: none;
+  opacity: 0;
+  transform: translateX(-10px);
+  pointer-events: none;
 }
 
 .sidebar.collapsed .nav-link:hover .nav-label {
-  display: inline;
+  opacity: 1;
+  transform: translateX(0);
   position: absolute;
   left: 100%;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(-50%) translateX(0);
   margin-left: 0.5rem;
   padding: 0.25rem 0.5rem;
   background: var(--surface);
@@ -144,6 +159,24 @@ body {
 
 .sidebar.collapsed .nav-link {
   justify-content: center;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.sidebar.collapsed .nav-link i:first-child {
+  margin-right: 0;
+}
+
+.sidebar .nav-link i:first-child {
+  transition: margin-right 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar .player-btn i {
+  transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.sidebar.collapsed .player-btn i {
+  transform: rotate(180deg);
 }
 
 /* Home Page Responsive Text */

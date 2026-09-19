@@ -29,24 +29,29 @@ export default function Settings() {
       <h1 className="text-xl font-medium text-fg mb-5">Settings</h1>
 
       <section className="bg-surface rounded-2xl p-5 mb-4">
-        <h2 className="text-sm font-medium text-fg mb-3">Appearance</h2>
-        <div className="flex gap-2">
-          {[
-            { value: 'light', label: 'Light' },
-            { value: 'dark', label: 'Dark' },
-          ].map((opt) => (
-            <button
-              key={opt.value}
-              onClick={() => setTheme(opt.value)}
-              className={`px-4 py-2 text-sm rounded-xl border transition-all duration-150 ${
-                theme === opt.value
-                  ? 'border-accent bg-accent-soft text-accent-text font-medium'
-                  : 'border-border text-fg-muted hover:border-fg-faint hover:text-fg'
-              }`}
-            >
-              {opt.label}
-            </button>
-          ))}
+        <h2 className="text-sm font-medium text-fg mb-3">General</h2>
+        <div className="space-y-4">
+          <div>
+            <h3 className="text-sm font-medium text-fg mb-2">Appearance</h3>
+            <div className="flex gap-2">
+              {[
+                { value: 'light', label: 'Light' },
+                { value: 'dark', label: 'Dark' },
+              ].map((opt) => (
+                <button
+                  key={opt.value}
+                  onClick={() => setTheme(opt.value)}
+                  className={`px-4 py-2 text-sm rounded-xl border transition-all duration-150 ${
+                    theme === opt.value
+                      ? 'border-accent bg-accent-soft text-accent-text font-medium'
+                      : 'border-border text-fg-muted hover:border-fg-faint hover:text-fg'
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
