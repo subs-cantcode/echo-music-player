@@ -1,6 +1,7 @@
-import MarqueeText from './MarqueeText.jsx';
+import { useTextOverflow } from '../hooks/useTextOverflow.js';
 
 export const PlaylistCard = ({ playlist, tracks, onOpen, onPlay, onShuffle }) => {
+  const { elementRef: nameRef, isOverflowing: nameOverflows } = useTextOverflow(playlist.name);
   const trackIds = playlist.trackIds || []
   const count = trackIds.length
 
@@ -35,7 +36,12 @@ export const PlaylistCard = ({ playlist, tracks, onOpen, onPlay, onShuffle }) =>
 
       <div className="playlist-card-info">
         <h3 className="playlist-card-name" title={playlist.name}>
-          <MarqueeText>{playlist.name}</MarqueeText>
+          <div ref={nameRef} className={`marquee-container ${nameOverflows ? 'marquee-running' : ''}`}>
+            <div className={`marquee-text ${nameOverflows ? 'marquee-active' : ''}`}>
+              <span>{playlist.name}</span>
+              {nameOverflows && <span aria-hidden="true">{playlist.name}</span>}
+            </div>
+          </div>
         </h3>
         <p className="playlist-card-meta">
           {count} song{count !== 1 ? 's' : ''}

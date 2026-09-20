@@ -1,24 +1,37 @@
-import MarqueeText from './MarqueeText.jsx';
+import { useTextOverflow } from '../hooks/useTextOverflow.js';
 import { formatTime } from './NowPlaying.jsx';
 
 export default function TrackRow({
   track, isActive, onPlay, onDelete, onToggleFavourite,
   deleteIcon = 'bi-trash3', deleteLabel = 'Delete track',
 }) {
+  const { elementRef: titleRef, isOverflowing: titleOverflows } = useTextOverflow(track.title);
+  const { elementRef: artistRef, isOverflowing: artistOverflows } = useTextOverflow(track.artist);
+
+  const artistLine = track.artist
+    ? `${track.artist}${track.duration ? ' \u00b7 ' + formatTime(track.duration) : ''}`
+    : track.duration
+      ? formatTime(track.duration)
+      : ''
+
   return (
     <div
       className={`track-row ${isActive ? 'active' : ''}`}
       onClick={() => onPlay(track)}
     >
       <div className="min-w-0 flex-1">
-        <MarqueeText className="text-sm font-medium">{track.title}</MarqueeText>
-        <MarqueeText className="text-fg-muted text-xs">
-          {track.artist
-            ? `${track.artist}${track.duration ? ' \u00b7 ' + formatTime(track.duration) : ''}`
-            : track.duration
-              ? formatTime(track.duration)
-              : ''}
-        </MarqueeText>
+        <div ref={titleRef} className={`marquee-container ${titleOverflows ? 'marquee-running' : ''}`}>
+          <div className={`text-sm font-medium marquee-text ${titleOverflows ? 'marquee-active' : ''}`}>
+            <span>{track.title}</span>
+            {titleOverflows && <span aria-hidden="true">{track.title}</span>}
+          </div>
+        </div>
+        <div ref={artistRef} className={`marquee-container ${artistOverflows ? 'marquee-running' : ''}`}>
+          <div className={`text-fg-muted text-xs marquee-text ${artistOverflows ? 'marquee-active' : ''}`}>
+            <span>{artistLine}</span>
+            {artistOverflows && <span aria-hidden="true">{artistLine}</span>}
+          </div>
+        </div>
       </div>
 
       <button

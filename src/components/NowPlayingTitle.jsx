@@ -5,7 +5,7 @@ import { useTextOverflow } from '../hooks/useTextOverflow'
 // it only re-renders when the actual title changes. The duplicate copy is what
 // makes the -50% marquee keyframes loop seamlessly.
 const NowPlayingTitle = React.memo(({ title }) => {
-  const { elementRef, isOverflowing } = useTextOverflow()
+  const { elementRef, isOverflowing } = useTextOverflow(title)
 
   return (
     <p
