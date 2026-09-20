@@ -56,9 +56,9 @@ export default function NowPlayingBar({
         <AudioWaves />
 
         <div className="relative z-10 flex items-center gap-2 flex-wrap">
-          {/* Track info. flex-1 mirrors the volume column so the centre
-              controls land on the bar's true horizontal centre. */}
-          <div className="flex items-center gap-2 min-w-0 flex-1 min-w-0 mr-6">
+          {/* Track info. flex-1 mirrors the lyrics/volume column so the
+              centred controls land on the bar's true horizontal centre. */}
+          <div className="flex items-center gap-2 min-w-0 flex-1">
             <div className="w-7 h-7 rounded-lg bg-border flex items-center justify-center flex-shrink-0 overflow-hidden">
               {track?.artwork ? (
                 <img src={track.artwork} alt="" className="w-full h-full object-cover" />
@@ -123,9 +123,28 @@ export default function NowPlayingBar({
             >
               <i className={`bi ${repeatIcon} text-sm`} />
             </button>
+
+            <button
+              onClick={onOpenMetadata}
+              className="player-btn w-10 h-10"
+              title="Edit metadata"
+              aria-label="Edit metadata"
+            >
+              <i className="bi bi-tag text-sm" />
+            </button>
+
+            <button
+              onClick={onOpenLastFm}
+              className="player-btn w-10 h-10"
+              title="Last.fm"
+              aria-label="Last.fm settings"
+            >
+              <i className="bi bi-lastfm text-sm" />
+            </button>
           </div>
 
-          {/* Volume + Feature buttons */}
+          {/* Lyrics + volume, right-aligned; lyrics sits just left of the
+              volume icon. */}
           <div className="flex items-center gap-1.5 flex-1 justify-end min-w-0">
             <button
               onClick={onOpenLyrics}
@@ -134,22 +153,6 @@ export default function NowPlayingBar({
               aria-label="Lyrics"
             >
               <i className="bi bi-file-text text-sm" />
-            </button>
-            <button
-              onClick={onOpenMetadata}
-              className="player-btn w-9 h-9"
-              title="Edit metadata"
-              aria-label="Edit metadata"
-            >
-              <i className="bi bi-tag text-sm" />
-            </button>
-            <button
-              onClick={onOpenLastFm}
-              className="player-btn w-9 h-9"
-              title="Last.fm"
-              aria-label="Last.fm settings"
-            >
-              <i className="bi bi-lastfm text-sm" />
             </button>
             <button onClick={onToggleMute} className="player-btn w-9 h-9" aria-label={isMuted ? 'Unmute' : 'Mute'}>
               <i className={`bi ${volIcon} text-sm`} />
