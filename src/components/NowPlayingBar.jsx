@@ -57,8 +57,10 @@ export default function NowPlayingBar({
 
         <div className="relative z-10 flex items-center gap-2 flex-wrap">
           {/* Track info. flex-1 mirrors the lyrics/volume column so the
-              centred controls land on the bar's true horizontal centre. */}
-          <div className="flex items-center gap-2 min-w-0 flex-1">
+              centred controls land on the bar's true horizontal centre. The
+              min width stops a narrow bar from crushing the text to a sliver
+              (which made even short titles scroll); the row wraps instead. */}
+          <div className="flex items-center gap-2 flex-1 min-w-[11rem]">
             <div className="w-10 h-10 rounded-xl bg-border flex items-center justify-center flex-shrink-0 overflow-hidden">
               {track?.artwork ? (
                 <img src={track.artwork} alt="" className="w-full h-full object-cover" />
@@ -66,7 +68,7 @@ export default function NowPlayingBar({
                 <i className="bi bi-music-note-beamed text-fg-faint text-sm" />
               )}
             </div>
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               {track ? (
                 <>
                   <MarqueeText className="text-base font-medium text-fg">{track.title}</MarqueeText>
