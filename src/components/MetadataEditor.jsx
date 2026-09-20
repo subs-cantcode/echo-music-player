@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import { updateTrack } from '../lib/localLibrary.js'
 
-export default function MetadataEditor({ track, onClose, onSaved }) {
+export default function MetadataEditor({ track, onClose, onSaved, isOpen }) {
+  if (!isOpen) return null
   const [formData, setFormData] = useState({
     title: '',
     artist: '',

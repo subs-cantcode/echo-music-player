@@ -344,6 +344,7 @@ function AppLayout() {
 
         <MetadataEditor
           track={currentTrack}
+          isOpen={metadataEditorOpen}
           onClose={() => setMetadataEditorOpen(false)}
           onSaved={(updated) => setCurrentTrack(updated)}
         />
