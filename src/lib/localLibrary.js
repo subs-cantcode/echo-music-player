@@ -4,6 +4,10 @@ const HISTORY_KEY = 'echoHistory'
 const DEMO_SEEDED_KEY = 'echo-demo-seeded'
 const MAX_HISTORY_ENTRIES = 1000
 
+// "Instant Replay" is a shortlist, not another library: keeping the pin count
+// bounded is what makes the section scannable at a glance.
+export const MAX_PINNED_TRACKS = 9
+
 // Object URLs are session-scoped: they cannot be persisted, so we keep one
 // cached blob URL per track id and regenerate it from the stored File on load.
 const objectUrls = new Map()
@@ -157,6 +161,8 @@ export async function addTrack(file, metadata = {}) {
     genre: metadata.genre || 'Uncategorized',
     year: metadata.year || new Date().getFullYear(),
     isFavourite: false,
+    isPinned: false,
+    pinnedAt: null,
     dateAdded: new Date().toISOString(),
     lastPlayed: null,
     playCount: 0,
@@ -188,6 +194,27 @@ export async function toggleFavourite(trackId) {
   if (!track) return null
 
   const updated = { ...track, isFavourite: !track.isFavourite }
+  await storeOperation('tracks', 'readwrite', (store) => store.put(updated))
+  return withObjectUrl(updated)
+}
+
+// Pins are stored on the track record itself, so they persist in IndexedDB
+// alongside the audio and survive a reload or a return visit to the URL.
+// Un-pinning is always allowed; the cap only blocks taking on one more.
+export async function togglePin(trackId) {
+  const track = await storeOperation('tracks', 'readonly', (store) => store.get(trackId))
+  if (!track) return null
+
+  if (!track.isPinned) {
+    const all = await storeOperation('tracks', 'readonly', (store) => store.getAll())
+    if (all.filter((t) => t.isPinned).length >= MAX_PINNED_TRACKS) return null
+  }
+
+  const updated = {
+    ...track,
+    isPinned: !track.isPinned,
+    pinnedAt: track.isPinned ? null : new Date().toISOString(),
+  }
   await storeOperation('tracks', 'readwrite', (store) => store.put(updated))
   return withObjectUrl(updated)
 }

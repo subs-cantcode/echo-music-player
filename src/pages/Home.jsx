@@ -10,7 +10,22 @@ function getGreeting() {
   return 'Good evening'
 }
 
-export default function Home({ tracks, currentTrack, onPlay, onDelete, onToggleFavourite, recentlyPlayed, onShuffleAll }) {
+export default function Home({ tracks, currentTrack, onPlay, onDelete, onToggleFavourite, onTogglePin, pinLimit = 9, recentlyPlayed, onShuffleAll }) {
+  // Pinned tracks, newest pin first, capped so legacy data that slipped past
+  // the limit can't widen the shelf.
+  const pinned = useMemo(() => {
+    return tracks
+      .filter((t) => t.isPinned)
+      .sort((a, b) => {
+        const aPinned = a.pinnedAt ? Date.parse(a.pinnedAt) : 0
+        const bPinned = b.pinnedAt ? Date.parse(b.pinnedAt) : 0
+        return bPinned - aPinned
+      })
+      .slice(0, pinLimit)
+  }, [tracks, pinLimit])
+
+  const pinLimitReached = pinned.length >= pinLimit
+
   const forgotten = useMemo(() => {
     if (tracks.length <= 5) return []
     return [...tracks]
@@ -61,6 +76,64 @@ export default function Home({ tracks, currentTrack, onPlay, onDelete, onToggleF
             </div>
           </section>
         )}
+
+        {/* Instant Replay: the shortlist of pinned tracks, kept above
+            Forgotten Echoes because it is the one the listener chose. */}
+        <section className="mb-6">
+          <div className="flex justify-between items-baseline gap-3 mb-3">
+            <div>
+              <h2 className="text-sm font-medium text-fg">Instant Replay</h2>
+              <p className="text-fg-faint text-xs mt-0.5">
+                {pinned.length === 0
+                  ? `Pin up to ${pinLimit} tracks and they'll be waiting here next visit.`
+                  : 'Your pinned tracks, newest first.'}
+              </p>
+            </div>
+            <span className="flex-shrink-0 text-fg-faint text-xs tabular-nums">
+              {pinned.length}/{pinLimit} pinned
+            </span>
+          </div>
+
+          {pinned.length === 0 ? (
+            <div className="bg-surface border border-border-subtle rounded-xl px-4 py-6 text-center">
+              <i className="bi bi-pin-angle text-fg-faint text-xl block mb-2" />
+              <p className="text-xs text-fg-muted">
+                Nothing pinned yet — use the pin on any track in Your Library.
+              </p>
+            </div>
+          ) : (
+            <div className="flex gap-2.5 overflow-x-auto pt-2 pb-2 -mx-1 px-1">
+              {pinned.map((track) => (
+                <div key={track.id} className="relative flex-shrink-0 w-[130px]">
+                  <button
+                    onClick={() => onPlay(track)}
+                    className={`w-full bg-surface border border-border-subtle p-3 rounded-xl text-left transition-all duration-200 hover:bg-surface-hover hover:scale-[1.02] active:scale-[0.98] ${
+                      currentTrack?.id === track.id ? 'ring-1 ring-accent' : ''
+                    }`}
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-border flex items-center justify-center mb-2 overflow-hidden">
+                      {track.artwork ? (
+                        <img src={track.artwork} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <i className="bi bi-pin-angle text-fg-faint text-sm" />
+                      )}
+                    </div>
+                    <MarqueeText className="text-sm font-medium text-fg">{track.title}</MarqueeText>
+                    <MarqueeText className="text-fg-faint text-[10px]">{track.artist || 'Unknown'}</MarqueeText>
+                  </button>
+                  <button
+                    onClick={() => onTogglePin?.(track.id)}
+                    className="absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center bg-surface-hover text-accent-text text-[10px] hover:bg-border transition-colors"
+                    title="Unpin from Instant Replay"
+                    aria-label={`Unpin ${track.title} from Instant Replay`}
+                  >
+                    <i className="bi bi-pin-angle-fill" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
 
 {forgotten.length > 0 && (
             <section className="mb-6">
@@ -124,6 +197,8 @@ export default function Home({ tracks, currentTrack, onPlay, onDelete, onToggleF
                   onPlay={onPlay}
                   onDelete={onDelete}
                   onToggleFavourite={onToggleFavourite}
+                  onTogglePin={onTogglePin}
+                  pinDisabled={pinLimitReached}
                 />
               ))}
             </div>

@@ -35,7 +35,7 @@ function buildShuffleOrder(tracks, firstId) {
 }
 
 function AppLayout() {
-  const { tracks, deleteTrack, toggleFavourite, logPlay, updateTrack } = useLibrary()
+  const { tracks, deleteTrack, toggleFavourite, togglePin, maxPinnedTracks, logPlay, updateTrack } = useLibrary()
   const [currentTrackId, setCurrentTrackId] = useState(null)
   // Derived from the shared tracks array so metadata edits anywhere are picked
   // up everywhere: there is no cached copy to go stale.
@@ -282,6 +282,7 @@ function AppLayout() {
             <Route path="/" element={
               <Home tracks={tracks} currentTrack={currentTrack} onPlay={handlePlayTrack}
                 onDelete={deleteTrack} onToggleFavourite={toggleFavourite} recentlyPlayed={recentlyPlayed}
+                onTogglePin={togglePin} pinLimit={maxPinnedTracks}
                 onShuffleAll={handleShuffleAll} />
             } />
             <Route path="/search" element={

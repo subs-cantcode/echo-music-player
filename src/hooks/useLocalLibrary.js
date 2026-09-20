@@ -50,6 +50,13 @@ export const useLocalLibrary = () => {
     return updated
   }, [])
 
+  const togglePin = useCallback(async (trackId) => {
+    const updated = await localLib.togglePin(trackId)
+    if (!updated) return null
+    setTracks((prev) => prev.map((t) => (t.id === trackId ? { ...t, ...updated } : t)))
+    return updated
+  }, [])
+
   const createPlaylist = useCallback(async (name, description = '') => {
     const newPlaylist = await localLib.createPlaylist(name, description)
     setPlaylists((prev) => [...prev, newPlaylist])
@@ -113,6 +120,8 @@ export const useLocalLibrary = () => {
     addTrack,
     deleteTrack,
     toggleFavourite,
+    togglePin,
+    maxPinnedTracks: localLib.MAX_PINNED_TRACKS,
     createPlaylist,
     deletePlaylist,
     addTrackToPlaylist,

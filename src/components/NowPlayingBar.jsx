@@ -76,7 +76,7 @@ export default function NowPlayingBar({
                   <MarqueeText className="text-fg-faint text-xs">{track.artist || ''}</MarqueeText>
                 </>
               ) : (
-                <div className="text-fg-faint text-base">No track</div>
+                <div className="text-fg-faint text-base">No song is being played</div>
               )}
             </div>
           </div>
