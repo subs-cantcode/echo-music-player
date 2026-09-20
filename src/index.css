@@ -128,17 +128,19 @@ body {
   justify-content: center;
   gap: 0;
   padding: 0;
-  /* Vertical rhythm only: the 80px rail plus the nav's 8px side padding is
-     sized to centre a 64px square exactly, so any side margin shifts the
-     container off-centre. */
   margin: 0.375rem 0;
-  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   text-decoration: none;
   color: var(--fg);
   border: 2px solid transparent;
   border-radius: 8px;
   background-color: var(--surface-hover);
+  transition: background-color 100ms ease-out, border-color 100ms ease-out;
+  will-change: background-color, border-color;
+}
+
+.nav-item:active {
+  transform: scale(0.98);
 }
 
 /* Collapsed state - 64px square */
