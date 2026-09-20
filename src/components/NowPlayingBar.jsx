@@ -7,6 +7,7 @@ export default function NowPlayingBar({
   track, isPlaying, currentTime, duration, progress, volume, isMuted,
   loopMode, shuffleOn, onPlayPause, onSkipBack, onSkipForward, onSeek,
   onSetVolume, onToggleMute, onToggleFavourite, onToggleLoop, onToggleShuffle,
+  onOpenLyrics, onOpenMetadata, onOpenLastFm,
 }) {
   const [volDrag, setVolDrag] = useState(false)
   const [heartKey, setHeartKey] = useState(0)
@@ -117,6 +118,33 @@ export default function NowPlayingBar({
               aria-pressed={loopMode !== 'off'}
             >
               <i className={`bi ${repeatIcon} text-base`} />
+            </button>
+
+            <button
+              onClick={onOpenLyrics}
+              className="player-btn w-11 h-11"
+              title="Lyrics"
+              aria-label="Lyrics"
+            >
+              <i className="bi bi-file-text text-base" />
+            </button>
+
+            <button
+              onClick={onOpenMetadata}
+              className="player-btn w-11 h-11"
+              title="Edit metadata"
+              aria-label="Edit metadata"
+            >
+              <i className="bi bi-tag text-base" />
+            </button>
+
+            <button
+              onClick={onOpenLastFm}
+              className="player-btn w-11 h-11"
+              title="Last.fm"
+              aria-label="Last.fm settings"
+            >
+              <i className="bi bi-lastfm text-base" />
             </button>
           </div>
 

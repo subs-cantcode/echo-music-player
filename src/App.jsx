@@ -3,8 +3,13 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { Sidebar } from './components/Sidebar.jsx'
 import NowPlayingBar from './components/NowPlayingBar.jsx'
 import UserMenu from './components/UserMenu.jsx'
+import LyricsPanel from './components/LyricsPanel.jsx'
+import MetadataEditor from './components/MetadataEditor.jsx'
+import LastFmSettings, { useLastFm } from './components/LastFmSettings.jsx'
+import LastFmCallback from './pages/LastFmCallback.jsx'
 import { useAudioPlayer } from './hooks/useAudioPlayer.js'
 import { LibraryProvider, useLibrary } from './lib/LibraryContext.jsx'
+import { scrobbleTrack, updateNowPlaying } from './lib/lastfm.js'
 
 const PLAYBACK_STATE_KEY = 'echo-playback-state'
 
@@ -30,13 +35,19 @@ function buildShuffleOrder(tracks, firstId) {
 }
 
 function AppLayout() {
-  const { tracks, deleteTrack, toggleFavourite, logPlay } = useLibrary()
+  const { tracks, deleteTrack, toggleFavourite, logPlay, updateTrack } = useLibrary()
   const [currentTrack, setCurrentTrack] = useState(null)
   const currentTrackRef = useRef(null)
   const [shuffleOn, setShuffleOn] = useState(false)
   // Track ids for the current shuffled pass; empty when shuffle is off.
   const playOrderRef = useRef([])
   const restoredRef = useRef(false)
+
+  // New feature states
+  const [lyricsOpen, setLyricsOpen] = useState(false)
+  const [metadataEditorOpen, setMetadataEditorOpen] = useState(false)
+  const [lastFmSettingsOpen, setLastFmSettingsOpen] = useState(false)
+  const { connected: lastFmConnected } = useLastFm()
 
   useEffect(() => {
     currentTrackRef.current = currentTrack
@@ -130,6 +141,10 @@ function AppLayout() {
       return [track, ...filtered].slice(0, 10)
     })
     await playTrack(track.objectUrl)
+    // Last.fm now playing
+    if (lastFmConnected) {
+      updateNowPlaying({ artist: track.artist, title: track.title, album: track.album, duration: track.duration })
+    }
     // Restore position if this is the track we saved
     try {
       const saved = localStorage.getItem(PLAYBACK_STATE_KEY)
@@ -142,7 +157,7 @@ function AppLayout() {
     } catch (e) {
       console.warn('Failed to restore seek position:', e)
     }
-  }, [playTrack, shuffleOn, tracks, seek])
+  }, [playTrack, shuffleOn, tracks, seek, lastFmConnected])
 
   // Keep ref updated for restore effect
   useEffect(() => {
@@ -169,6 +184,14 @@ function AppLayout() {
     (timeListened, mode) => {
       const track = currentTrackRef.current
       if (track) logPlay(track.id, timeListened)
+
+      // Last.fm scrobble (50% or 4 min rule)
+      if (lastFmConnected && track && timeListened > 0) {
+        const shouldScrobble = timeListened >= Math.min(track.duration * 0.5, 240)
+        if (shouldScrobble) {
+          scrobbleTrack({ artist: track.artist, title: track.title, album: track.album, duration: track.duration })
+        }
+      }
 
       // Single-track repeats are handled by the audio element's own loop flag.
       if (!track || mode === 'track') return
@@ -199,7 +222,7 @@ function AppLayout() {
 
       if (next) handlePlayTrack(next)
     },
-    [logPlay, tracks, handlePlayTrack, shuffleOn]
+    [logPlay, tracks, handlePlayTrack, shuffleOn, lastFmConnected]
   )
 
   // Player bar skip buttons move whole tracks. Shuffle follows the current
@@ -273,6 +296,7 @@ function AppLayout() {
               <Upload onUploaded={showToast} />
             } />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/lastfm-callback" element={<LastFmCallback onSuccess={() => setLastFmSettingsOpen(false)} />} />
           </Routes>
 
           {uploadToast && (
@@ -306,6 +330,27 @@ function AppLayout() {
             const updated = await toggleFavourite(currentTrack.id)
             if (updated) setCurrentTrack((prev) => prev ? { ...prev, isFavourite: updated.isFavourite } : prev)
           }}
+          onOpenLyrics={() => setLyricsOpen(true)}
+          onOpenMetadata={() => setMetadataEditorOpen(true)}
+          onOpenLastFm={() => setLastFmSettingsOpen(true)}
+        />
+
+        <LyricsPanel
+          track={currentTrack}
+          currentTime={currentTime}
+          isOpen={lyricsOpen}
+          onClose={() => setLyricsOpen(false)}
+        />
+
+        <MetadataEditor
+          track={currentTrack}
+          onClose={() => setMetadataEditorOpen(false)}
+          onSaved={(updated) => setCurrentTrack(updated)}
+        />
+
+        <LastFmSettings
+          isOpen={lastFmSettingsOpen}
+          onClose={() => setLastFmSettingsOpen(false)}
         />
       </main>
     </div>

@@ -141,6 +141,8 @@ export async function addTrack(file, metadata = {}) {
     dateAdded: new Date().toISOString(),
     lastPlayed: null,
     playCount: 0,
+    lyrics: metadata.lyrics || null,
+    artwork: metadata.artwork || null,
   }
 
   await storeOperation('tracks', 'readwrite', (store) => store.add(track))
@@ -167,6 +169,23 @@ export async function toggleFavourite(trackId) {
   if (!track) return null
 
   const updated = { ...track, isFavourite: !track.isFavourite }
+  await storeOperation('tracks', 'readwrite', (store) => store.put(updated))
+  return withObjectUrl(updated)
+}
+
+export async function updateTrack(trackId, updates) {
+  const track = await storeOperation('tracks', 'readonly', (store) => store.get(trackId))
+  if (!track) return null
+
+  const allowedFields = ['title', 'artist', 'album', 'genre', 'year', 'lyrics', 'artwork']
+  const filteredUpdates = {}
+  for (const key of allowedFields) {
+    if (updates[key] !== undefined) {
+      filteredUpdates[key] = updates[key]
+    }
+  }
+
+  const updated = { ...track, ...filteredUpdates }
   await storeOperation('tracks', 'readwrite', (store) => store.put(updated))
   return withObjectUrl(updated)
 }

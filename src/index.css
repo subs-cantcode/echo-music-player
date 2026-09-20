@@ -421,7 +421,35 @@ body {
   transform: scale(1.2);
 }
 
-/* Heart animation */
+/* Lyrics panel */
+.lyrics-content {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.lyric-line {
+  transition: color 300ms ease, transform 300ms ease;
+}
+
+.lyric-line.active {
+  color: var(--accent) !important;
+  font-weight: 600;
+  transform: scale(1.05);
+}
+
+/* Metadata editor */
+.metadata-editor-input {
+  @apply w-full px-4 py-2.5 bg-bg border border-border rounded-xl text-fg focus:outline-none focus:border-accent transition-colors;
+}
+
+/* Last.fm */
+.lastfm-connected {
+  @apply bg-accent-soft text-accent;
+}
+
+.lastfm-disconnected {
+  @apply bg-border text-fg-muted;
+}
 .heart-pop {
   animation: heartBounce 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }

@@ -99,6 +99,10 @@ export const useLocalLibrary = () => {
 
   const getListeningHistory = useCallback(() => localLib.getListeningHistory(), [])
 
+  const updateTrack = useCallback(async (trackId, updates) => {
+    return localLib.updateTrack(trackId, updates)
+  }, [])
+
   return {
     tracks,
     playlists,
@@ -113,5 +117,6 @@ export const useLocalLibrary = () => {
     clearAllData,
     logPlay,
     getListeningHistory,
+    updateTrack,
   }
 }
