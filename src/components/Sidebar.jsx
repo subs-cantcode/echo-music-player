@@ -59,7 +59,7 @@ export const Sidebar = () => {
 
   return (
       <aside
-        className={`sidebar transition-all duration-280 overflow-y-auto flex flex-col h-screen bg-surface border-r border-border ${
+        className={`sidebar transition-all duration-280 overflow-hidden flex flex-col h-screen bg-surface border-r border-border ${
           isExpanded ? 'w-64' : 'w-20'
         }`}
       >
@@ -80,8 +80,10 @@ export const Sidebar = () => {
         </div>
       )}
 
-      {/* Scrollable Nav Content */}
-      <nav className="flex-1 flex flex-col gap-1 px-2 py-4">
+      {/* Scrollable Nav Content. Only this list scrolls (its scrollbar is
+          hidden), so the sidebar itself never shows one and the settings
+          section below stays pinned to the bottom. */}
+      <nav className="flex-1 min-h-0 no-scrollbar overflow-y-auto flex flex-col gap-1 px-2 py-4">
         {libraryItems.map(item => (
           <NavItem key={item.path} item={item} />
         ))}
