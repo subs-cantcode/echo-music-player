@@ -90,6 +90,37 @@ describe('TrackRow actions menu', () => {
     expect(screen.getByRole('menuitem', { name: 'Unpin' })).toBeInTheDocument()
   })
 
+  it('keeps the lit icons in the kebab cluster and clears them in one click', () => {
+    const props = handlers()
+    render(<TrackRow track={{ ...shortTrack, isFavourite: true, isPinned: true }} {...props} />)
+
+    const kebab = screen.getByLabelText('Actions for Song')
+    const heart = screen.getByLabelText('Unfavourite')
+    const pin = screen.getByLabelText('Unpin')
+
+    // Same cluster as the kebab: they are the row's state readout, not a
+    // separate control strip.
+    expect(heart.parentElement).toBe(kebab.parentElement)
+    expect(pin.parentElement).toBe(kebab.parentElement)
+
+    fireEvent.click(heart)
+    expect(props.onToggleFavourite).toHaveBeenCalledWith('t1')
+
+    fireEvent.click(pin)
+    expect(props.onTogglePin).toHaveBeenCalledWith('t1')
+
+    // Neither click should start playback.
+    expect(props.onPlay).not.toHaveBeenCalled()
+  })
+
+  it('shows no lit icons for a track that is neither favourite nor pinned', () => {
+    render(<TrackRow track={shortTrack} {...handlers()} />)
+
+    expect(screen.queryByLabelText('Unfavourite')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText('Unpin')).not.toBeInTheDocument()
+    expect(screen.getByLabelText('Actions for Song')).toBeInTheDocument()
+  })
+
   it('greys out pinning once the Instant Replay shelf is full', () => {
     render(
       <TrackRow

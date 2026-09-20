@@ -117,16 +117,46 @@ export default function TrackActionsMenu({
 
   if (!hasActions) return null;
 
-  // Tinting the kebab is what still shows, at a glance, that a row is a
-  // favourite or pinned now that those buttons live inside the menu.
-  const triggerTone = open
-    ? 'bg-border text-fg'
-    : isFavourite || isPinned
-      ? 'text-accent-text hover:bg-border/50'
-      : 'text-fg-faint hover:text-fg hover:bg-border/50';
+  const triggerTone = open ? 'bg-border text-fg' : 'text-fg-faint hover:text-fg hover:bg-border/50';
+
+  // The lit state of a track is its own icon beside the kebab, so clearing it
+  // is one click instead of a trip through the menu. Both keep the shared
+  // icon-button sizing so the cluster stays even.
+  const badges = [
+    isFavourite && onToggleFavourite && {
+      key: 'favourite',
+      icon: 'bi-heart-fill',
+      label: 'Unfavourite',
+      run: onToggleFavourite,
+    },
+    isPinned && onTogglePin && {
+      key: 'pinned',
+      icon: 'bi-pin-angle-fill',
+      label: 'Unpin',
+      title: 'Unpin from Instant Replay',
+      run: onTogglePin,
+    },
+  ].filter(Boolean);
 
   return (
-    <div ref={anchorRef} className="relative flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+    <div
+      ref={anchorRef}
+      className="relative flex items-center gap-0.5 flex-shrink-0"
+      onClick={(e) => e.stopPropagation()}
+    >
+      {badges.map((badge) => (
+        <button
+          key={badge.key}
+          type="button"
+          onClick={() => { close(); badge.run(); }}
+          className="w-6 h-6 rounded-full flex items-center justify-center text-accent-text hover:bg-border/60 transition-colors duration-200"
+          title={badge.title || badge.label}
+          aria-label={badge.label}
+        >
+          <i className={`bi ${badge.icon} text-xs`} />
+        </button>
+      ))}
+
       <button
         type="button"
         onClick={toggle}
