@@ -59,8 +59,12 @@ export default function NowPlayingBar({
           {/* Track info. flex-1 mirrors the volume column so the centre
               controls land on the bar's true horizontal centre. */}
           <div className="flex items-center gap-2.5 min-w-0 flex-1">
-            <div className="w-8 h-8 rounded-lg bg-border flex items-center justify-center flex-shrink-0">
-              <i className="bi bi-music-note-beamed text-fg-faint text-xs" />
+            <div className="w-8 h-8 rounded-lg bg-border flex items-center justify-center flex-shrink-0 overflow-hidden">
+              {track?.artwork ? (
+                <img src={track.artwork} alt="" className="w-full h-full object-cover" />
+              ) : (
+                <i className="bi bi-music-note-beamed text-fg-faint text-xs" />
+              )}
             </div>
             <div className="min-w-0">
               {track ? (

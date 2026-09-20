@@ -6,7 +6,7 @@ export const PlaylistCard = ({ playlist, tracks, onOpen, onPlay, onShuffle }) =>
 
   const coverImages = trackIds
     .slice(0, 4)
-    .map((trackId) => tracks.find((t) => t.id === trackId)?.coverImage)
+    .map((trackId) => tracks.find((t) => t.id === trackId)?.artwork)
     .filter(Boolean)
 
   const open = () => onOpen?.(playlist.id)

@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback } from 'react'
 import { useLibrary } from '../lib/LibraryContext.jsx'
+import { extractMetadata } from '../lib/extractMetadata'
 
 function bytesToLabel(bytes) {
   if (!bytes && bytes !== 0) return ''
@@ -50,11 +51,19 @@ export default function UploadZone({ onUpload }) {
       setUploadingFiles((prev) => prev.map((f, idx) => idx === i ? { ...f, status: 'uploading', progress: 50 } : f))
       try {
         const file = files[i].file
-        await addTrack(file, {
-          title: file.name.replace(/\.[^/.]+$/, ''),
-          artist: 'Unknown Artist',
-          album: 'Unknown Album',
-        })
+        const extracted = await extractMetadata(file)
+
+        const metadata = {
+          title: extracted.title || file.name.replace(/\.[^/.]+$/, ''),
+          artist: extracted.artist || 'Unknown Artist',
+          album: extracted.album || 'Unknown Album',
+          genre: extracted.genre || 'Uncategorized',
+          year: extracted.year || new Date().getFullYear(),
+          duration: extracted.duration || 0,
+          artwork: extracted.artworkDataUrl || null,
+        }
+
+        await addTrack(file, metadata)
         setUploadingFiles((prev) => prev.map((f, idx) => idx === i ? { ...f, status: 'done', progress: 100 } : f))
       } catch (err) {
         setUploadingFiles((prev) => prev.map((f, idx) => idx === i ? { ...f, status: 'error', error: err.message || 'Failed' } : f))

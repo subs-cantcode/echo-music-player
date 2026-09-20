@@ -1,7 +1,7 @@
 export const PlaylistRow = ({ playlist, tracks, onOpen, onPlay, onDelete }) => {
   const trackIds = playlist.trackIds || []
   const firstTrack = tracks.find((t) => t.id === trackIds[0])
-  const coverUrl = firstTrack?.coverImage
+  const coverUrl = firstTrack?.artwork
   const count = trackIds.length
 
   const open = () => onOpen?.(playlist.id)

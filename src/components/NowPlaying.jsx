@@ -11,7 +11,11 @@ export default function NowPlaying({ track, progress, currentTime, totalTime, on
       <h2 className="text-lg font-medium text-fg mb-4">Now Playing</h2>
       <div className="flex items-center gap-5">
         <div className="w-16 h-16 rounded-xl bg-border flex items-center justify-center flex-shrink-0 overflow-hidden">
-          <i className="bi bi-music-note-beamed text-fg-muted text-xl" />
+          {track?.artwork ? (
+            <img src={track.artwork} alt="" className="w-full h-full object-cover" />
+          ) : (
+            <i className="bi bi-music-note-beamed text-fg-muted text-xl" />
+          )}
         </div>
         <div className="flex-1 min-w-0">
           <div className="font-medium text-fg truncate">{track?.title || 'No track'}</div>
