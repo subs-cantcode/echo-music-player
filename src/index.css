@@ -292,6 +292,15 @@ body {
   gap: 0;
 }
 
+/* Main scroll container. The fixed player bar floats ~96px off the viewport
+   floor (bar height incl. its bottom-3 offset), so content needs bottom
+   padding to scroll fully clear of it — otherwise the last tracks hide
+   underneath the bar. */
+.main-content {
+  overflow-y: auto;
+  padding-bottom: 128px;
+}
+
 
 /* Player button.
    The colour rules live in :where() so their specificity is 0: plain classes
