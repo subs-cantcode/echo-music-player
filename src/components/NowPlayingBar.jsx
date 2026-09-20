@@ -59,21 +59,21 @@ export default function NowPlayingBar({
           {/* Track info. flex-1 mirrors the lyrics/volume column so the
               centred controls land on the bar's true horizontal centre. */}
           <div className="flex items-center gap-2 min-w-0 flex-1">
-            <div className="w-7 h-7 rounded-lg bg-border flex items-center justify-center flex-shrink-0 overflow-hidden">
+            <div className="w-10 h-10 rounded-xl bg-border flex items-center justify-center flex-shrink-0 overflow-hidden">
               {track?.artwork ? (
                 <img src={track.artwork} alt="" className="w-full h-full object-cover" />
               ) : (
-                <i className="bi bi-music-note-beamed text-fg-faint text-xs" />
+                <i className="bi bi-music-note-beamed text-fg-faint text-sm" />
               )}
             </div>
             <div className="min-w-0">
               {track ? (
                 <>
-                  <MarqueeText className="text-sm font-medium text-fg">{track.title}</MarqueeText>
-                  <MarqueeText className="text-fg-faint text-[10px]">{track.artist || ''}</MarqueeText>
+                  <MarqueeText className="text-base font-medium text-fg">{track.title}</MarqueeText>
+                  <MarqueeText className="text-fg-faint text-xs">{track.artist || ''}</MarqueeText>
                 </>
               ) : (
-                <div className="text-fg-faint text-sm">No track</div>
+                <div className="text-fg-faint text-base">No track</div>
               )}
             </div>
           </div>
@@ -174,7 +174,7 @@ export default function NowPlayingBar({
         </div>
 
         {/* Progress */}
-        <div className="relative z-10 flex items-center gap-2.5 mt-1.5 px-0.5">
+        <div className="relative z-10 flex items-center gap-2 mt-1 px-0.5">
           <span className="text-fg-faint text-[10px] w-8 text-right tabular-nums">{formatTime(currentTime)}</span>
           <input
             type="range"

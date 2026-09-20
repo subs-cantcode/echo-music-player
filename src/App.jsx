@@ -340,6 +340,7 @@ function AppLayout() {
           currentTime={currentTime}
           isOpen={lyricsOpen}
           onClose={() => setLyricsOpen(false)}
+          onLyricsSaved={(lyrics) => setCurrentTrack((prev) => (prev ? { ...prev, lyrics } : prev))}
         />
 
         <MetadataEditor

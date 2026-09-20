@@ -13,19 +13,46 @@ export default function MarqueeText({ children, className = '' }) {
     const container = containerRef.current
     if (!el || !container) return
 
+    let frame = 0
+    const raf =
+      typeof requestAnimationFrame === 'function'
+        ? requestAnimationFrame
+        : (cb) => setTimeout(cb, 0)
+    const cancel = (id) => {
+      if (typeof cancelAnimationFrame === 'function') cancelAnimationFrame(id)
+      else clearTimeout(id)
+    }
+
     const check = () => setIsOverflowing(el.scrollWidth > container.clientWidth)
+
+    // Re-measure after the browser has flushed the edited text's layout. React
+    // runs this effect on the commit that a new title/artist triggers, so the
+    // boxes can still reflect the previous string and leave the reel paused.
+    const schedule = () => {
+      cancel(frame)
+      frame = raf(check)
+    }
+
     check()
+    schedule()
 
     // Re-check when the container is resized (window resizes don't cover e.g.
     // a sidebar expanding, which changes this element's width).
     const observer =
-      typeof ResizeObserver !== 'undefined' ? new ResizeObserver(check) : null
+      typeof ResizeObserver !== 'undefined' ? new ResizeObserver(schedule) : null
     observer?.observe(container)
-    window.addEventListener('resize', check)
+    window.addEventListener('resize', schedule)
+
+    // A late web-font swap changes the text width long after first paint, which
+    // would otherwise leave an overflow decided against the fallback metrics.
+    if (typeof document !== 'undefined' && document.fonts?.ready) {
+      document.fonts.ready.then(schedule).catch(() => {})
+    }
 
     return () => {
+      cancel(frame)
       observer?.disconnect()
-      window.removeEventListener('resize', check)
+      window.removeEventListener('resize', schedule)
     }
   }, [children])
 

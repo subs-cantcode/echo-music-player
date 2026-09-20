@@ -39,4 +39,35 @@ describe('MarqueeText', () => {
       'marquee-text',
     )
   })
+
+  it('keeps the reel running when an overflowing name is edited', () => {
+    const { rerender } = render(<MarqueeText>{LONG_NAME}</MarqueeText>)
+    expect(container()).toHaveClass('marquee-running')
+
+    const EDITED = 'A Different But Still Quite Long Track Title'
+    rerender(<MarqueeText>{EDITED}</MarqueeText>)
+
+    expect(container()).toHaveClass('marquee-running')
+    expect(container().querySelector('.marquee-text')).toHaveClass('marquee-active')
+    expect(screen.getAllByText(EDITED)).toHaveLength(2)
+  })
+
+  it('stops the reel when the edited name fits again', () => {
+    const { rerender } = render(<MarqueeText>{LONG_NAME}</MarqueeText>)
+
+    rerender(<MarqueeText>{SHORT_NAME}</MarqueeText>)
+
+    expect(container()).not.toHaveClass('marquee-running')
+    expect(screen.getAllByText(SHORT_NAME)).toHaveLength(1)
+  })
+
+  it('starts the reel when a short name is edited into a long one', () => {
+    const { rerender } = render(<MarqueeText>{SHORT_NAME}</MarqueeText>)
+    expect(container()).not.toHaveClass('marquee-running')
+
+    rerender(<MarqueeText>{LONG_NAME}</MarqueeText>)
+
+    expect(container()).toHaveClass('marquee-running')
+    expect(container().querySelector('.marquee-text')).toHaveClass('marquee-active')
+  })
 })

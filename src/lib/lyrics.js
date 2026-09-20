@@ -42,22 +42,32 @@ export async function searchLyrics(query) {
   }
 }
 
+// Matches [mm:ss], [mm:ss.xx], [mm:ss.xxx] and the single-digit variants people
+// paste (e.g. [1:5.5]); section headers like [Verse 1] have no colon so miss it.
+const LRC_TIME = /\[(\d{1,2}):(\d{1,2})(?:[.:](\d{1,3}))?\]/g
+
+export function isSyncedLyrics(text) {
+  if (typeof text !== 'string') return false
+  LRC_TIME.lastIndex = 0
+  return LRC_TIME.test(text)
+}
+
 export function parseSyncedLyrics(lrcText) {
   const lines = lrcText.split('\n')
   const result = []
-  const timeRegex = /\[(\d{2}):(\d{2})[.:](\d{2,3})\]/g
 
   for (const line of lines) {
-    const matches = [...line.matchAll(timeRegex)]
-    const text = line.replace(timeRegex, '').trim()
+    const pattern = new RegExp(LRC_TIME.source, 'g')
+    const matches = [...line.matchAll(pattern)]
+    const text = line.replace(pattern, '').trim()
 
     if (!text) continue
 
     for (const match of matches) {
       const minutes = parseInt(match[1], 10)
       const seconds = parseInt(match[2], 10)
-      const centiseconds = parseInt(match[3].padEnd(3, '0').slice(0, 2), 10)
-      const time = minutes * 60 + seconds + centiseconds / 100
+      const hundredths = match[3] ? parseInt(match[3].padEnd(2, '0').slice(0, 2), 10) : 0
+      const time = minutes * 60 + seconds + hundredths / 100
       result.push({ time, text })
     }
   }
