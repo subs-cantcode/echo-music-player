@@ -102,7 +102,7 @@ export const Sidebar = () => {
       </nav>
 
       {/* Settings Section (Bottom) */}
-      <div className="border-t border-border pt-2 px-2 pb-4">
+      <div className="border-t border-border pt-2 px-2 pb-4 mb-32">
         <SectionLabel label="Settings" />
         <Link
           to="/settings"

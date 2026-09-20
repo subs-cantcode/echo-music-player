@@ -13,7 +13,14 @@ export const useTextOverflow = (text) => {
     if (!element) return
 
     const checkOverflow = () => {
-      const isOverflow = element.scrollWidth > element.clientWidth
+      // Measure a single copy of the text, not the whole container. When the
+      // marquee is running the reel holds the text twice, so comparing the
+      // container's scrollWidth against its clientWidth would report overflow
+      // even for a short title that fits on its own - the duplicate copy alone
+      // is wider than the box, and the marquee would never switch back off.
+      let textNode = element
+      while (textNode.firstElementChild) textNode = textNode.firstElementChild
+      const isOverflow = textNode.scrollWidth > element.clientWidth
       setIsOverflowing(isOverflow)
     }
 
