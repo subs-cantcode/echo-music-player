@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import LyricsPanel from './LyricsPanel.jsx'
 import { updateTrack } from '../lib/localLibrary.js'
+import { fetchLyricsOvh } from '../lib/lyrics.js'
 
 vi.mock('../lib/localLibrary.js', () => ({
   updateTrack: vi.fn(async (id, updates) => ({ id, ...updates })),
@@ -13,6 +14,7 @@ vi.mock('../lib/lyrics.js', async (importActual) => {
     ...actual,
     fetchLyrics: vi.fn(async () => null),
     searchLyrics: vi.fn(async () => []),
+    fetchLyricsOvh: vi.fn(async () => null),
   }
 })
 
@@ -42,6 +44,15 @@ describe('LyricsPanel', () => {
 
     expect(await screen.findByText('First line of the verse')).toBeInTheDocument()
     expect(screen.getByText('Second line here')).toBeInTheDocument()
+  })
+
+  it('falls back to lyrics.ovh when LRCLIB has nothing', async () => {
+    fetchLyricsOvh.mockResolvedValueOnce({ synced: false, text: 'Fallback lyric line' })
+    render(<LyricsPanel track={baseTrack} currentTime={0} isOpen onClose={() => {}} />)
+
+    fireEvent.click(screen.getByRole('button', { name: /Fetch lyrics/i }))
+
+    expect(await screen.findByText('Fallback lyric line')).toBeInTheDocument()
   })
 
   it('nudges the active line with the sync offset control', () => {

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
-import { fetchLyrics, searchLyrics, parseSyncedLyrics, isSyncedLyrics } from '../lib/lyrics.js'
+import { fetchLyrics, fetchLyricsOvh, searchLyrics, parseSyncedLyrics, isSyncedLyrics } from '../lib/lyrics.js'
 import { updateTrack } from '../lib/localLibrary.js'
 import { formatTime } from './NowPlaying.jsx'
 
@@ -142,10 +142,29 @@ export default function LyricsPanel({ track, currentTime, isOpen, onClose, onLyr
     setSearching(true)
     setError(null)
     setView('search')
+
     const query = `${track.artist || ''} ${track.title || ''}`.trim()
     const found = await searchLyrics(query)
-    setResults(found)
-    if (!found.length) setError('No lyrics found online. You can add them manually.')
+
+    if (found.length) {
+      setResults(found)
+      setSearching(false)
+      return
+    }
+
+    // Nothing in LRCLIB at all — fall back to plain text from lyrics.ovh.
+    const fallback = await fetchLyricsOvh(track.artist, track.title)
+    if (fallback) {
+      clearManual(track.id)
+      applyLyrics(fallback.text, false)
+      setView('display')
+      persist(fallback.text)
+      setSearching(false)
+      return
+    }
+
+    setResults([])
+    setError('No lyrics found online. You can add them manually.')
     setSearching(false)
   }
 

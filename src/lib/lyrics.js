@@ -1,4 +1,5 @@
 const LRCLIB_BASE = 'https://lrclib.net/api'
+const LYRICS_OVH_BASE = 'https://api.lyrics.ovh/v1'
 
 export async function fetchLyrics(artist, title, duration) {
   try {
@@ -17,6 +18,30 @@ export async function fetchLyrics(artist, title, duration) {
     return null
   } catch (e) {
     console.warn('Lyrics fetch failed:', e)
+    return null
+  }
+}
+
+// Plain-text fallback. lyrics.ovh is CORS-friendly and key-free, but returns no
+// timestamps, so anything from here renders static rather than synced.
+export async function fetchLyricsOvh(artist, title) {
+  try {
+    if (!artist || !title) return null
+
+    const res = await fetch(
+      `${LYRICS_OVH_BASE}/${encodeURIComponent(artist)}/${encodeURIComponent(title)}`
+    )
+    if (!res.ok) return null
+
+    const data = await res.json()
+    const text = String(data?.lyrics || '')
+      .replace(/\r\n/g, '\n')
+      .trim()
+    if (!text) return null
+
+    return { synced: false, text, source: 'lyrics.ovh' }
+  } catch (e) {
+    console.warn('lyrics.ovh fetch failed:', e)
     return null
   }
 }
