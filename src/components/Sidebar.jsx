@@ -82,23 +82,12 @@ export const Sidebar = () => {
 
       {/* Scrollable Nav Content */}
       <nav className="flex-1 overflow-y-auto flex flex-col gap-1 px-2 py-4">
-        {/* Library Section */}
-        <SectionLabel label="Library" />
-        <div className="flex flex-col gap-1">
-          {libraryItems.map(item => (
-            <NavItem key={item.path} item={item} />
-          ))}
-        </div>
-
-        {/* Playlists Section */}
-        <div className="pt-2 mt-2 border-t border-border">
-          <SectionLabel label="Playlists" />
-          <div className="flex flex-col gap-1">
-            {playlistItems.map(item => (
-              <NavItem key={item.path} item={item} />
-            ))}
-          </div>
-        </div>
+        {libraryItems.map(item => (
+          <NavItem key={item.path} item={item} />
+        ))}
+        {playlistItems.map(item => (
+          <NavItem key={item.path} item={item} />
+        ))}
       </nav>
 
       {/* Settings Section (Bottom) */}
