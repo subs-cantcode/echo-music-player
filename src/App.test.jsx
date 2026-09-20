@@ -77,10 +77,12 @@ describe('App — coming back to a quiet player', () => {
     expect(cards[1]).toHaveTextContent('Song B')
   })
 
-  it('stays quiet for a first-time listener', () => {
+  it('stays quiet for a first-time listener, and nudges without a shelf', () => {
     renderApp()
 
     expect(screen.getByText('No song is being played right now')).toBeInTheDocument()
+    expect(screen.getByText(/Pick a track to start listening/)).toBeInTheDocument()
+    expect(document.querySelector('.bi-pause-circle')).not.toBeNull()
     expect(screen.queryByText('Where You Left Off')).not.toBeInTheDocument()
   })
 

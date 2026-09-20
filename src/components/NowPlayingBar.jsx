@@ -217,11 +217,19 @@ export default function NowPlayingBar({
         {/* Centred in front of the faded controls. It lands right on top of the
             play button, so it carries its own background to stay legible;
             dulling the whole panel instead would cost the bar its frosted
-            translucency. */}
+            translucency.
+
+            The nudge to act rides inside that same surface, and only from sm
+            up: out on the bar itself it would fall across the dimmed controls
+            and stop being readable, and on a phone the pill needs the room. */}
         {isIdle && (
           <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none px-4">
-            <span className="text-sm font-medium text-fg bg-surface border border-border-subtle rounded-full px-3.5 py-1 shadow-sm whitespace-nowrap">
+            <span className="flex items-center gap-2 text-sm font-medium text-fg bg-surface border border-border-subtle rounded-full px-3.5 py-1 shadow-sm whitespace-nowrap">
+              <i className="bi bi-pause-circle text-base text-fg-muted" aria-hidden="true" />
               No song is being played right now
+              <span className="hidden sm:inline text-xs font-normal text-fg-muted">
+                · Pick a track to start listening
+              </span>
             </span>
           </div>
         )}
