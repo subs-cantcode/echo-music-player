@@ -36,7 +36,10 @@ function buildShuffleOrder(tracks, firstId) {
 
 function AppLayout() {
   const { tracks, deleteTrack, toggleFavourite, logPlay, updateTrack } = useLibrary()
-  const [currentTrack, setCurrentTrack] = useState(null)
+  const [currentTrackId, setCurrentTrackId] = useState(null)
+  // Derived from the shared tracks array so metadata edits anywhere are picked
+  // up everywhere: there is no cached copy to go stale.
+  const currentTrack = tracks.find((t) => t.id === currentTrackId) || null
   const currentTrackRef = useRef(null)
   const [shuffleOn, setShuffleOn] = useState(false)
   // Track ids for the current shuffled pass; empty when shuffle is off.
@@ -75,7 +78,7 @@ function AppLayout() {
         const state = JSON.parse(saved)
         const track = tracks.find((t) => t.id === state.trackId)
         if (track) {
-          setCurrentTrack(track)
+          setCurrentTrackId(track.id)
           setShuffleOn(state.shuffleOn ?? false)
           // Auto-play restored track if it was playing
           if (state.isPlaying) {
@@ -106,7 +109,10 @@ function AppLayout() {
     localStorage.setItem(PLAYBACK_STATE_KEY, JSON.stringify(state))
   }, [currentTrack, currentTime, isPlaying, volume, isMuted, loopMode, shuffleOn])
 
-  const [recentlyPlayed, setRecentlyPlayed] = useState([])
+  const [recentlyPlayedIds, setRecentlyPlayedIds] = useState([])
+  const recentlyPlayed = recentlyPlayedIds
+    .map((id) => tracks.find((t) => t.id === id))
+    .filter(Boolean)
   const [uploadToast, setUploadToast] = useState(false)
   const toastTimer = useRef(null)
 
@@ -135,10 +141,10 @@ function AppLayout() {
     if (shuffleOn && !playOrderRef.current.includes(track.id)) {
       playOrderRef.current = buildShuffleOrder(tracks, track.id)
     }
-    setCurrentTrack(track)
-    setRecentlyPlayed((prev) => {
-      const filtered = prev.filter((t) => t.id !== track.id)
-      return [track, ...filtered].slice(0, 10)
+    setCurrentTrackId(track.id)
+    setRecentlyPlayedIds((prev) => {
+      const filtered = prev.filter((id) => id !== track.id)
+      return [track.id, ...filtered].slice(0, 10)
     })
     await playTrack(track.objectUrl)
     // Last.fm now playing
@@ -327,8 +333,7 @@ function AppLayout() {
           onToggleMute={toggleMute}
           onToggleFavourite={async () => {
             if (!currentTrack) return
-            const updated = await toggleFavourite(currentTrack.id)
-            if (updated) setCurrentTrack((prev) => prev ? { ...prev, isFavourite: updated.isFavourite } : prev)
+            await toggleFavourite(currentTrack.id)
           }}
           onOpenLyrics={() => setLyricsOpen(true)}
           onOpenMetadata={() => setMetadataEditorOpen(true)}
@@ -340,14 +345,12 @@ function AppLayout() {
           currentTime={currentTime}
           isOpen={lyricsOpen}
           onClose={() => setLyricsOpen(false)}
-          onLyricsSaved={(lyrics) => setCurrentTrack((prev) => (prev ? { ...prev, lyrics } : prev))}
         />
 
         <MetadataEditor
           track={currentTrack}
           isOpen={metadataEditorOpen}
           onClose={() => setMetadataEditorOpen(false)}
-          onSaved={(updated) => setCurrentTrack(updated)}
         />
 
         <LastFmSettings

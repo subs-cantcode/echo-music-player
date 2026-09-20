@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { fetchLyrics, fetchLyricsOvh, searchLyrics, parseSyncedLyrics, isSyncedLyrics } from '../lib/lyrics.js'
-import { updateTrack } from '../lib/localLibrary.js'
+import { useLibrary } from '../lib/LibraryContext.jsx'
 import { formatTime } from './NowPlaying.jsx'
 
 const OFFSET_KEY = 'echo-lyrics-offsets'
@@ -59,6 +59,7 @@ function writeOffset(trackId, value) {
 const formatOffset = (value) => `${value > 0 ? '+' : ''}${value.toFixed(2)}s`
 
 export default function LyricsPanel({ track, currentTime, isOpen, onClose, onLyricsSaved }) {
+  const { updateTrack } = useLibrary()
   const [lyrics, setLyrics] = useState(null)
   const [synced, setSynced] = useState(false)
   const [parsedLyrics, setParsedLyrics] = useState(null)

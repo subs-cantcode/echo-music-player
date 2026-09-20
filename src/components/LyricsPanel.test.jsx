@@ -1,11 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import LyricsPanel from './LyricsPanel.jsx'
-import { updateTrack } from '../lib/localLibrary.js'
 import { fetchLyricsOvh } from '../lib/lyrics.js'
 
-vi.mock('../lib/localLibrary.js', () => ({
+const mocks = vi.hoisted(() => ({
   updateTrack: vi.fn(async (id, updates) => ({ id, ...updates })),
+}))
+
+vi.mock('../lib/LibraryContext.jsx', () => ({
+  useLibrary: () => ({ updateTrack: mocks.updateTrack }),
 }))
 
 vi.mock('../lib/lyrics.js', async (importActual) => {
@@ -68,7 +71,7 @@ describe('LyricsPanel', () => {
   })
 
   it('still shows the lyrics when saving to the library fails', async () => {
-    updateTrack.mockRejectedValueOnce(new Error('indexeddb down'))
+    mocks.updateTrack.mockRejectedValueOnce(new Error('indexeddb down'))
     render(<LyricsPanel track={baseTrack} currentTime={0} isOpen onClose={() => {}} />)
 
     fireEvent.click(screen.getByRole('button', { name: /Add lyrics manually/i }))

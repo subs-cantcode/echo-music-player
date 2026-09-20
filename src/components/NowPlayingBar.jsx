@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { formatTime } from './NowPlaying.jsx'
 import MarqueeText from './MarqueeText.jsx'
+import NowPlayingTitle from './NowPlayingTitle.jsx'
 import AudioWaves from './AudioWaves.jsx'
 
 export default function NowPlayingBar({
@@ -71,7 +72,7 @@ export default function NowPlayingBar({
             <div className="min-w-0 flex-1">
               {track ? (
                 <>
-                  <MarqueeText className="text-base font-medium text-fg">{track.title}</MarqueeText>
+                  <NowPlayingTitle title={track.title} />
                   <MarqueeText className="text-fg-faint text-xs">{track.artist || ''}</MarqueeText>
                 </>
               ) : (

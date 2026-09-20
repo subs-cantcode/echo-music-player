@@ -100,7 +100,10 @@ export const useLocalLibrary = () => {
   const getListeningHistory = useCallback(() => localLib.getListeningHistory(), [])
 
   const updateTrack = useCallback(async (trackId, updates) => {
-    return localLib.updateTrack(trackId, updates)
+    const updated = await localLib.updateTrack(trackId, updates)
+    if (!updated) return null
+    setTracks((prev) => prev.map((t) => (t.id === trackId ? updated : t)))
+    return updated
   }, [])
 
   return {

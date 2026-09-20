@@ -284,6 +284,35 @@ body {
   100% { transform: translateX(-50%); }
 }
 
+/* Player bar title. Short names that fit stay static and clip with an
+   ellipsis; truly long ones duplicate inside the reel so the -50% marquee
+   keyframes loop seamlessly. The element is memoised, so this animation is
+   never restarted by the player bar's timeupdate re-renders. */
+.now-playing-title {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.now-playing-title-reel {
+  display: inline-block;
+}
+
+.now-playing-title-reel span {
+  display: inline-block;
+  padding-right: 1em;
+}
+
+.now-playing-title.marquee {
+  text-overflow: clip;
+}
+
+.now-playing-title.marquee .now-playing-title-reel {
+  letter-spacing: 0.05em;
+  animation: marquee 8s linear infinite;
+}
+
 /* Grid Layout */
 .app-layout {
   display: grid;

@@ -19,6 +19,25 @@ function stripExtension(fileName) {
   return String(fileName || '').replace(/\.[^/.]+$/, '')
 }
 
+// Whether an incoming file looks like it already exists in the library, so the
+// import flow can ask before silently creating a duplicate.
+export const findPotentialDuplicate = (tracks, fileName, extractedTitle, extractedArtist) => {
+  const normalizedFileName = stripExtension(fileName).toLowerCase().trim()
+
+  return (
+    tracks.find((t) => {
+      const titleMatch =
+        (extractedTitle && t.title.toLowerCase().trim() === extractedTitle.toLowerCase().trim()) ||
+        t.title.toLowerCase().trim() === normalizedFileName
+
+      const artistMatch =
+        !extractedArtist || t.artist.toLowerCase().trim() === extractedArtist.toLowerCase().trim()
+
+      return titleMatch && artistMatch
+    }) || null
+  )
+}
+
 const getDb = () => getDB()
 
 function storeOperation(storeName, mode, action) {
