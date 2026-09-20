@@ -50,7 +50,7 @@ export default function NowPlayingBar({
       className="fixed bottom-3 left-3 right-3 z-40 transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]"
     >
       <div
-        className="frosted-panel relative overflow-hidden max-w-[800px] mx-auto bg-surface border border-border-subtle rounded-2xl px-4 py-2.5 shadow-sm"
+        className="frosted-panel relative overflow-hidden max-w-[840px] mx-auto bg-surface border border-border-subtle rounded-2xl px-4 py-2.5 shadow-sm"
         style={{ '--frost-tint': '65%', '--frost-blur': '20px' }}
       >
         <AudioWaves />
