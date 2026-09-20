@@ -55,11 +55,11 @@ export default function NowPlayingBar({
       >
         <AudioWaves />
 
-        <div className="relative z-10 flex items-center gap-3">
+        <div className="relative z-10 flex items-center gap-2 flex-wrap">
           {/* Track info. flex-1 mirrors the volume column so the centre
               controls land on the bar's true horizontal centre. */}
-          <div className="flex items-center gap-2.5 min-w-0 flex-1">
-            <div className="w-8 h-8 rounded-lg bg-border flex items-center justify-center flex-shrink-0 overflow-hidden">
+          <div className="flex items-center gap-2 min-w-0 flex-1 min-w-0">
+            <div className="w-7 h-7 rounded-lg bg-border flex items-center justify-center flex-shrink-0 overflow-hidden">
               {track?.artwork ? (
                 <img src={track.artwork} alt="" className="w-full h-full object-cover" />
               ) : (
@@ -79,87 +79,87 @@ export default function NowPlayingBar({
           </div>
 
           {/* Controls */}
-          <div className="flex items-center justify-center gap-2 flex-shrink-0">
+          <div className="flex items-center justify-center gap-1.5 flex-shrink-0 flex-wrap">
             <button
               onClick={() => { onToggleFavourite(); setHeartKey((k) => k + 1) }}
-              className={`player-btn w-11 h-11 ${isFav ? 'text-accent-text' : ''}`}
+              className={`player-btn w-10 h-10 ${isFav ? 'text-accent-text' : ''}`}
               aria-label={isFav ? 'Remove from favourites' : 'Add to favourites'}
             >
-              <i key={heartKey} className={`text-lg heart-pop ${isFav ? 'bi-heart-fill' : 'bi-heart'}`} />
+              <i key={heartKey} className={`text-base heart-pop ${isFav ? 'bi-heart-fill' : 'bi-heart'}`} />
             </button>
 
             <button
               onClick={onToggleShuffle}
-              className={`player-btn w-11 h-11 ${shuffleOn ? 'text-accent-text' : ''}`}
+              className={`player-btn w-10 h-10 ${shuffleOn ? 'text-accent-text' : ''}`}
               title={shuffleOn ? 'Shuffle on' : 'Shuffle off'}
               aria-label="Shuffle"
               aria-pressed={Boolean(shuffleOn)}
             >
-              <i className="bi bi-shuffle text-base" />
+              <i className="bi bi-shuffle text-sm" />
             </button>
 
-            <button onClick={onSkipBack} className="player-btn w-11 h-11" title="Previous track" aria-label="Previous track">
-              <i className="bi bi-skip-backward-fill text-lg" />
+            <button onClick={onSkipBack} className="player-btn w-10 h-10" title="Previous track" aria-label="Previous track">
+              <i className="bi bi-skip-backward-fill text-base" />
             </button>
 
             <button
               onClick={onPlayPause}
-              className="player-btn w-12 h-12 bg-fg text-bg hover:bg-fg/85"
+              className="player-btn w-11 h-11 bg-fg text-bg hover:bg-fg/85"
               aria-label={isPlaying ? 'Pause' : 'Play'}
             >
               {isPlaying ? <i className="bi bi-pause-fill text-xl" /> : <i className="bi bi-play-fill text-xl ml-0.5" />}
             </button>
 
-            <button onClick={onSkipForward} className="player-btn w-11 h-11" title="Next track" aria-label="Next track">
-              <i className="bi bi-skip-forward-fill text-lg" />
+            <button onClick={onSkipForward} className="player-btn w-10 h-10" title="Next track" aria-label="Next track">
+              <i className="bi bi-skip-forward-fill text-base" />
             </button>
 
             <button
               onClick={onToggleLoop}
-              className={`player-btn w-11 h-11 ${loopMode !== 'off' ? 'text-accent-text' : ''}`}
+              className={`player-btn w-10 h-10 ${loopMode !== 'off' ? 'text-accent-text' : ''}`}
               title={`Loop: ${loopMode}`}
               aria-label="Loop"
               aria-pressed={loopMode !== 'off'}
             >
-              <i className={`bi ${repeatIcon} text-base`} />
+              <i className={`bi ${repeatIcon} text-sm`} />
             </button>
 
             <button
               onClick={onOpenLyrics}
-              className="player-btn w-11 h-11"
+              className="player-btn w-10 h-10"
               title="Lyrics"
               aria-label="Lyrics"
             >
-              <i className="bi bi-file-text text-base" />
+              <i className="bi bi-file-text text-sm" />
             </button>
 
             <button
               onClick={onOpenMetadata}
-              className="player-btn w-11 h-11"
+              className="player-btn w-10 h-10"
               title="Edit metadata"
               aria-label="Edit metadata"
             >
-              <i className="bi bi-tag text-base" />
+              <i className="bi bi-tag text-sm" />
             </button>
 
             <button
               onClick={onOpenLastFm}
-              className="player-btn w-11 h-11"
+              className="player-btn w-10 h-10"
               title="Last.fm"
               aria-label="Last.fm settings"
             >
-              <i className="bi bi-lastfm text-base" />
+              <i className="bi bi-lastfm text-sm" />
             </button>
           </div>
 
           {/* Volume */}
-          <div className="flex items-center gap-2 flex-1 justify-end">
-            <button onClick={onToggleMute} className="player-btn w-11 h-11" aria-label={isMuted ? 'Unmute' : 'Mute'}>
-              <i className={`bi ${volIcon} text-base`} />
+          <div className="flex items-center gap-1.5 flex-1 justify-end min-w-0">
+            <button onClick={onToggleMute} className="player-btn w-9 h-9" aria-label={isMuted ? 'Unmute' : 'Mute'}>
+              <i className={`bi ${volIcon} text-sm`} />
             </button>
             <div
               ref={volRef}
-              className="relative h-7 w-[96px] flex items-center cursor-pointer group"
+              className="relative h-6 w-[80px] flex items-center cursor-pointer group"
               onMouseDown={handleVolMouseDown}
             >
               <div className="bar-track w-full">
