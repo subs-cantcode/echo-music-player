@@ -48,9 +48,13 @@ function AppLayout() {
 
   // New feature states
   const [lyricsOpen, setLyricsOpen] = useState(false)
-  const [metadataEditorOpen, setMetadataEditorOpen] = useState(false)
+  // Which track the metadata editor is showing. Held by id rather than by
+  // record so the editor follows edits made while it is open; the player bar
+  // and every track row's menu are two doors into the same modal.
+  const [metadataTrackId, setMetadataTrackId] = useState(null)
   const [lastFmSettingsOpen, setLastFmSettingsOpen] = useState(false)
   const { connected: lastFmConnected } = useLastFm()
+  const editingTrack = tracks.find((t) => t.id === metadataTrackId) || null
 
   // The player stores its ended callback in a ref, so it can call through one of
   // ours. The handler needs the library order, which is defined further down.
@@ -283,21 +287,25 @@ function AppLayout() {
               <Home tracks={tracks} currentTrack={currentTrack} onPlay={handlePlayTrack}
                 onDelete={deleteTrack} onToggleFavourite={toggleFavourite} recentlyPlayed={recentlyPlayed}
                 onTogglePin={togglePin} pinLimit={maxPinnedTracks}
+                onEditMetadata={setMetadataTrackId}
                 onShuffleAll={handleShuffleAll} />
             } />
             <Route path="/search" element={
               <Search tracks={tracks} currentTrack={currentTrack} onPlay={handlePlayTrack}
-                onDelete={deleteTrack} onToggleFavourite={toggleFavourite} />
+                onDelete={deleteTrack} onToggleFavourite={toggleFavourite}
+                onEditMetadata={setMetadataTrackId} />
             } />
             <Route path="/playlists" element={
               <Playlists tracks={tracks} currentTrack={currentTrack} onPlay={handlePlayTrack} />
             } />
             <Route path="/playlists/:id" element={
-              <PlaylistDetail tracks={tracks} currentTrack={currentTrack} onPlay={handlePlayTrack} />
+              <PlaylistDetail tracks={tracks} currentTrack={currentTrack} onPlay={handlePlayTrack}
+                onEditMetadata={setMetadataTrackId} />
             } />
             <Route path="/favourites" element={
               <Favourites tracks={tracks} currentTrack={currentTrack} onPlay={handlePlayTrack}
-                onDelete={deleteTrack} onToggleFavourite={toggleFavourite} />
+                onDelete={deleteTrack} onToggleFavourite={toggleFavourite}
+                onEditMetadata={setMetadataTrackId} />
             } />
             <Route path="/upload" element={
               <Upload onUploaded={showToast} />
@@ -337,7 +345,7 @@ function AppLayout() {
             await toggleFavourite(currentTrack.id)
           }}
           onOpenLyrics={() => setLyricsOpen(true)}
-          onOpenMetadata={() => setMetadataEditorOpen(true)}
+          onOpenMetadata={() => setMetadataTrackId(currentTrack?.id ?? null)}
           onOpenLastFm={() => setLastFmSettingsOpen(true)}
         />
 
@@ -349,9 +357,9 @@ function AppLayout() {
         />
 
         <MetadataEditor
-          track={currentTrack}
-          isOpen={metadataEditorOpen}
-          onClose={() => setMetadataEditorOpen(false)}
+          track={editingTrack}
+          isOpen={Boolean(editingTrack)}
+          onClose={() => setMetadataTrackId(null)}
         />
 
         <LastFmSettings

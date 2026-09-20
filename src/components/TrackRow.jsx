@@ -3,8 +3,8 @@ import { formatTime } from './NowPlaying.jsx';
 import TrackActionsMenu from './TrackActionsMenu.jsx';
 
 export default function TrackRow({
-  track, isActive, onPlay, onDelete, onToggleFavourite, onTogglePin, pinDisabled = false,
-  deleteIcon = 'bi-trash3', deleteLabel = 'Delete track',
+  track, isActive, onPlay, onDelete, onToggleFavourite, onTogglePin, onEditMetadata,
+  pinDisabled = false, deleteIcon = 'bi-trash3', deleteLabel = 'Delete track',
 }) {
   const { elementRef: titleRef, isOverflowing: titleOverflows } = useTextOverflow(track.title);
   const { elementRef: artistRef, isOverflowing: artistOverflows } = useTextOverflow(track.artist);
@@ -35,9 +35,9 @@ export default function TrackRow({
         </div>
       </div>
 
-      {/* Favourite, pin and remove all live behind one kebab so the row keeps a
-          single action slot. A list only offers the actions it can honour:
-          playlist rows drop the pin, read-only lists drop remove. */}
+      {/* Favourite, pin, metadata and remove all live behind one kebab so the
+          row keeps a single action slot. A list only offers the actions it can
+          honour: playlist rows drop the pin, read-only lists drop remove. */}
       <TrackActionsMenu
         label={`Actions for ${track.title}`}
         isFavourite={Boolean(track.isFavourite)}
@@ -45,6 +45,7 @@ export default function TrackRow({
         pinDisabled={pinDisabled}
         onToggleFavourite={onToggleFavourite ? () => onToggleFavourite(track.id) : undefined}
         onTogglePin={onTogglePin ? () => onTogglePin(track.id) : undefined}
+        onEdit={onEditMetadata ? () => onEditMetadata(track.id) : undefined}
         onRemove={onDelete ? () => onDelete(track.id) : undefined}
         removeIcon={deleteIcon}
         removeLabel={deleteLabel}

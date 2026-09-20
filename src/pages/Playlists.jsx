@@ -116,7 +116,7 @@ function PlaylistList({ tracks, onPlay, onNavigate }) {
   )
 }
 
-function PlaylistDetail({ tracks, currentTrack, onPlay }) {
+function PlaylistDetail({ tracks, currentTrack, onPlay, onEditMetadata }) {
   const { id } = useParams()
   const navigate = useNavigate()
   const { playlists, addTrackToPlaylist, removeTrackFromPlaylist, deletePlaylist } = useLibrary()
@@ -220,6 +220,7 @@ function PlaylistDetail({ tracks, currentTrack, onPlay }) {
                 onDelete={(trackId) => removeTrackFromPlaylist(playlist.id, trackId)}
                 deleteIcon="bi-dash-circle"
                 deleteLabel="Remove from playlist"
+                onEditMetadata={onEditMetadata}
               />
             ))}
           </div>

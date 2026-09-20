@@ -1,6 +1,6 @@
 import TrackRow from '../components/TrackRow.jsx'
 
-export default function Favourites({ tracks, currentTrack, onPlay, onDelete, onToggleFavourite }) {
+export default function Favourites({ tracks, currentTrack, onPlay, onDelete, onToggleFavourite, onEditMetadata }) {
   const favourited = tracks.filter((t) => t.isFavourite)
 
   return (
@@ -27,6 +27,7 @@ export default function Favourites({ tracks, currentTrack, onPlay, onDelete, onT
                 onPlay={onPlay}
                 onDelete={onDelete}
                 onToggleFavourite={onToggleFavourite}
+                onEditMetadata={onEditMetadata}
               />
             ))}
           </div>

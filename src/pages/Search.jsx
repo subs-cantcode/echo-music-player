@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 import TrackRow from '../components/TrackRow.jsx'
 
-export default function Search({ tracks, currentTrack, onPlay, onDelete, onToggleFavourite }) {
+export default function Search({ tracks, currentTrack, onPlay, onDelete, onToggleFavourite, onEditMetadata }) {
   const [query, setQuery] = useState('')
 
   const filtered = useMemo(() => {
@@ -61,8 +61,9 @@ export default function Search({ tracks, currentTrack, onPlay, onDelete, onToggl
                 isActive={currentTrack?.id === track.id}
                 onPlay={onPlay}
                 onDelete={onDelete}
-                onToggleFavourite={onToggleFavourite}
-              />
+              onToggleFavourite={onToggleFavourite}
+              onEditMetadata={onEditMetadata}
+            />
             ))}
           </div>
         )}

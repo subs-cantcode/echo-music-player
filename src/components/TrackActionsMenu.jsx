@@ -49,6 +49,7 @@ export default function TrackActionsMenu({
   pinDisabled = false,
   onToggleFavourite,
   onTogglePin,
+  onEdit,
   onRemove,
   removeIcon = 'bi-trash3',
   removeLabel = 'Delete track',
@@ -113,7 +114,7 @@ export default function TrackActionsMenu({
     action?.();
   };
 
-  const hasActions = Boolean(onToggleFavourite || onTogglePin || onRemove);
+  const hasActions = Boolean(onToggleFavourite || onTogglePin || onEdit || onRemove);
 
   if (!hasActions) return null;
 
@@ -194,6 +195,16 @@ export default function TrackActionsMenu({
                 disabled={pinDisabled && !isPinned}
                 title={pinDisabled && !isPinned ? 'Instant Replay is full' : undefined}
                 onSelect={select(() => onTogglePin())}
+              />
+            )}
+
+            {/* Open to every track, imported or not: the editor only ever reads
+                and rewrites fields the record already has. */}
+            {onEdit && (
+              <MenuItem
+                icon="bi-tag"
+                label="Edit metadata"
+                onSelect={select(() => onEdit())}
               />
             )}
 

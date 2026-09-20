@@ -10,7 +10,7 @@ function getGreeting() {
   return 'Good evening'
 }
 
-export default function Home({ tracks, currentTrack, onPlay, onDelete, onToggleFavourite, onTogglePin, pinLimit = 9, recentlyPlayed, onShuffleAll }) {
+export default function Home({ tracks, currentTrack, onPlay, onDelete, onToggleFavourite, onTogglePin, onEditMetadata, pinLimit = 9, recentlyPlayed, onShuffleAll }) {
   // Pinned tracks, newest pin first, capped so legacy data that slipped past
   // the limit can't widen the shelf.
   const pinned = useMemo(() => {
@@ -198,6 +198,7 @@ export default function Home({ tracks, currentTrack, onPlay, onDelete, onToggleF
                   onDelete={onDelete}
                   onToggleFavourite={onToggleFavourite}
                   onTogglePin={onTogglePin}
+                  onEditMetadata={onEditMetadata}
                   pinDisabled={pinLimitReached}
                 />
               ))}

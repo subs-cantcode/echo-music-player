@@ -37,6 +37,7 @@ describe('TrackRow actions menu', () => {
     onDelete: vi.fn(),
     onToggleFavourite: vi.fn(),
     onTogglePin: vi.fn(),
+    onEditMetadata: vi.fn(),
   })
 
   it('keeps the row to one action slot and runs each action', () => {
@@ -47,7 +48,12 @@ describe('TrackRow actions menu', () => {
 
     openMenu()
     const items = screen.getAllByRole('menuitem')
-    expect(items.map((item) => item.textContent)).toEqual(['Favourite', 'Pin', 'Delete track'])
+    expect(items.map((item) => item.textContent)).toEqual([
+      'Favourite',
+      'Pin',
+      'Edit metadata',
+      'Delete track',
+    ])
 
     fireEvent.click(items[0])
     expect(props.onToggleFavourite).toHaveBeenCalledWith('t1')
@@ -57,8 +63,28 @@ describe('TrackRow actions menu', () => {
     expect(props.onTogglePin).toHaveBeenCalledWith('t1')
 
     openMenu()
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Edit metadata' }))
+    expect(props.onEditMetadata).toHaveBeenCalledWith('t1')
+
+    openMenu()
     fireEvent.click(screen.getByRole('menuitem', { name: 'Delete track' }))
     expect(props.onDelete).toHaveBeenCalledWith('t1')
+  })
+
+  it('offers metadata editing on a track with no other actions', () => {
+    const onEditMetadata = vi.fn()
+    render(
+      <TrackRow
+        track={{ ...shortTrack, id: 'imported-1', title: 'Imported Song' }}
+        onPlay={() => {}}
+        onEditMetadata={onEditMetadata}
+      />
+    )
+
+    fireEvent.click(screen.getByLabelText('Actions for Imported Song'))
+    fireEvent.click(screen.getByRole('menuitem', { name: 'Edit metadata' }))
+
+    expect(onEditMetadata).toHaveBeenCalledWith('imported-1')
   })
 
   it('closes the menu after an action and on Escape', () => {

@@ -1,8 +1,11 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useLibrary } from '../lib/LibraryContext.jsx'
 
 export default function MetadataEditor({ track, onClose, onSaved, isOpen }) {
-  if (!isOpen) return null
+  // Hooks stay above the `isOpen` check (see the early return further down) so
+  // the hook count never depends on the prop: App keeps the editor mounted and
+  // opens it by prop, and a caller that mounts it conditionally must behave the
+  // same way.
   const { updateTrack } = useLibrary()
   const [formData, setFormData] = useState({
     title: '',
@@ -15,21 +18,29 @@ export default function MetadataEditor({ track, onClose, onSaved, isOpen }) {
   const [artworkPreview, setArtworkPreview] = useState(null)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(null)
+  // Which record the form was last filled from: re-opening the editor re-seeds
+  // it, while unrelated library churn cannot wipe edits in progress.
+  const seededTrackRef = useRef(null)
 
   useEffect(() => {
-    if (track) {
-      setFormData({
-        title: track.title || '',
-        artist: track.artist || '',
-        album: track.album || '',
-        genre: track.genre || '',
-        year: track.year || '',
-      })
-      if (track.artwork) {
-        setArtworkPreview(track.artwork)
-      }
+    if (!isOpen) {
+      seededTrackRef.current = null
+      return
     }
-  }, [track])
+    if (!track || seededTrackRef.current === track.id) return
+
+    seededTrackRef.current = track.id
+    setFormData({
+      title: track.title || '',
+      artist: track.artist || '',
+      album: track.album || '',
+      genre: track.genre || '',
+      year: track.year || '',
+    })
+    setArtworkFile(null)
+    setArtworkPreview(track.artwork || null)
+    setError(null)
+  }, [isOpen, track])
 
   const handleArtworkChange = useCallback((e) => {
     const file = e.target.files[0]
@@ -90,6 +101,8 @@ export default function MetadataEditor({ track, onClose, onSaved, isOpen }) {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
+
+  if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-bg/95 backdrop-blur-sm p-4" role="dialog" aria-modal="true">
