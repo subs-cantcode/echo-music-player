@@ -1,5 +1,6 @@
 import { useTextOverflow } from '../hooks/useTextOverflow.js';
 import { formatTime } from './NowPlaying.jsx';
+import TrackActionsMenu from './TrackActionsMenu.jsx';
 
 export default function TrackRow({
   track, isActive, onPlay, onDelete, onToggleFavourite, onTogglePin, pinDisabled = false,
@@ -34,50 +35,20 @@ export default function TrackRow({
         </div>
       </div>
 
-      {/* The pin action only exists where the list can offer it (Home, which
-          shows the whole library). At the cap the button is inert rather than
-          silently doing nothing. */}
-      {onTogglePin && (
-        <button
-          onClick={(e) => { e.stopPropagation(); onTogglePin(track.id) }}
-          disabled={pinDisabled && !track.isPinned}
-          className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs transition-all duration-200 ${
-            track.isPinned
-              ? 'text-accent-text'
-              : 'text-fg-faint hover:text-accent-text opacity-0 group-hover:opacity-100'
-          } ${pinDisabled && !track.isPinned ? 'cursor-not-allowed opacity-40' : ''}`}
-          title={
-            track.isPinned
-              ? 'Unpin from Instant Replay'
-              : pinDisabled
-                ? 'Instant Replay is full'
-                : 'Pin to Instant Replay'
-          }
-          aria-label={track.isPinned ? 'Unpin from Instant Replay' : 'Pin to Instant Replay'}
-        >
-          <i className={`bi ${track.isPinned ? 'bi-pin-angle-fill' : 'bi-pin-angle'}`} />
-        </button>
-      )}
-
-      <button
-        onClick={(e) => { e.stopPropagation(); onToggleFavourite?.(track.id) }}
-        className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs transition-all duration-200 ${
-          track.isFavourite
-            ? 'text-accent-text heart-pop'
-            : 'text-fg-faint hover:text-accent-text opacity-0 group-hover:opacity-100'
-        }`}
-        aria-label={track.isFavourite ? 'Remove from favourites' : 'Add to favourites'}
-      >
-        <i className={`bi ${track.isFavourite ? 'bi-heart-fill' : 'bi-heart'}`} />
-      </button>
-
-      <button
-        onClick={(e) => { e.stopPropagation(); onDelete?.(track.id) }}
-        className="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-fg-faint hover:text-fg text-xs opacity-0 group-hover:opacity-100 transition-all duration-200"
-        aria-label={deleteLabel}
-      >
-        <i className={`bi ${deleteIcon}`} />
-      </button>
+      {/* Favourite, pin and remove all live behind one kebab so the row keeps a
+          single action slot. A list only offers the actions it can honour:
+          playlist rows drop the pin, read-only lists drop remove. */}
+      <TrackActionsMenu
+        label={`Actions for ${track.title}`}
+        isFavourite={Boolean(track.isFavourite)}
+        isPinned={Boolean(track.isPinned)}
+        pinDisabled={pinDisabled}
+        onToggleFavourite={onToggleFavourite ? () => onToggleFavourite(track.id) : undefined}
+        onTogglePin={onTogglePin ? () => onTogglePin(track.id) : undefined}
+        onRemove={onDelete ? () => onDelete(track.id) : undefined}
+        removeIcon={deleteIcon}
+        removeLabel={deleteLabel}
+      />
     </div>
   )
 }
