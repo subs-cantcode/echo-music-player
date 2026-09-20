@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { Sidebar } from './components/Sidebar.jsx'
 import NowPlayingBar from './components/NowPlayingBar.jsx'
@@ -12,6 +12,10 @@ import { LibraryProvider, useLibrary } from './lib/LibraryContext.jsx'
 import { scrobbleTrack, updateNowPlaying } from './lib/lastfm.js'
 
 const PLAYBACK_STATE_KEY = 'echo-playback-state'
+const RECENTLY_PLAYED_KEY = 'echo-recently-played'
+
+// How many tracks Home's "Where You Left Off" shelf remembers between visits.
+const RECENTLY_PLAYED_LIMIT = 10
 
 import Home from './pages/Home.jsx'
 import Search from './pages/Search.jsx'
@@ -44,7 +48,28 @@ function AppLayout() {
   const [shuffleOn, setShuffleOn] = useState(false)
   // Track ids for the current shuffled pass; empty when shuffle is off.
   const playOrderRef = useRef([])
-  const restoredRef = useRef(false)
+  const recentSeededRef = useRef(false)
+
+  // Where You Left Off, newest first. Kept in localStorage rather than in
+  // IndexedDB because it is view state about a session, not library metadata,
+  // and it is what makes the shelf survive a refresh even though the player
+  // itself deliberately comes back empty.
+  const [recentlyPlayedIds, setRecentlyPlayedIds] = useState(() => {
+    try {
+      const raw = JSON.parse(localStorage.getItem(RECENTLY_PLAYED_KEY) || '[]')
+      return Array.isArray(raw) ? raw : []
+    } catch (e) {
+      console.warn('Failed to read recently played tracks:', e)
+      return []
+    }
+  })
+  // Memoised so the shelf's identity only changes when the shelf or the
+  // library does: Home keys work off it, and the player bar re-renders this
+  // tree on every timeupdate tick.
+  const recentlyPlayed = useMemo(
+    () => recentlyPlayedIds.map((id) => tracks.find((t) => t.id === id)).filter(Boolean),
+    [recentlyPlayedIds, tracks]
+  )
 
   // New feature states
   const [lyricsOpen, setLyricsOpen] = useState(false)
@@ -59,7 +84,6 @@ function AppLayout() {
   // The player stores its ended callback in a ref, so it can call through one of
   // ours. The handler needs the library order, which is defined further down.
   const endedHandlerRef = useRef(null)
-  const handlePlayTrackRef = useRef(null)
 
   const {
     isPlaying, currentTime, duration, progress, volume, isMuted, loopMode,
@@ -72,31 +96,35 @@ function AppLayout() {
     currentTrackRef.current = currentTrack
   }, [currentTrack])
 
-  // Restore playback state from localStorage
+  // Opening the app starts quiet. The track that was loaded last time is put at
+  // the head of Where You Left Off instead of into the player, so nothing plays
+  // before the listener asks for it and a refresh never lands mid-song by
+  // surprise. Its saved playhead still applies (see handlePlayTrack), so picking
+  // it up resumes where it stopped.
   useEffect(() => {
-    if (!tracks.length || restoredRef.current) return
-    restoredRef.current = true
+    if (!tracks.length || recentSeededRef.current) return
+    recentSeededRef.current = true
     try {
-      const saved = localStorage.getItem(PLAYBACK_STATE_KEY)
-      if (saved) {
-        const state = JSON.parse(saved)
-        const track = tracks.find((t) => t.id === state.trackId)
-        if (track) {
-          setCurrentTrackId(track.id)
-          setShuffleOn(state.shuffleOn ?? false)
-          // Auto-play restored track if it was playing
-          if (state.isPlaying) {
-            // Defer to next tick so player is ready
-            setTimeout(() => {
-              handlePlayTrackRef.current?.(track)
-            }, 0)
-          }
-        }
-      }
+      const raw = localStorage.getItem(PLAYBACK_STATE_KEY)
+      const state = raw ? JSON.parse(raw) : null
+      const lastTrackId = tracks.some((t) => t.id === state?.trackId) ? state.trackId : null
+      if (!lastTrackId) return
+      setRecentlyPlayedIds((prev) => [
+        lastTrackId,
+        ...prev.filter((id) => id !== lastTrackId),
+      ].slice(0, RECENTLY_PLAYED_LIMIT))
     } catch (e) {
-      console.warn('Failed to restore playback state:', e)
+      console.warn('Failed to read the last played track:', e)
     }
   }, [tracks])
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(RECENTLY_PLAYED_KEY, JSON.stringify(recentlyPlayedIds))
+    } catch (e) {
+      console.warn('Failed to save recently played tracks:', e)
+    }
+  }, [recentlyPlayedIds])
 
   // Persist playback state to localStorage
   useEffect(() => {
@@ -113,10 +141,6 @@ function AppLayout() {
     localStorage.setItem(PLAYBACK_STATE_KEY, JSON.stringify(state))
   }, [currentTrack, currentTime, isPlaying, volume, isMuted, loopMode, shuffleOn])
 
-  const [recentlyPlayedIds, setRecentlyPlayedIds] = useState([])
-  const recentlyPlayed = recentlyPlayedIds
-    .map((id) => tracks.find((t) => t.id === id))
-    .filter(Boolean)
   const [uploadToast, setUploadToast] = useState(false)
   const toastTimer = useRef(null)
 
@@ -148,7 +172,7 @@ function AppLayout() {
     setCurrentTrackId(track.id)
     setRecentlyPlayedIds((prev) => {
       const filtered = prev.filter((id) => id !== track.id)
-      return [track.id, ...filtered].slice(0, 10)
+      return [track.id, ...filtered].slice(0, RECENTLY_PLAYED_LIMIT)
     })
     await playTrack(track.objectUrl)
     // Last.fm now playing
@@ -168,11 +192,6 @@ function AppLayout() {
       console.warn('Failed to restore seek position:', e)
     }
   }, [playTrack, shuffleOn, tracks, seek, lastFmConnected])
-
-  // Keep ref updated for restore effect
-  useEffect(() => {
-    handlePlayTrackRef.current = handlePlayTrack
-  }, [handlePlayTrack])
 
   // Home: play the whole library in a fresh random order.
   const handleShuffleAll = useCallback(() => {

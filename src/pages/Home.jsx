@@ -28,15 +28,19 @@ export default function Home({ tracks, currentTrack, onPlay, onDelete, onToggleF
 
   const forgotten = useMemo(() => {
     if (tracks.length <= 5) return []
+    // Anything still on the Where You Left Off shelf is not forgotten yet, so
+    // the two shelves never show the same track (a track played but not yet
+    // finished still has no lastPlayed to sort it away with).
+    const shelvedIds = new Set(recentlyPlayed.map((t) => t.id))
     return [...tracks]
-      .filter((t) => currentTrack?.id !== t.id)
+      .filter((t) => currentTrack?.id !== t.id && !shelvedIds.has(t.id))
       .sort((a, b) => {
         const aPlayed = a.lastPlayed ? Date.parse(a.lastPlayed) : 0
         const bPlayed = b.lastPlayed ? Date.parse(b.lastPlayed) : 0
         return aPlayed - bPlayed
       })
       .slice(0, 5)
-  }, [tracks, currentTrack])
+  }, [tracks, currentTrack, recentlyPlayed])
 
   return (
     <div className="home-page">
@@ -52,7 +56,12 @@ export default function Home({ tracks, currentTrack, onPlay, onDelete, onToggleF
 
 {recentlyPlayed.length > 0 && (
           <section className="mb-6">
-            <h2 className="text-sm font-medium text-fg mb-3">Continue Listening</h2>
+            <div className="mb-3">
+              <h2 className="text-sm font-medium text-fg">Where You Left Off</h2>
+              <p className="text-fg-faint text-xs mt-0.5">
+                The player starts quiet now — pick a track back up whenever you're ready.
+              </p>
+            </div>
             <div className="flex gap-2.5 overflow-x-auto pt-2 pb-2 -mx-1 px-1">
               {recentlyPlayed.slice(0, 6).map((track) => (
                 <button

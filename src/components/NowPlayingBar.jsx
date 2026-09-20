@@ -80,7 +80,7 @@ export default function NowPlayingBar({
                   </MarqueeText>
                 </>
               ) : (
-                <div className="text-fg-faint text-base">No song is being played</div>
+                <div className="text-fg-faint text-base">No song is being played right now</div>
               )}
             </div>
           </div>
