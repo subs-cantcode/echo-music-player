@@ -63,7 +63,6 @@ export const Sidebar = () => {
           isExpanded ? 'w-64' : 'w-20'
         }`}
       >
-    >
       {/* Toggle Button */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
@@ -82,7 +81,7 @@ export const Sidebar = () => {
       )}
 
       {/* Scrollable Nav Content */}
-      <nav className="flex-1 flex flex-col px-2 py-4">
+      <nav className="flex-1 flex flex-col gap-1 px-2 py-4">
         {libraryItems.map(item => (
           <NavItem key={item.path} item={item} />
         ))}
