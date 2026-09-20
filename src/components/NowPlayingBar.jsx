@@ -123,37 +123,34 @@ export default function NowPlayingBar({
             >
               <i className={`bi ${repeatIcon} text-sm`} />
             </button>
+          </div>
 
+          {/* Volume + Feature buttons */}
+          <div className="flex items-center gap-1.5 flex-1 justify-end min-w-0">
             <button
               onClick={onOpenLyrics}
-              className="player-btn w-10 h-10"
+              className="player-btn w-9 h-9"
               title="Lyrics"
               aria-label="Lyrics"
             >
               <i className="bi bi-file-text text-sm" />
             </button>
-
             <button
               onClick={onOpenMetadata}
-              className="player-btn w-10 h-10"
+              className="player-btn w-9 h-9"
               title="Edit metadata"
               aria-label="Edit metadata"
             >
               <i className="bi bi-tag text-sm" />
             </button>
-
             <button
               onClick={onOpenLastFm}
-              className="player-btn w-10 h-10"
+              className="player-btn w-9 h-9"
               title="Last.fm"
               aria-label="Last.fm settings"
             >
               <i className="bi bi-lastfm text-sm" />
             </button>
-          </div>
-
-          {/* Volume */}
-          <div className="flex items-center gap-1.5 flex-1 justify-end min-w-0">
             <button onClick={onToggleMute} className="player-btn w-9 h-9" aria-label={isMuted ? 'Unmute' : 'Mute'}>
               <i className={`bi ${volIcon} text-sm`} />
             </button>
