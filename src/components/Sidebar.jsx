@@ -104,24 +104,9 @@ export const Sidebar = () => {
       {/* Settings Section (Bottom) */}
       <div className="border-t border-border pt-2 px-2 pb-4">
         <SectionLabel label="Settings" />
-        <Link
-          to="/settings"
-          className={`nav-item w-20 flex items-center justify-center flex-shrink-0 transition-all border-2 border-transparent rounded-lg ${
-            isExpanded ? 'h-auto py-2 px-4' : 'h-16 justify-center'
-          } ${
-            isActive('/settings')
-              ? 'bg-accent-soft border-accent text-accent'
-              : 'bg-surface-hover hover:bg-surface-hover hover:border-accent'
-          }`}
-          title="Settings"
-        >
-          <Gear size={18} className="flex-shrink-0" />
-          {isExpanded && (
-            <span className="ml-3 text-sm font-500 whitespace-nowrap">
-              Settings
-            </span>
-          )}
-        </Link>
+        <div className="flex flex-col gap-1">
+          <NavItem item={{ path: '/settings', label: 'Settings', icon: Gear }} />
+        </div>
       </div>
     </aside>
   );
