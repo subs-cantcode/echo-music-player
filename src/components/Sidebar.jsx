@@ -91,7 +91,7 @@ export const Sidebar = () => {
       </nav>
 
       {/* Settings Section (Bottom) */}
-      <div className="border-t border-border pt-2 px-2 pb-4">
+      <div className="border-t border-border pt-2 px-2">
         <SectionLabel label="Settings" />
         <div className="flex flex-col gap-1">
           <NavItem item={{ path: '/settings', label: 'Settings', icon: Gear }} />
