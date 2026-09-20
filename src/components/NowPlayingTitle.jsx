@@ -7,10 +7,12 @@ import { useTextOverflow } from '../hooks/useTextOverflow'
 const NowPlayingTitle = React.memo(({ title }) => {
   const { elementRef, isOverflowing } = useTextOverflow(title)
 
+  // leading-5 pairs the title with the artist line below it: the font's default
+  // 24px line box left a visible gap between the two.
   return (
     <p
       ref={elementRef}
-      className={`now-playing-title text-base font-medium text-fg ${isOverflowing ? 'marquee' : ''}`}
+      className={`now-playing-title text-base leading-5 font-medium text-fg ${isOverflowing ? 'marquee' : ''}`}
     >
       <span className="now-playing-title-reel">
         <span>{title}</span>

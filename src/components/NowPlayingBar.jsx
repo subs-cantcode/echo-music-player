@@ -73,7 +73,11 @@ export default function NowPlayingBar({
               {track ? (
                 <>
                   <NowPlayingTitle title={track.title} />
-                  <MarqueeText className="text-fg-faint text-xs">{track.artist || ''}</MarqueeText>
+                  {/* leading-4 against the title's leading-5 keeps the pair's
+                      line boxes snug and evenly padded. */}
+                  <MarqueeText className="text-fg-faint text-[13px] leading-4">
+                    {track.artist || ''}
+                  </MarqueeText>
                 </>
               ) : (
                 <div className="text-fg-faint text-base">No song is being played</div>
