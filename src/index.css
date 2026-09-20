@@ -451,11 +451,26 @@ body {
   transform: scale(1.06);
 }
 
-/* Plain (unsynced) lyrics have no active line, so they render at full strength
-   instead of the dimmed synced styling. */
-.lyrics-plain .lyric-line {
-  opacity: 1;
+/* Manually added (or unsynced) lyrics: static, no timeline, deliberately
+   minimal — just quiet centred text. Lines are capped to a comfortable measure,
+   the type scales down on narrow screens, and long unbroken strings (URLs,
+   endless words) wrap instead of forcing a horizontal scroll. */
+.lyrics-static {
+  max-width: 38rem;
+  margin: 0 auto;
+  padding: 0 clamp(0.25rem, 2vw, 1.5rem) 1.5rem;
+  text-align: center;
+  font-size: clamp(0.95rem, 0.45vw + 0.82rem, 1.1rem);
+  line-height: 1.85;
   color: var(--fg-muted);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  text-wrap: pretty;
+}
+
+.lyrics-static > div {
+  min-height: 1.85em;
 }
 
 /* Metadata editor */

@@ -67,7 +67,7 @@ describe('LyricsPanel', () => {
     expect(await screen.findByText('Still visible line')).toBeInTheDocument()
   })
 
-  it('syncs and highlights a manually added timestamped line', async () => {
+  it('renders manually added lyrics statically, even with timestamps', async () => {
     render(<LyricsPanel track={baseTrack} currentTime={10} isOpen onClose={() => {}} />)
 
     fireEvent.click(screen.getByRole('button', { name: /Add lyrics manually/i }))
@@ -76,8 +76,9 @@ describe('LyricsPanel', () => {
     })
     fireEvent.click(screen.getByRole('button', { name: /^Save$/i }))
 
-    const later = await screen.findByText('Later line')
-    expect(later).toHaveClass('lyric-line')
-    expect(later).toHaveClass('active')
+    // Shown verbatim, with no lyric-line styling and no sync offset control.
+    const later = await screen.findByText('[00:10.00]Later line')
+    expect(later).not.toHaveClass('lyric-line')
+    expect(screen.queryByRole('button', { name: /Shift lyrics later/i })).not.toBeInTheDocument()
   })
 })

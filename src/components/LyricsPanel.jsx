@@ -6,6 +6,37 @@ import { formatTime } from './NowPlaying.jsx'
 const OFFSET_KEY = 'echo-lyrics-offsets'
 const OFFSET_STEP = 0.25
 const OFFSET_LIMIT = 5
+const MANUAL_KEY = 'echo-lyrics-manual'
+
+// Manually typed lyrics stay static (no timeline) even if they contain text
+// that looks like a timestamp, so we remember which tracks were hand-written.
+function readManualMap() {
+  try {
+    return JSON.parse(localStorage.getItem(MANUAL_KEY)) || {}
+  } catch {
+    return {}
+  }
+}
+
+function markManual(trackId) {
+  try {
+    const all = readManualMap()
+    all[trackId] = true
+    localStorage.setItem(MANUAL_KEY, JSON.stringify(all))
+  } catch {
+    // Not remembering the flag only costs us the static styling on reopen.
+  }
+}
+
+function clearManual(trackId) {
+  try {
+    const all = readManualMap()
+    delete all[trackId]
+    localStorage.setItem(MANUAL_KEY, JSON.stringify(all))
+  } catch {
+    // ignore
+  }
+}
 
 function readOffsets() {
   try {
@@ -50,7 +81,8 @@ export default function LyricsPanel({ track, currentTime, isOpen, onClose, onLyr
     setOffset(readOffsets()[track.id] || 0)
 
     if (track.lyrics) {
-      applyLyrics(track.lyrics)
+      const manual = Boolean(readManualMap()[track.id])
+      applyLyrics(track.lyrics, manual ? false : undefined)
     } else {
       setLyrics(null)
       setSynced(false)
@@ -125,6 +157,7 @@ export default function LyricsPanel({ track, currentTime, isOpen, onClose, onLyr
     const result = await fetchLyrics(track.artist, track.title, track.duration)
     setLoading(false)
     if (result) {
+      clearManual(track.id)
       applyLyrics(result.text, result.synced)
       persist(result.text)
     } else {
@@ -136,6 +169,7 @@ export default function LyricsPanel({ track, currentTime, isOpen, onClose, onLyr
   const handlePick = (result) => {
     const text = result.syncedLyrics || result.plainLyrics
     if (!text) return
+    clearManual(track.id)
     applyLyrics(text, Boolean(result.syncedLyrics))
     setView('display')
     persist(text)
@@ -143,7 +177,9 @@ export default function LyricsPanel({ track, currentTime, isOpen, onClose, onLyr
 
   const handleSaveManual = () => {
     const text = editText
-    applyLyrics(text)
+    // Hand-written lyrics are always static, never synced.
+    applyLyrics(text, false)
+    markManual(track.id)
     setView('display')
     persist(text)
   }
@@ -308,13 +344,9 @@ export default function LyricsPanel({ track, currentTime, isOpen, onClose, onLyr
             )}
           </div>
         )}
-        <div
-          ref={lyricsRef}
-          className={`text-center leading-relaxed ${synced ? 'lyrics-synced' : 'lyrics-content lyrics-plain'}`}
-          style={synced ? undefined : { fontSize: '1.15rem', lineHeight: '2.5rem' }}
-        >
-          {synced && parsedLyrics ? (
-            parsedLyrics.map((line, i) => (
+        {synced && parsedLyrics ? (
+          <div ref={lyricsRef} className="lyrics-synced text-center leading-relaxed">
+            {parsedLyrics.map((line, i) => (
               <div
                 key={i}
                 className={`lyric-line ${i === activeIndex ? 'active' : ''}`}
@@ -322,25 +354,14 @@ export default function LyricsPanel({ track, currentTime, isOpen, onClose, onLyr
               >
                 {line.text}
               </div>
-            ))
-          ) : (
-            lyrics.split('\n').map((line, i) => (
-              <div key={i} className="lyric-line">
-                {line || <span className="text-fg-faint">♪</span>}
-              </div>
-            ))
-          )}
-        </div>
-        {!synced && (
-          <p className="text-center text-fg-faint text-sm mt-4">
-            <i className="bi bi-info-circle" /> These lyrics aren&apos;t synced.{' '}
-            <button
-              onClick={() => { setEditText(lyrics); setView('edit') }}
-              className="text-accent-text hover:underline"
-            >
-              Add timestamps
-            </button>
-          </p>
+            ))}
+          </div>
+        ) : (
+          <div className="lyrics-static">
+            {lyrics.split('\n').map((line, i) => (
+              <div key={i}>{line || '\u00a0'}</div>
+            ))}
+          </div>
         )}
       </div>
     )
