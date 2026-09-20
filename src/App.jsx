@@ -6,6 +6,8 @@ import UserMenu from './components/UserMenu.jsx'
 import { useAudioPlayer } from './hooks/useAudioPlayer.js'
 import { LibraryProvider, useLibrary } from './lib/LibraryContext.jsx'
 
+const PLAYBACK_STATE_KEY = 'echo-playback-state'
+
 import Home from './pages/Home.jsx'
 import Search from './pages/Search.jsx'
 import Playlists, { PlaylistDetail } from './pages/Playlists.jsx'
@@ -34,14 +36,57 @@ function AppLayout() {
   const [shuffleOn, setShuffleOn] = useState(false)
   // Track ids for the current shuffled pass; empty when shuffle is off.
   const playOrderRef = useRef([])
+  const restoredRef = useRef(false)
 
   useEffect(() => {
     currentTrackRef.current = currentTrack
   }, [currentTrack])
 
+  // Restore playback state from localStorage
+  useEffect(() => {
+    if (!tracks.length || restoredRef.current) return
+    restoredRef.current = true
+    try {
+      const saved = localStorage.getItem(PLAYBACK_STATE_KEY)
+      if (saved) {
+        const state = JSON.parse(saved)
+        const track = tracks.find((t) => t.id === state.trackId)
+        if (track) {
+          setCurrentTrack(track)
+          setShuffleOn(state.shuffleOn ?? false)
+          // Auto-play restored track if it was playing
+          if (state.isPlaying) {
+            // Defer to next tick so player is ready
+            setTimeout(() => {
+              handlePlayTrackRef.current?.(track)
+            }, 0)
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to restore playback state:', e)
+    }
+  }, [tracks])
+
+  // Persist playback state to localStorage
+  useEffect(() => {
+    if (!currentTrack) return
+    const state = {
+      trackId: currentTrack.id,
+      currentTime,
+      isPlaying,
+      volume,
+      isMuted,
+      loopMode,
+      shuffleOn,
+    }
+    localStorage.setItem(PLAYBACK_STATE_KEY, JSON.stringify(state))
+  }, [currentTrack, currentTime, isPlaying, volume, isMuted, loopMode, shuffleOn])
+
   // The player stores its ended callback in a ref, so it can call through one of
   // ours. The handler needs the library order, which is defined further down.
   const endedHandlerRef = useRef(null)
+  const handlePlayTrackRef = useRef(null)
 
   const {
     isPlaying, currentTime, duration, progress, volume, isMuted, loopMode,
@@ -85,7 +130,24 @@ function AppLayout() {
       return [track, ...filtered].slice(0, 10)
     })
     await playTrack(track.objectUrl)
-  }, [playTrack, shuffleOn, tracks])
+    // Restore position if this is the track we saved
+    try {
+      const saved = localStorage.getItem(PLAYBACK_STATE_KEY)
+      if (saved) {
+        const state = JSON.parse(saved)
+        if (state.trackId === track.id && state.currentTime > 0) {
+          seek(state.currentTime)
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to restore seek position:', e)
+    }
+  }, [playTrack, shuffleOn, tracks, seek])
+
+  // Keep ref updated for restore effect
+  useEffect(() => {
+    handlePlayTrackRef.current = handlePlayTrack
+  }, [handlePlayTrack])
 
   // Home: play the whole library in a fresh random order.
   const handleShuffleAll = useCallback(() => {
