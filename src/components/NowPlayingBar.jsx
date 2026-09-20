@@ -144,16 +144,22 @@ export default function NowPlayingBar({
         {/* Progress */}
         <div className="relative z-10 flex items-center gap-2.5 mt-1.5 px-0.5">
           <span className="text-fg-faint text-[10px] w-8 text-right tabular-nums">{formatTime(currentTime)}</span>
-          <div className="flex-1 group cursor-pointer" onClick={(e) => {
-            if (!duration || !onSeek) return
-            const rect = e.currentTarget.getBoundingClientRect()
-            onSeek(((e.clientX - rect.left) / rect.width) * duration)
-          }}>
-            <div className="bar-track">
-              <div className="bar-fill" style={{ width: `${progress}%` }} />
-              <div className="bar-thumb" style={{ left: `${progress}%` }} />
-            </div>
-          </div>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={progress}
+            onChange={(e) => {
+              if (!duration || !onSeek) return
+              const newTime = (e.target.value / 100) * duration
+              onSeek(newTime)
+            }}
+            className="progress-slider flex-1"
+            style={{
+              background: `linear-gradient(to right, var(--accent) ${progress}%, var(--border) ${progress}%)`,
+            }}
+            aria-label="Seek"
+          />
           <span className="text-fg-faint text-[10px] w-8 tabular-nums">{formatTime(duration)}</span>
         </div>
       </div>
