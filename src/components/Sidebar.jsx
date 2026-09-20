@@ -58,10 +58,11 @@ export const Sidebar = () => {
   );
 
   return (
-    <aside
-      className={`sidebar transition-all duration-280 overflow-hidden flex flex-col h-screen bg-surface border-r border-border ${
-        isExpanded ? 'w-64' : 'w-20'
-      }`}
+      <aside
+        className={`sidebar transition-all duration-280 overflow-y-auto flex flex-col h-screen bg-surface border-r border-border ${
+          isExpanded ? 'w-64' : 'w-20'
+        }`}
+      >
     >
       {/* Toggle Button */}
       <button
@@ -81,7 +82,7 @@ export const Sidebar = () => {
       )}
 
       {/* Scrollable Nav Content */}
-      <nav className="flex-1 overflow-y-auto flex flex-col gap-1 px-2 py-4">
+      <nav className="flex-1 flex flex-col px-2 py-4">
         {libraryItems.map(item => (
           <NavItem key={item.path} item={item} />
         ))}
