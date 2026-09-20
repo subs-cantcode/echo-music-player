@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, within, fireEvent } from '@testing-library/react'
 import { ThemeProvider } from './lib/ThemeContext.jsx'
 import App from './App.jsx'
 
@@ -46,6 +46,8 @@ const shelf = () => screen.getByText('Where You Left Off').closest('section')
 describe('App — coming back to a quiet player', () => {
   beforeEach(() => {
     localStorage.clear()
+    // jsdom's media element has no play(); stub it so a click resolves.
+    window.HTMLMediaElement.prototype.play = vi.fn().mockResolvedValue(undefined)
     // jsdom has no matchMedia, which the theme provider reads on mount.
     window.matchMedia = window.matchMedia || (() => ({ matches: false }))
   })
@@ -80,5 +82,21 @@ describe('App — coming back to a quiet player', () => {
 
     expect(screen.getByText('No song is being played right now')).toBeInTheDocument()
     expect(screen.queryByText('Where You Left Off')).not.toBeInTheDocument()
+  })
+
+  it('fades the controls back while idle and lifts them for a track', () => {
+    localStorage.setItem('echo-playback-state', JSON.stringify({ trackId: 't1' }))
+    renderApp()
+
+    // The controls sit inside a cluster that is faded and stands down.
+    const dimmed = () => screen.getByRole('button', { name: 'Shuffle' }).closest('.opacity-40')
+    expect(screen.getByText('No song is being played right now')).toBeInTheDocument()
+    expect(dimmed()).not.toBeNull()
+    expect(dimmed()).toHaveClass('pointer-events-none')
+
+    fireEvent.click(within(shelf()).getByRole('button', { name: /Song A/ }))
+
+    expect(screen.queryByText('No song is being played right now')).not.toBeInTheDocument()
+    expect(dimmed()).toBeNull()
   })
 })

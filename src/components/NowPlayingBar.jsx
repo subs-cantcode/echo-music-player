@@ -45,6 +45,9 @@ export default function NowPlayingBar({
   const volIcon = effectiveVol === 0 ? 'bi-volume-mute' : effectiveVol < 0.5 ? 'bi-volume-down' : 'bi-volume-up'
   const repeatIcon = loopMode === 'track' ? 'bi-repeat-1' : 'bi-repeat'
   const isFav = track?.isFavourite ?? false
+  // Nothing loaded: the bar is furniture until a track is picked, so the
+  // controls fade back and stand down rather than offering dead buttons.
+  const isIdle = !track
 
   return (
     <div
@@ -56,7 +59,14 @@ export default function NowPlayingBar({
       >
         <AudioWaves />
 
-        <div className="relative z-10 flex items-center gap-2 flex-wrap">
+        {/* Both rows fade as one when idle. `ease-smooth` is not conditional:
+            dropping the duration along with the opacity would snap the fade
+            back instead of animating it out. */}
+        <div
+          className={`relative z-10 flex items-center gap-2 flex-wrap ease-smooth ${
+            isIdle ? 'opacity-40 pointer-events-none' : ''
+          }`}
+        >
           {/* Track info. flex-1 mirrors the lyrics/volume column so the
               centred controls land on the bar's true horizontal centre. The
               min width stops a narrow bar from crushing the text to a sliver
@@ -79,9 +89,7 @@ export default function NowPlayingBar({
                     {track.artist || ''}
                   </MarqueeText>
                 </>
-              ) : (
-                <div className="text-fg-faint text-base">No song is being played right now</div>
-              )}
+              ) : null}
             </div>
           </div>
 
@@ -181,7 +189,11 @@ export default function NowPlayingBar({
         </div>
 
         {/* Progress */}
-        <div className="relative z-10 flex items-center gap-2 mt-1 px-0.5">
+        <div
+          className={`relative z-10 flex items-center gap-2 mt-1 px-0.5 ease-smooth ${
+            isIdle ? 'opacity-40 pointer-events-none' : ''
+          }`}
+        >
           <span className="text-fg-faint text-[10px] w-8 text-right tabular-nums">{formatTime(currentTime)}</span>
           <input
             type="range"
@@ -201,6 +213,18 @@ export default function NowPlayingBar({
           />
           <span className="text-fg-faint text-[10px] w-8 tabular-nums">{formatTime(duration)}</span>
         </div>
+
+        {/* Centred in front of the faded controls. It lands right on top of the
+            play button, so it carries its own background to stay legible;
+            dulling the whole panel instead would cost the bar its frosted
+            translucency. */}
+        {isIdle && (
+          <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none px-4">
+            <span className="text-sm font-medium text-fg bg-surface border border-border-subtle rounded-full px-3.5 py-1 shadow-sm whitespace-nowrap">
+              No song is being played right now
+            </span>
+          </div>
+        )}
       </div>
     </div>
   )
