@@ -49,8 +49,10 @@ export function useLastFm() {
   return { connected, connecting, error, connect, disconnect, handleCallback, isConfigured: isLastFmConfigured() }
 }
 
-export default function LastFmSettings({ onClose }) {
+export default function LastFmSettings({ isOpen, onClose }) {
   const { connected, connecting, error, connect, disconnect, isConfigured } = useLastFm()
+
+  if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-bg/95 backdrop-blur-sm p-4" role="dialog" aria-modal="true">
