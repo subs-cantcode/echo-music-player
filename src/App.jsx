@@ -49,6 +49,18 @@ function AppLayout() {
   const [lastFmSettingsOpen, setLastFmSettingsOpen] = useState(false)
   const { connected: lastFmConnected } = useLastFm()
 
+  // The player stores its ended callback in a ref, so it can call through one of
+  // ours. The handler needs the library order, which is defined further down.
+  const endedHandlerRef = useRef(null)
+  const handlePlayTrackRef = useRef(null)
+
+  const {
+    isPlaying, currentTime, duration, progress, volume, isMuted, loopMode,
+    playTrack, togglePlay, seek, setVolume, toggleMute, toggleLoop,
+  } = useAudioPlayer({
+    onEnded: (timeListened, mode) => endedHandlerRef.current?.(timeListened, mode),
+  })
+
   useEffect(() => {
     currentTrackRef.current = currentTrack
   }, [currentTrack])
@@ -93,18 +105,6 @@ function AppLayout() {
     }
     localStorage.setItem(PLAYBACK_STATE_KEY, JSON.stringify(state))
   }, [currentTrack, currentTime, isPlaying, volume, isMuted, loopMode, shuffleOn])
-
-  // The player stores its ended callback in a ref, so it can call through one of
-  // ours. The handler needs the library order, which is defined further down.
-  const endedHandlerRef = useRef(null)
-  const handlePlayTrackRef = useRef(null)
-
-  const {
-    isPlaying, currentTime, duration, progress, volume, isMuted, loopMode,
-    playTrack, togglePlay, seek, setVolume, toggleMute, toggleLoop,
-  } = useAudioPlayer({
-    onEnded: (timeListened, mode) => endedHandlerRef.current?.(timeListened, mode),
-  })
 
   const [recentlyPlayed, setRecentlyPlayed] = useState([])
   const [uploadToast, setUploadToast] = useState(false)
